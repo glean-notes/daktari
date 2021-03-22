@@ -25,3 +25,15 @@ class MkcertInstalled(Check):
 
     def check(self) -> CheckResult:
         return self.verify(can_run_command("mkcert -version"), "mkcert is <not/> installed")
+
+
+class KtlintInstalled(Check):
+    name = "ktlint.installed"
+
+    suggestions = {
+        OS.OS_X: "<cmd>brew install ktlint</cmd>",
+        OS.GENERIC: "Install ktlint: https://github.com/pinterest/ktlint#installation",
+    }
+
+    def check(self) -> CheckResult:
+        return self.verify(can_run_command("ktlint --version"), "ktlint is <not/> installed")

@@ -64,3 +64,10 @@ def get_stdout(command) -> Optional[str]:
         return run_command(command).stdout
     except Exception:
         return None
+
+
+def get_stderr(command) -> Optional[str]:
+    try:
+        return run_command(command).stderr
+    except Exception:
+        return None

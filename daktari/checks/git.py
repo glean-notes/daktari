@@ -11,7 +11,7 @@ class GitInstalled(Check):
     suggestions = {
         OS.OS_X: "<cmd>brew install git</cmd>",
         OS.UBUNTU: "<cmd>sudo apt install git</cmd>",
-        OS.GENERIC: "Install Git from https://git-scm.com/downloads",
+        OS.GENERIC: "Install Git: https://git-scm.com/downloads",
     }
 
     def check(self) -> CheckResult:
@@ -28,7 +28,7 @@ class GitLfsInstalled(Check):
     suggestions = {
         OS.OS_X: "<cmd>brew install git-lfs</cmd>",
         OS.UBUNTU: "<cmd>sudo apt install git-lfs</cmd>",
-        OS.GENERIC: "Install Git LFS (https://github.com/git-lfs/git-lfs/wiki/Installation)",
+        OS.GENERIC: "Install Git LFS: https://github.com/git-lfs/git-lfs/wiki/Installation",
     }
 
     def check(self) -> CheckResult:
@@ -75,7 +75,7 @@ class GitCryptInstalled(Check):
     suggestions = {
         OS.OS_X: "<cmd>brew install git-crypt</cmd>",
         OS.UBUNTU: "<cmd>sudo apt install git-crypt</cmd>",
-        OS.GENERIC: "Install git-crypt (https://www.agwa.name/projects/git-crypt/)",
+        OS.GENERIC: "Install git-crypt: https://www.agwa.name/projects/git-crypt/",
     }
 
     def check(self) -> CheckResult:
