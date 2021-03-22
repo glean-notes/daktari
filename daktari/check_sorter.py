@@ -1,4 +1,5 @@
 from typing import Dict, List, Set, TypeVar
+
 from daktari.check import Check
 
 

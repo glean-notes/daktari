@@ -1,8 +1,10 @@
 import re
-from daktari.os import OS, detect_os
-from daktari.check import CheckResult, CheckStatus
 from typing import Dict, Optional
-from colors import red, green, underline
+
+from colors import green, red, underline
+
+from daktari.check import CheckResult, CheckStatus
+from daktari.os import OS, detect_os
 
 
 def check_status_symbol(status: CheckStatus) -> str:

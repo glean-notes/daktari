@@ -1,9 +1,10 @@
 from __future__ import annotations
+
 import abc
+import re
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List, Optional, Type
-import re
 
 
 class CheckStatus(Enum):

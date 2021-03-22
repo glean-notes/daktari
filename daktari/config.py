@@ -1,7 +1,8 @@
-from pathlib import Path
-from daktari.check import Check
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+from daktari.check import Check
 
 
 @dataclass

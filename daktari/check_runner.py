@@ -1,6 +1,8 @@
 import logging
 from typing import List
+
 from colors import yellow
+
 from daktari.check import Check, CheckStatus
 from daktari.check_sorter import sort_checks
 from daktari.os import detect_os
