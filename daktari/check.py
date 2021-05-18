@@ -4,6 +4,8 @@ from enum import Enum
 from typing import Dict, List, Optional, Type
 import re
 
+from daktari.command_utils import can_run_command
+
 
 class CheckStatus(Enum):
     PASS = "PASS"
@@ -36,6 +38,9 @@ class Check:
             return self.passed(pattern.sub(" ", dualMessage))
         else:
             return self.failed(pattern.sub(" not ", dualMessage))
+
+    def verify_install(self, program: str) -> CheckResult:
+        return self.verify(can_run_command(f"{program} --version"), f"{program} is <not/> installed")
 
     @abc.abstractmethod
     def check(self) -> CheckResult:

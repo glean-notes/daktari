@@ -1,6 +1,5 @@
 from daktari.os import OS
 from daktari.check import Check, CheckResult
-from daktari.command_utils import can_run_command
 
 
 class WatchmanInstalled(Check):
@@ -12,7 +11,7 @@ class WatchmanInstalled(Check):
     }
 
     def check(self) -> CheckResult:
-        return self.verify(can_run_command("watchman --version"), "Watchman is <not/> installed")
+        return self.verify_install("watchman")
 
 
 class MkcertInstalled(Check):
@@ -24,7 +23,7 @@ class MkcertInstalled(Check):
     }
 
     def check(self) -> CheckResult:
-        return self.verify(can_run_command("mkcert -version"), "mkcert is <not/> installed")
+        return self.verify_install("mkcert")
 
 
 class KtlintInstalled(Check):
@@ -36,7 +35,7 @@ class KtlintInstalled(Check):
     }
 
     def check(self) -> CheckResult:
-        return self.verify(can_run_command("ktlint --version"), "ktlint is <not/> installed")
+        return self.verify_install("ktlint")
 
 
 class JqInstalled(Check):
@@ -49,4 +48,17 @@ class JqInstalled(Check):
     }
 
     def check(self) -> CheckResult:
-        return self.verify(can_run_command("jq --version"), "jq is <not/> installed")
+        return self.verify_install("jq")
+
+
+class FlywayInstalled(Check):
+    name = "flyway.installed"
+
+    suggestions = {
+        OS.OS_X: "<cmd>brew install flyway</cmd>",
+        OS.UBUNTU: "<cmd>snap install flyway</cmd>",
+        OS.GENERIC: "Install flyway: https://flywaydb.org/documentation/usage/commandline/#download-and-installation"
+    }
+
+    def check(self) -> CheckResult:
+        return self.verify_install("flyway")
