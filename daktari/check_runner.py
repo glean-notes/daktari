@@ -1,6 +1,5 @@
 import logging
-from typing import List
-
+from typing import List, Set
 from colors import yellow
 
 from daktari.check import Check, CheckStatus
@@ -17,7 +16,7 @@ class CheckRunner:
     def __init__(self, checks: List[Check]):
         self.checks = checks
         self.all_passed = True
-        self.checks_passed: set[str] = set()
+        self.checks_passed: Set[str] = set()
 
     def run(self) -> bool:
         for check in sort_checks(self.checks):
