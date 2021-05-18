@@ -1,8 +1,8 @@
 import abc
+import re
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List, Optional, Type
-import re
 
 from daktari.command_utils import can_run_command
 
@@ -46,13 +46,13 @@ class Check:
     def check(self) -> CheckResult:
         raise NotImplementedError("check must be implemented")
 
-    def override_suggestions(self, suggestions: Dict[str, str]) -> 'Check':
+    def override_suggestions(self, suggestions: Dict[str, str]) -> "Check":
         self.suggestions = suggestions
         return self
 
-    def suggest(self, os: str, text: str) -> 'Check':
+    def suggest(self, os: str, text: str) -> "Check":
         return self.override_suggestions({os: text})
 
-    def only_on(self, os: str) -> 'Check':
+    def only_on(self, os: str) -> "Check":
         self.run_on = os
         return self

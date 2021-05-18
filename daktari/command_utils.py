@@ -1,7 +1,7 @@
+import logging
 import subprocess
 from dataclasses import dataclass
 from typing import Optional
-import logging
 
 
 @dataclass

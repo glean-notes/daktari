@@ -1,9 +1,10 @@
 import logging
-from typing import Optional
-from daktari.command_utils import get_stderr
-from daktari.check import Check, CheckResult
-from daktari.os import OS
 import re
+from typing import Optional
+
+from daktari.check import Check, CheckResult
+from daktari.command_utils import get_stderr
+from daktari.os import OS
 
 java_version_pattern = re.compile('^.*version "(.*?)".*$', re.MULTILINE)
 one_dot_pattern = re.compile("1\\.([0-9]+)")

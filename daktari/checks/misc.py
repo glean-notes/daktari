@@ -1,5 +1,5 @@
-from daktari.os import OS
 from daktari.check import Check, CheckResult
+from daktari.os import OS
 
 
 class WatchmanInstalled(Check):

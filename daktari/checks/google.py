@@ -1,6 +1,6 @@
-from daktari.os import OS
 from daktari.check import Check, CheckResult
 from daktari.command_utils import can_run_command
+from daktari.os import OS
 
 
 class GoogleCloudSdkInstalled(Check):

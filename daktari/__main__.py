@@ -1,10 +1,12 @@
-from daktari.config import read_config
-from daktari.check_runner import run_checks
-from daktari.options import argument_parser
-import sys
 import logging
-from pyfiglet import Figlet
 import os
+import sys
+
+from pyfiglet import Figlet
+
+from daktari.check_runner import run_checks
+from daktari.config import read_config
+from daktari.options import argument_parser
 
 
 def print_logo(title: str):
