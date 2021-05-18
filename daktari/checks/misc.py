@@ -37,3 +37,16 @@ class KtlintInstalled(Check):
 
     def check(self) -> CheckResult:
         return self.verify(can_run_command("ktlint --version"), "ktlint is <not/> installed")
+
+
+class JqInstalled(Check):
+    name = "jq.installed"
+
+    suggestions = {
+        OS.OS_X: "<cmd>brew install jq</cmd>",
+        OS.UBUNTU: "<cmd>sudo apt install jq</cmd>",
+        OS.GENERIC: "Install jq: https://stedolan.github.io/jq/download/"
+    }
+
+    def check(self) -> CheckResult:
+        return self.verify(can_run_command("jq --version"), "jq is <not/> installed")
