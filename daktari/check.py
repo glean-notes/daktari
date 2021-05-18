@@ -1,4 +1,3 @@
-from __future__ import annotations
 import abc
 from dataclasses import dataclass
 from enum import Enum
@@ -42,13 +41,13 @@ class Check:
     def check(self) -> CheckResult:
         raise NotImplementedError("check must be implemented")
 
-    def override_suggestions(self, suggestions: Dict[str, str]) -> Check:
+    def override_suggestions(self, suggestions: Dict[str, str]) -> 'Check':
         self.suggestions = suggestions
         return self
 
-    def suggest(self, os: str, text: str) -> Check:
+    def suggest(self, os: str, text: str) -> 'Check':
         return self.override_suggestions({os: text})
 
-    def only_on(self, os: str) -> Check:
+    def only_on(self, os: str) -> 'Check':
         self.run_on = os
         return self
