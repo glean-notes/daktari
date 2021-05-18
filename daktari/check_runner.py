@@ -1,5 +1,6 @@
 import logging
 from typing import List, Set
+
 from colors import yellow
 
 from daktari.check import Check, CheckStatus
