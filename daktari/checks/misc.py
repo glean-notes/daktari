@@ -61,4 +61,4 @@ class FlywayInstalled(Check):
     }
 
     def check(self) -> CheckResult:
-        return self.verify_install("flyway")
+        return self.verify_install("flyway", "-v")

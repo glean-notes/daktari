@@ -39,8 +39,8 @@ class Check:
         else:
             return self.failed(pattern.sub(" not ", dualMessage))
 
-    def verify_install(self, program: str) -> CheckResult:
-        return self.verify(can_run_command(f"{program} --version"), f"{program} is <not/> installed")
+    def verify_install(self, program: str, version_flag: str = "--version") -> CheckResult:
+        return self.verify(can_run_command(f"{program} {version_flag}"), f"{program} is <not/> installed")
 
     @abc.abstractmethod
     def check(self) -> CheckResult:
