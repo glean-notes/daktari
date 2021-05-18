@@ -29,7 +29,7 @@ def run_command(command_parts):
     combined_command = " ".join(command_parts)
     logging.debug(f"Running command '{combined_command}'")
     try:
-        result = subprocess.run(command_parts, stdout=subprocess.PIPE, stderr=subprocess.PIPE, input='')
+        result = subprocess.run(command_parts, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     except FileNotFoundError:
         logging.debug(f"Command not found for '{combined_command}'.")
         raise CommandNotFoundException(f"Command not found: {combined_command}")
