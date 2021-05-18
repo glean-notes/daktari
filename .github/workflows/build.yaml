@@ -30,3 +30,6 @@ jobs:
     - name: mypy
       run: |
         mypy daktari
+    - name: execute git check
+      run: |
+        python3 -m daktari --debug --config .ci-config.py
