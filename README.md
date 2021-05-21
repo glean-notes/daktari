@@ -48,3 +48,12 @@ class GitCryptInstalled(Check):
     def check(self):
         return self.verify(can_run_command("git crypt version"), "git-crypt is <not/> installed")
 ```
+
+## Release instructions
+
+```
+bumpversion --verbose patch
+python setup.py sdist bdist_wheel
+twine check dist/*
+twine upload dist/*
+```
