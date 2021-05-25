@@ -10,7 +10,10 @@ from daktari.os import OS
 class DockerInstalled(Check):
     name = "docker.installed"
 
-    suggestions = {OS.GENERIC: "Install docker: https://docs.docker.com/get-docker/"}
+    suggestions = {
+        OS.GENERIC: "Install docker: https://docs.docker.com/get-docker/",
+        OS.OS_X: "Install docker: https://docs.docker.com/docker-for-mac/install/",
+    }
 
     def __init__(self, minimum_version: Optional[int] = None):
         self.minimum_version = minimum_version
