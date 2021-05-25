@@ -44,7 +44,7 @@ class JqInstalled(Check):
     suggestions = {
         OS.OS_X: "<cmd>brew install jq</cmd>",
         OS.UBUNTU: "<cmd>sudo apt install jq</cmd>",
-        OS.GENERIC: "Install jq: https://stedolan.github.io/jq/download/"
+        OS.GENERIC: "Install jq: https://stedolan.github.io/jq/download/",
     }
 
     def check(self) -> CheckResult:
@@ -57,7 +57,7 @@ class FlywayInstalled(Check):
     suggestions = {
         OS.OS_X: "<cmd>brew install flyway</cmd>",
         OS.UBUNTU: "<cmd>snap install flyway</cmd>",
-        OS.GENERIC: "Install flyway: https://flywaydb.org/documentation/usage/commandline/#download-and-installation"
+        OS.GENERIC: "Install flyway: https://flywaydb.org/documentation/usage/commandline/#download-and-installation",
     }
 
     def check(self) -> CheckResult:

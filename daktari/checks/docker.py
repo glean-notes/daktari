@@ -10,9 +10,7 @@ from daktari.os import OS
 class DockerInstalled(Check):
     name = "docker.installed"
 
-    suggestions = {
-        OS.GENERIC: "Install docker: https://docs.docker.com/get-docker/"
-    }
+    suggestions = {OS.GENERIC: "Install docker: https://docs.docker.com/get-docker/"}
 
     def check(self) -> CheckResult:
         return self.verify_install("docker")
@@ -44,15 +42,16 @@ class DockerVersion(Check):
 
     def check(self) -> CheckResult:
         major_version = get_major_docker_version()
-        return self.verify(major_version >= self.required_version, f"Docker version is <not/> >={self.required_version} ({major_version})")
+        return self.verify(
+            major_version >= self.required_version,
+            f"Docker version is <not/> >={self.required_version} ({major_version})",
+        )
 
 
 class DockerComposeInstalled(Check):
     name = "docker-compose.installed"
 
-    suggestions = {
-        OS.GENERIC: "Install docker-compose: https://docs.docker.com/compose/install/"
-    }
+    suggestions = {OS.GENERIC: "Install docker-compose: https://docs.docker.com/compose/install/"}
 
     def check(self) -> CheckResult:
         return self.verify_install("docker-compose")
