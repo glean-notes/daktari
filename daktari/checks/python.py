@@ -1,5 +1,5 @@
-from daktari.os import OS
 from daktari.check import Check, CheckResult
+from daktari.os import OS
 
 
 class PythonInstalled(Check):
@@ -9,7 +9,7 @@ class PythonInstalled(Check):
         self.suggestions = {
             OS.OS_X: f"<cmd>brew install python{required_version}</cmd>",
             OS.UBUNTU: f"<cmd>sudo apt install python{required_version}-dev</cmd>",
-            OS.GENERIC: f"Download python {required_version}: https://www.python.org/downloads/"
+            OS.GENERIC: f"Download python {required_version}: https://www.python.org/downloads/",
         }
 
     def check(self) -> CheckResult:
