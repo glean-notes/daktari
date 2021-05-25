@@ -12,40 +12,35 @@ class DockerInstalled(Check):
 
     suggestions = {OS.GENERIC: "Install docker: https://docs.docker.com/get-docker/"}
 
+    def __init__(self, minimum_version: Optional[int] = None):
+        self.minimum_version = minimum_version
+
     def check(self) -> CheckResult:
-        return self.verify_install("docker")
+        installed_version = get_major_docker_version()
+        if installed_version is None:
+            return self.failed("docker is not installed")
+
+        if self.minimum_version is None:
+            return self.passed("docker is installed")
+
+        return self.verify(
+            installed_version >= self.minimum_version,
+            f"docker version is <not/> >={self.minimum_version} ({installed_version})",
+        )
 
 
-major_version_pattern = re.compile("([0-9]+)")
+major_version_pattern = re.compile("Docker version ([0-9]+)")
 
 
 def get_major_docker_version() -> Optional[int]:
-    raw_version = get_stdout("docker version --format '{{.Server.Version}}'")
+    raw_version = get_stdout("docker --version")
     if raw_version:
         match = major_version_pattern.search(raw_version)
         if match:
             major_version_string = match.group(1)
-            logging.debug(f"Docker major version: {major_version_string} (parsed from {raw_version})")
+            logging.debug(f"Docker major version: {major_version_string}")
             return int(major_version_string)
     return None
-
-
-class DockerVersion(Check):
-    name = "docker.version"
-    depends_on = [DockerInstalled]
-
-    def __init__(self, required_version: int):
-        self.required_version = required_version
-        self.suggestions = {
-            OS.GENERIC: f"Install a newer version of docker (at least {required_version}): https://docs.docker.com/get-docker/"
-        }
-
-    def check(self) -> CheckResult:
-        major_version = get_major_docker_version()
-        return self.verify(
-            major_version >= self.required_version,
-            f"Docker version is <not/> >={self.required_version} ({major_version})",
-        )
 
 
 class DockerComposeInstalled(Check):
