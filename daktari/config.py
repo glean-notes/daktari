@@ -1,19 +1,63 @@
+import logging
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from packaging import version
+
+from colors import yellow, red
+from daktari import __version__
 
 from daktari.check import Check
+from daktari.result_printer import print_suggestion_text
 
 
 @dataclass
 class Config:
+    min_version: Optional[str]
     title: Optional[str]
     checks: List[Check]
 
 
-def read_config(config_path: Path) -> Config:
+version_regex = re.compile('daktari_version.*"([0-9.]+)"')
+
+
+def read_config(config_path: Path) -> Optional[Config]:
     variables: Dict[str, Any] = {}
-    exec(config_path.read_text(), variables)
+    raw_config = config_path.read_text()
+    if not check_version_compatibility(config_path, raw_config):
+        return None
+
+    exec(raw_config, variables)
     checks = variables.get("checks", [])
     title = variables.get("title", None)
-    return Config(title, checks)
+    min_version = variables.get("daktari_version", None)
+    return Config(min_version, title, checks)
+
+
+def check_version_compatibility(config_path: Path, raw_config: str) -> bool:
+    match = version_regex.search(raw_config)
+    disclaimer = "Specifying daktari_version is recommended to ensure team members have compatible versions installed."
+    if match is None:
+        print(yellow(f"⚠️  No minimum version found in {config_path}. {disclaimer}"))
+        return True
+
+    my_version = version.parse(__version__)
+    required_version = version.parse(match.group(1))
+
+    if not isinstance(required_version, version.Version):
+        print(red(f"❌  Invalid daktari_version in {config_path}: {required_version}"))
+        return False
+
+    logging.debug(f"Doing version check. Mine [{my_version}], required [{required_version}]")
+    if required_version > version.parse(__version__):
+        print(
+            red(
+                f"""❌  Installed version of daktari [{my_version}] is too old
+                 for this project (needs at least {required_version})."""
+            )
+        )
+        print_suggestion_text("pip install daktari -U")
+        return False
+
+    return True

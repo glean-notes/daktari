@@ -19,6 +19,8 @@ def main() -> int:
     if args.debug:
         logging.basicConfig(level=logging.DEBUG)
     config = read_config(args.config_path)
+    if config is None:
+        return 1
 
     os.chdir(args.config_path.parent.absolute())
 
