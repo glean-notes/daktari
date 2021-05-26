@@ -50,7 +50,7 @@ def check_version_compatibility(config_path: Path, raw_config: str) -> bool:
         return False
 
     logging.debug(f"Doing version check. Mine [{my_version}], required [{required_version}]")
-    if required_version > version.parse(__version__):
+    if required_version > my_version:
         print(
             red(
                 f"""❌  Installed version of daktari [{my_version}] is too old
