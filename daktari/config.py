@@ -28,7 +28,13 @@ def read_config(config_path: Path) -> Optional[Config]:
     if not check_version_compatibility(config_path, raw_config):
         return None
 
-    exec(raw_config, variables)
+    try:
+        exec(raw_config, variables)
+    except Exception:
+        print(red(f"❌  Failed to parse {config_path} - config is not valid."))
+        logging.error(f"Exception reading {config_path}", exc_info=True)
+        return None
+
     checks = variables.get("checks", [])
     title = variables.get("title", None)
     min_version = variables.get("daktari_version", None)
