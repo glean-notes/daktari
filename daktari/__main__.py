@@ -27,6 +27,7 @@ def main() -> int:
     if config.title:
         print_logo(config.title)
     all_passed = run_checks(config.checks)
+    print("")
     return 0 if all_passed else 1
 
 

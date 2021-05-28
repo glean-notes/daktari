@@ -62,3 +62,42 @@ class FlywayInstalled(Check):
 
     def check(self) -> CheckResult:
         return self.verify_install("flyway", "-v")
+
+
+class ShellcheckInstalled(Check):
+    name = "shellcheck.installed"
+
+    suggestions = {
+        OS.OS_X: "<cmd>brew install shellcheck</cmd>",
+        OS.UBUNTU: "<cmd>sudo apt install shellcheck</cmd>",
+        OS.GENERIC: "Install shellcheck: https://github.com/koalaman/shellcheck#user-content-installing",
+    }
+
+    def check(self) -> CheckResult:
+        return self.verify_install("shellcheck")
+
+
+class MakeInstalled(Check):
+    name = "make.installed"
+
+    suggestions = {
+        OS.OS_X: "<cmd>xcode-select --install</cmd>",
+        OS.UBUNTU: "<cmd>sudo apt install make</cmd>",
+        OS.GENERIC: "Install make: https://www.gnu.org/software/make/",
+    }
+
+    def check(self) -> CheckResult:
+        return self.verify_install("make")
+
+
+class GccInstalled(Check):
+    name = "gcc.installed"
+
+    suggestions = {
+        OS.OS_X: "<cmd>xcode-select --install</cmd>",
+        OS.UBUNTU: "<cmd>sudo apt install gcc</cmd>",
+        OS.GENERIC: "Install gcc: https://gcc.gnu.org/",
+    }
+
+    def check(self) -> CheckResult:
+        return self.verify_install("gcc")
