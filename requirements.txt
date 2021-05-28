@@ -2,3 +2,5 @@ ansicolors==1.1.8
 distro==1.5.0
 pyfiglet==0.7
 dataclasses==0.8; python_version < '3.7'
+packaging==20.9
+setuptools==56.2.0

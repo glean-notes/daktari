@@ -30,6 +30,9 @@ jobs:
     - name: mypy
       run: |
         mypy daktari
+    - name: test
+      run: |
+        python -m unittest discover
     - name: execute git check
       run: |
         python3 -m daktari --debug --config .ci-config.py
