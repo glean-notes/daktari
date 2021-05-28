@@ -70,7 +70,7 @@ class ShellcheckInstalled(Check):
     suggestions = {
         OS.OS_X: "<cmd>brew install shellcheck</cmd>",
         OS.UBUNTU: "<cmd>sudo apt install shellcheck</cmd>",
-        OS.GENERIC: "Install flyway: https://github.com/koalaman/shellcheck#user-content-installing",
+        OS.GENERIC: "Install shellcheck: https://github.com/koalaman/shellcheck#user-content-installing",
     }
 
     def check(self) -> CheckResult:
