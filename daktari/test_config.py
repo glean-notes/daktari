@@ -7,7 +7,7 @@ from packaging import version
 from colors import yellow, red
 from packaging.version import Version
 
-from daktari.config import check_version_compatibility, parse_raw_config, read_config
+from daktari.config import check_version_compatibility, parse_raw_config
 from daktari import __version__
 
 config_path = Path("./.daktari.config")
@@ -57,11 +57,6 @@ class TestConfig(unittest.TestCase):
         result = parse_raw_config(config_path, "checks = [NonExistentCheck()]")
         self.assertEqual(result, None)
         self.verify_error("❌  Failed to parse .daktari.config - config is not valid.")
-
-    def test_read_config(self):
-        result = read_config(Path("../.ci-config.py"))
-        assert result is not None
-        self.assertEqual(result.title, "CI Test")
 
     def verify_no_logging(self):
         self.assertEqual(self.capturedOutput.getvalue(), "")
