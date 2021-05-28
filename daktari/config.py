@@ -23,11 +23,15 @@ version_regex = re.compile('daktari_version.*"([0-9.]+)"')
 
 
 def read_config(config_path: Path) -> Optional[Config]:
-    variables: Dict[str, Any] = {}
     raw_config = config_path.read_text()
+    return parse_raw_config(config_path, raw_config)
+
+
+def parse_raw_config(config_path: Path, raw_config: str) -> Optional[Config]:
     if not check_version_compatibility(config_path, raw_config):
         return None
 
+    variables: Dict[str, Any] = {}
     try:
         exec(raw_config, variables)
     except Exception:
@@ -59,8 +63,8 @@ def check_version_compatibility(config_path: Path, raw_config: str) -> bool:
     if required_version > my_version:
         print(
             red(
-                f"""❌  Installed version of daktari [{my_version}] is too old
-                 for this project (needs at least {required_version})."""
+                f"❌  Installed version of daktari [{my_version}] is "
+                f"too old for this project (needs at least {required_version}). "
             )
         )
         print_suggestion_text("pip install daktari -U")
