@@ -43,3 +43,18 @@ def get_kubectl_version() -> Optional[float]:
             logging.debug(f"Kubectl version: {version_string}")
             return float(version_string)
     return None
+
+
+class KubectlContextExists(Check):
+    def __init__(self, context_name: str, provision_command: str):
+        self.context_name = context_name
+        self.name = f"kubectl.contextExists.{context_name}"
+        self.suggestions = {
+            OS.GENERIC: f"""A kubectl context is missing, :
+                           <cmd>{provision_command}</cmd>"""
+        }
+
+    def check(self) -> CheckResult:
+        output = get_stdout("kubectl config get-contexts")
+        passed = bool(output and self.context_name in output)
+        return self.verify(passed, f"{self.context_name} is <not/> configured for the current user")
