@@ -8,7 +8,7 @@ from daktari.os import OS
 
 
 class KubectlInstalled(Check):
-    def __init__(self, minimum_version: Optional[float] = None):
+    def __init__(self, minimum_version: Optional[float] = ""):
         self.minimum_version = minimum_version
         self.name = "Kubectl.installed"
         self.suggestions = {
