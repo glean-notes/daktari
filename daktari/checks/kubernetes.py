@@ -1,5 +1,6 @@
 import logging
 import re
+import json
 from typing import Optional
 
 from daktari.check import Check, CheckResult
@@ -87,9 +88,26 @@ helm_version_pattern = re.compile("v([0-9]+.[0-9]+)")
 def get_helm_version() -> Optional[float]:
     raw_version = get_stdout("helm version --short")
     if raw_version:
-        match = version_pattern.search(raw_version)
+        match = helm_version_pattern.search(raw_version)
         if match:
             version_string = match.group(1)
             logging.debug(f"Helm Version: {version_string}")
             return float(version_string)
     return None
+
+
+class HelmRepoExists(Check):
+    def __init__(self, repo_name: str, repo_url: str):
+        self.repo_name = repo_name
+        self.repo_url = repo_url
+        self.name = f"helm.repoExists.{repo_name}"
+        self.suggestions = {
+            OS.GENERIC: f"helm repo add {repo_name} {repo_url}",
+        }
+
+    def check(self) -> CheckResult:
+        output = get_stdout("helm repo list -o json")
+        repo_json = json.loads(output)
+        repo = [item["url"] for item in repo_json if item.get("name") == self.repo_name]
+        passed = bool(output and self.repo_url in repo)
+        return self.verify(passed, f"{self.repo_name} is <not/> configured for the current user")
