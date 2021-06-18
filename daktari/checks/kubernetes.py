@@ -60,3 +60,40 @@ class KubectlContextExists(Check):
         output = get_stdout("kubectl config get-contexts")
         passed = bool(output and self.context_name in output)
         return self.verify(passed, f"{self.context_name} is <not/> configured for the current user")
+
+class HelmInstalled(Check):
+    def __init__(self, minimum_version: float):
+        self.minimum_version = minimum_version
+        self.name = "Helm.installed"
+        self.suggestions = {
+            OS.OS_X: "<cmd>brew install helm</cmd>",
+            OS.UBUNTU: "<cmd>sudo snap install helm --classic</cmd>",
+            OS.GENERIC: "Install Helm: https://helm.sh/docs/intro/install/",
+        }
+
+    def check(self) -> CheckResult:
+        installed_version = get_helm_version()
+        if installed_version is None:
+            return self.failed("Helm is not installed")
+
+        if self.minimum_version is None:
+            return self.passed("Helm is installed")
+
+        return self.verify(
+            installed_version >= self.minimum_version,
+            f"Helm version is <not/> >={self.minimum_version} ({installed_version})",
+        )
+
+
+helm_version_pattern = re.compile("v([0-9]+.[0-9]+)")
+
+
+def get_helm_version() -> Optional[float]:
+    raw_version = get_stdout("helm version --short")
+    if raw_version:
+        match = version_pattern.search(raw_version)
+        if match:
+            version_string = match.group(1)
+            logging.debug(f"Helm Version: {version_string}")
+            return float(version_string)
+    return None
