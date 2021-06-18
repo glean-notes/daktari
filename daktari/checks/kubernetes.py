@@ -107,6 +107,8 @@ class HelmRepoExists(Check):
 
     def check(self) -> CheckResult:
         output = get_stdout("helm repo list -o json")
+        if not output:
+            return self.failed("No helm repos appear to be configured for the current user.")
         repo_json = json.loads(output)
         repo = [item["url"] for item in repo_json if item.get("name") == self.repo_name]
         passed = bool(output and self.repo_url in repo)
