@@ -56,8 +56,9 @@ class KubectlContextExists(Check):
         passed = bool(output and self.context_name in output)
         return self.verify(passed, f"{self.context_name} is <not/> configured for the current user")
 
+
 class HelmInstalled(Check):
-    def __init__(self, minimum_version: float):
+    def __init__(self, minimum_version: Optional[float] = None):
         self.minimum_version = minimum_version
         self.name = "Helm.installed"
         self.suggestions = {
