@@ -8,7 +8,7 @@ from daktari.os import OS
 
 
 class KubectlInstalled(Check):
-    def __init__(self, minimum_version: float):
+    def __init__(self, minimum_version: Optional[float] = None):
         self.minimum_version = minimum_version
         self.name = "Kubectl.installed"
         self.suggestions = {
@@ -46,15 +46,10 @@ def get_kubectl_version() -> Optional[float]:
 
 
 class KubectlContextExists(Check):
-    def __init__(self, context_name: str, provision_command: str = None):
+    def __init__(self, context_name: str, provision_command: str = ""):
         self.context_name = context_name
         self.name = f"kubectl.contextExists.{context_name}"
-
-        if provision_command is None:
-            self.suggestions = {
-                OS.GENERIC: f"""A kubectl context is missing, :
-                               <cmd>{provision_command}</cmd>"""
-            }
+        self.suggestions = {OS.GENERIC: provision_command}
 
     def check(self) -> CheckResult:
         output = get_stdout("kubectl config get-contexts")
