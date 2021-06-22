@@ -11,7 +11,7 @@ from daktari.os import OS
 class KubectlInstalled(Check):
     def __init__(self, minimum_version: Optional[float] = None):
         self.minimum_version = minimum_version
-        self.name = "Kubectl.installed"
+        self.name = "kubectl.installed"
         self.suggestions = {
             OS.OS_X: "<cmd>brew install kubectl</cmd>",
             OS.UBUNTU: "<cmd>sudo snap install kubectl --classic</cmd>",
