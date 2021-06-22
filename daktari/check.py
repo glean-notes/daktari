@@ -39,6 +39,18 @@ class Check:
         else:
             return self.failed(pattern.sub(" not ", dualMessage))
 
+    def validate_version(self, application, installed_version, minimum_version) -> CheckResult:
+        if installed_version is None:
+            return self.failed(f"{application} is not installed")
+
+        if minimum_version is None:
+            return self.passed(f"{application} is installed")
+
+        return self.verify(
+            installed_version >= self.minimum_version,
+            f"{application} version is <not/> >={minimum_version} ({installed_version})",
+        )
+
     def verify_install(self, program: str, version_flag: str = "--version") -> CheckResult:
         return self.verify(can_run_command(f"{program} {version_flag}"), f"{program} is <not/> installed")
 

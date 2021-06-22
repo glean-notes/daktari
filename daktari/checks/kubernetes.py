@@ -20,16 +20,7 @@ class KubectlInstalled(Check):
 
     def check(self) -> CheckResult:
         installed_version = get_kubectl_version()
-        if installed_version is None:
-            return self.failed("Kubectl is not installed")
-
-        if self.minimum_version is None:
-            return self.passed("Kubectl is installed")
-
-        return self.verify(
-            installed_version >= self.minimum_version,
-            f"Kubectl version is <not/> >={self.minimum_version} ({installed_version})",
-        )
+        return self.validate_version("Kubectl", installed_version, self.minimum_version)
 
 
 version_pattern = re.compile("Client Version: v([0-9]+.[0-9]+)")
@@ -70,16 +61,7 @@ class HelmInstalled(Check):
 
     def check(self) -> CheckResult:
         installed_version = get_helm_version()
-        if installed_version is None:
-            return self.failed("Helm is not installed")
-
-        if self.minimum_version is None:
-            return self.passed("Helm is installed")
-
-        return self.verify(
-            installed_version >= self.minimum_version,
-            f"Helm version is <not/> >={self.minimum_version} ({installed_version})",
-        )
+        return self.validate_version("Helm", installed_version, self.minimum_version)
 
 
 helm_version_pattern = re.compile("v([0-9]+.[0-9]+)")

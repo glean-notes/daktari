@@ -20,16 +20,7 @@ class DockerInstalled(Check):
 
     def check(self) -> CheckResult:
         installed_version = get_major_docker_version()
-        if installed_version is None:
-            return self.failed("docker is not installed")
-
-        if self.minimum_version is None:
-            return self.passed("docker is installed")
-
-        return self.verify(
-            installed_version >= self.minimum_version,
-            f"docker version is <not/> >={self.minimum_version} ({installed_version})",
-        )
+        return self.validate_version("Docker", installed_version, self.minimum_version)
 
 
 major_version_pattern = re.compile("Docker version ([0-9]+)")
