@@ -106,7 +106,7 @@ class GccInstalled(Check):
 
 class EnvVarSet(Check):
     def __init__(self, variable_name: str, variable_value: Optional[str] = "", provision_command: str = ""):
-        self.name = f"env.VariableSet.{variable_name}"
+        self.name = f"env.variableSet.{variable_name}"
         self.suggestions = {OS.GENERIC: provision_command}
         self.variable_name = variable_name
         self.variable_value = variable_value
