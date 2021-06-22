@@ -47,7 +47,7 @@ class Check:
             return self.passed(f"{application} is installed")
 
         return self.verify(
-            installed_version >= self.minimum_version,
+            installed_version >= minimum_version,
             f"{application} version is <not/> >={minimum_version} ({installed_version})",
         )
 
