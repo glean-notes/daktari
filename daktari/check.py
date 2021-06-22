@@ -39,7 +39,7 @@ class Check:
         else:
             return self.failed(pattern.sub(" not ", dualMessage))
 
-    def validate_version(self, application, installed_version, minimum_version) -> CheckResult:
+    def validate_version(self, application: str, installed_version: float, minimum_version: float) -> CheckResult:
         if installed_version is None:
             return self.failed(f"{application} is not installed")
 
