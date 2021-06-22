@@ -1,5 +1,6 @@
 from daktari.check import Check, CheckResult
-from daktari.os import OS
+from daktari.os import OS, check_env_var_exists, get_env_var_value
+from typing import Optional
 
 
 class WatchmanInstalled(Check):
@@ -101,3 +102,20 @@ class GccInstalled(Check):
 
     def check(self) -> CheckResult:
         return self.verify_install("gcc")
+
+
+class EnvVarSet(Check):
+    def __init__(self, variable_name: str, variable_value: Optional[str] = "", provision_command: str = ""):
+        self.name = f"env.variableSet.{variable_name}"
+        self.suggestions = {OS.GENERIC: provision_command}
+        self.variable_name = variable_name
+        self.variable_value = variable_value
+
+    def check(self) -> CheckResult:
+        if self.variable_value:
+            return self.verify(
+                get_env_var_value(self.variable_name) == self.variable_value,
+                f"{self.variable_name} has <not/> got the required value of f{self.variable_value}",
+            )
+        else:
+            return self.verify(check_env_var_exists(self.variable_name), f"{self.variable_name} is <not/> set")
