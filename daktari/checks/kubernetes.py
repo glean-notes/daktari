@@ -50,6 +50,8 @@ class KubectlContextExists(Check):
 
 
 class HelmInstalled(Check):
+    name = "helm.installed"
+
     def __init__(self, minimum_version: Optional[float] = None):
         self.minimum_version = minimum_version
         self.name = "helm.installed"
