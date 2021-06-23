@@ -54,7 +54,6 @@ class HelmInstalled(Check):
 
     def __init__(self, minimum_version: Optional[float] = None):
         self.minimum_version = minimum_version
-        self.name = "helm.installed"
         self.suggestions = {
             OS.OS_X: "<cmd>brew install helm</cmd>",
             OS.UBUNTU: "<cmd>sudo snap install helm --classic</cmd>",
