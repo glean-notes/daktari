@@ -45,7 +45,7 @@ class Check:
         if installed_version is None:
             return self.failed(f"{application} is not installed")
 
-        if required_version is "":
+        if required_version == "":
             return self.passed(f"{application} is installed")
 
         return self.verify(
