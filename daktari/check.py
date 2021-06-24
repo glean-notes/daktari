@@ -2,7 +2,7 @@ import abc
 import re
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Optional, Type
+from typing import Dict, List, Optional, Type, Union
 
 from daktari.command_utils import can_run_command
 
@@ -39,7 +39,21 @@ class Check:
         else:
             return self.failed(pattern.sub(" not ", dualMessage))
 
-    def validate_version(
+    def validate_required_version(
+        self, application: str, installed_version: Union[float, str, None], required_version: Union[float, str]
+    ) -> CheckResult:
+        if installed_version is None:
+            return self.failed(f"{application} is not installed")
+
+        if required_version == "":
+            return self.passed(f"{application} is installed")
+
+        return self.verify(
+            installed_version == required_version,
+            f"{application} version is <not/> ={required_version} ({installed_version})",
+        )
+
+    def validate_minimum_version(
         self, application: str, installed_version: Optional[float], minimum_version: Optional[float]
     ) -> CheckResult:
         if installed_version is None:
