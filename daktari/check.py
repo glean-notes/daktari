@@ -40,7 +40,7 @@ class Check:
             return self.failed(pattern.sub(" not ", dualMessage))
 
     def validate_required_version(
-        self, application: str, installed_version: Union[float, str, None], required_version: Union[float, str, None]
+        self, application: str, installed_version: Union[float, str, None], required_version: Union[float, str]
     ) -> CheckResult:
         if installed_version is None:
             return self.failed(f"{application} is not installed")
