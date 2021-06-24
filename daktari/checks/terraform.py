@@ -8,9 +8,15 @@ from daktari.os import OS
 
 
 class TerraformInstalled(Check):
-    def __init__(self, required_version: Optional[str] = ""):
+    def __init__(self, required_version: str = "", use_tfenv: bool = False):
         self.required_version = required_version
         self.name = "terraform.installed"
+
+        if use_tfenv:
+            # Read the required tf-version from tfenv (i.e. .terraform-version files)
+            tfenv_version = open(".terraform-version", "r").read().strip()
+            logging.debug(f"Terraform version required from .terraform-version file is: {tfenv_version}")
+            self.required_version = tfenv_version
 
         if self.required_version:
             self.version_string = f"@{self.required_version}"
