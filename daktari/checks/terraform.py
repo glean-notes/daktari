@@ -18,7 +18,7 @@ class TfenvInstalled(Check):
     }
 
     def check(self) -> CheckResult:
-        return self.verify_install("tfenvv")
+        return self.verify_install("tfenv")
 
 
 class TerraformInstalled(Check):
