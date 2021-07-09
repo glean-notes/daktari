@@ -84,7 +84,7 @@ class HelmRepoExists(Check):
 
     def __init__(self, repo_name: str, repo_url: str):
         self.repo_name = repo_name
-        self.repo_url = repo_url
+        self.repo_url = repo_url.strip("/")
         self.name = f"helm.repoExists.{repo_name}"
         self.suggestions = {
             OS.GENERIC: f"helm repo add {repo_name} {repo_url}",
@@ -95,6 +95,6 @@ class HelmRepoExists(Check):
         if not output:
             return self.failed("No helm repos appear to be configured for the current user.")
         repo_json = json.loads(output)
-        repo = [item["url"] for item in repo_json if item.get("name") == self.repo_name]
+        repo = [item["url"].strip("/") for item in repo_json if item.get("name") == self.repo_name]
         passed = self.repo_url in repo
         return self.verify(passed, f"{self.repo_name} is <not/> configured for the current user")
