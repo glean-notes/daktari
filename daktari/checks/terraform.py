@@ -13,7 +13,7 @@ class TfenvInstalled(Check):
     suggestions = {
         OS.OS_X: "<cmd>brew install tfenv</cmd>",
         OS.UBUNTU: """<cmd>git clone https://github.com/tfutils/tfenv.git ~/.tfenv</cmd>
-                      <cmd>ln -s ~/.tfenv/bin/* /usr/local/bin</cmd>""",
+                      <cmd>sudo ln -s ~/.tfenv/bin/* /usr/local/bin</cmd>""",
         OS.GENERIC: "Install tfenv: https://github.com/tfutils/tfenv",
     }
 
