@@ -87,7 +87,7 @@ class HelmRepoExists(Check):
         self.repo_url = repo_url.strip("/")
         self.name = f"helm.repoExists.{repo_name}"
         self.suggestions = {
-            OS.GENERIC: f"helm repo add {repo_name} {repo_url}",
+            OS.GENERIC: f"<cmd>helm repo add {repo_name} {repo_url} --force-update</cmd>",
         }
 
     def check(self) -> CheckResult:
@@ -95,6 +95,16 @@ class HelmRepoExists(Check):
         if not output:
             return self.failed("No helm repos appear to be configured for the current user.")
         repo_json = json.loads(output)
-        repo = [item["url"].strip("/") for item in repo_json if item.get("name") == self.repo_name]
-        passed = self.repo_url in repo
-        return self.verify(passed, f"{self.repo_name} is <not/> configured for the current user")
+        repo = next(filter(lambda repo_details: repo_details.get("name") == self.repo_name, repo_json), None)
+        if repo is None:
+            return self.failed(f"{self.repo_name} is not configured for the current user")
+
+        installed_url = repo["url"].strip("/")
+        logging.debug(f"{self.repo_name} helm repo is installed with URL {installed_url}.")
+
+        if installed_url != self.repo_url:
+            return self.failed(
+                f"{self.repo_name} is configured to use the wrong URL. Expected {self.repo_url}, got {installed_url}"
+            )
+
+        return self.passed(f"{self.repo_name} is configured for the current user")
