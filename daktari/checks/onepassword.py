@@ -15,7 +15,8 @@ class OnePassInstalled(Check):
     def __init__(self, minimum_version: Optional[float] = None):
         self.minimum_version = minimum_version
         self.suggestions = {
-            OS.GENERIC: "Install OP (1Password CLI): https://support.1password.com/command-line-getting-started/#set-up-the-command-line-tool",
+            OS.GENERIC: "Install OP (1Password CLI): "
+                        "https://support.1password.com/command-line-getting-started/#set-up-the-command-line-tool",
         }
 
     def check(self) -> CheckResult:
