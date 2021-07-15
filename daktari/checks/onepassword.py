@@ -51,7 +51,7 @@ class OPAccountExists(Check):
     def check(self) -> CheckResult:
 
         home = str(Path.home())
-        if OS.OS_X:
+        if detect_os() == OS.OS_X:
             config_path = f"{home}/.op/config"
         else:
             config_path = f"{home}/.config/op/config"
