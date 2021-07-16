@@ -6,6 +6,7 @@ import json
 from daktari.check import Check, CheckResult
 from daktari.command_utils import get_stdout
 from daktari.os import OS, detect_os
+from daktari.file_utils import file_exists
 from pathlib import Path
 
 
@@ -56,13 +57,15 @@ class OPAccountExists(Check):
         else:
             config_path = f"{home}/.config/op/config"
 
-        op_config = json.loads(open(config_path).read())
-        account_json = op_config["accounts"]
-        if not account_json:
+        if file_exists(config_path):
+            op_config = json.loads(open(config_path).read())
+            account_json = op_config["accounts"]
+            repo = next(
+                filter(lambda op_contexts: op_contexts.get("shorthand") == self.context_name, account_json), None
+            )
+            if repo is None:
+                return self.failed(f"{self.context_name} is not configured with OP CLI for the current user")
+
+            return self.passed(f"{self.context_name} is configured with OP CLI for the current user")
+        else:
             return self.failed("No 1Password config appears to be present on this machine.")
-
-        repo = next(filter(lambda op_contexts: op_contexts.get("shorthand") == self.context_name, account_json), None)
-        if repo is None:
-            return self.failed(f"{self.context_name} is not configured with OP CLI for the current user")
-
-        return self.passed(f"{self.context_name} is configured with OP CLI for the current user")
