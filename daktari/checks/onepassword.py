@@ -5,7 +5,7 @@ import json
 
 from daktari.check import Check, CheckResult
 from daktari.command_utils import get_stdout
-from daktari.os import OS
+from daktari.os import OS, detect_os
 from pathlib import Path
 
 
@@ -16,7 +16,7 @@ class OnePassInstalled(Check):
         self.minimum_version = minimum_version
         self.suggestions = {
             OS.GENERIC: "Install OP (1Password CLI): "
-                        "https://support.1password.com/command-line-getting-started/#set-up-the-command-line-tool",
+            "https://support.1password.com/command-line-getting-started/#set-up-the-command-line-tool",
         }
 
     def check(self) -> CheckResult:
