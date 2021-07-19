@@ -52,20 +52,18 @@ class OPAccountExists(Check):
     def check(self) -> CheckResult:
 
         home = str(Path.home())
-        if detect_os() == OS.OS_X:
-            config_path = f"{home}/.op/config"
-        else:
-            config_path = f"{home}/.config/op/config"
+        possible_paths = [f"{home}/.op/config", f"{home}/.config/op/config"]
 
-        if file_exists(config_path):
-            op_config = json.loads(open(config_path).read())
-            account_json = op_config["accounts"]
-            repo = next(
-                filter(lambda op_contexts: op_contexts.get("shorthand") == self.context_name, account_json), None
-            )
-            if repo is None:
-                return self.failed(f"{self.context_name} is not configured with OP CLI for the current user")
+        for config_path in possible_paths:
+            if file_exists(config_path):
+                op_config = json.loads(open(config_path).read())
+                account_json = op_config["accounts"]
+                repo = next(
+                    filter(lambda op_contexts: op_contexts.get("shorthand") == self.context_name, account_json), None
+                )
+                if repo is None:
+                    return self.failed(f"{self.context_name} is not configured with OP CLI for the current user")
 
-            return self.passed(f"{self.context_name} is configured with OP CLI for the current user")
-        else:
-            return self.failed("No 1Password config appears to be present on this machine.")
+                return self.passed(f"{self.context_name} is configured with OP CLI for the current user")
+
+        return self.failed("No 1Password config appears to be present on this machine.")
