@@ -41,12 +41,12 @@ def get_op_version() -> Optional[float]:
 
 class OPAccountExists(Check):
     depends_on = [OnePassInstalled]
+    name = "onepass.contextExists"
 
     def __init__(self, context_name: str):
         self.context_name = context_name
-        self.name = f"op.accountExists.{context_name}"
         self.suggestions = {
-            OS.GENERIC: f"<cmd>op signin {context_name}.onepassword.com <your-email-here></cmd>",
+            OS.GENERIC: f"<cmd>op signin {context_name}.1password.com <your-email-here></cmd>",
         }
 
     def check(self) -> CheckResult:
