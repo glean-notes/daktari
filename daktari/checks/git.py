@@ -1,5 +1,5 @@
 import logging
-from pathlib import Path
+
 from daktari.check import Check, CheckResult
 from daktari.command_utils import can_run_command, get_stdout
 from daktari.file_utils import file_contains_text, is_ascii

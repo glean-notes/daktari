@@ -1,6 +1,7 @@
+from typing import Optional
+
 from daktari.check import Check, CheckResult
 from daktari.os import OS, check_env_var_exists, get_env_var_value
-from typing import Optional
 
 
 class WatchmanInstalled(Check):

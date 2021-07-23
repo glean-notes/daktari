@@ -3,11 +3,11 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+from colors import red, yellow
 from packaging import version
 
-from colors import yellow, red
 from daktari import __version__
-
 from daktari.check import Check
 from daktari.result_printer import print_suggestion_text
 

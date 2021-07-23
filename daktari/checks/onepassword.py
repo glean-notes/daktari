@@ -1,13 +1,13 @@
+import json
 import logging
 import re
+from pathlib import Path
 from typing import Optional
-import json
 
 from daktari.check import Check, CheckResult
 from daktari.command_utils import get_stdout
-from daktari.os import OS
 from daktari.file_utils import file_exists
-from pathlib import Path
+from daktari.os import OS
 
 
 class OnePassInstalled(Check):

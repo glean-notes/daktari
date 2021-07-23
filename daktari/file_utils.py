@@ -1,5 +1,6 @@
-from daktari.command_utils import get_stdout
 from pathlib import Path
+
+from daktari.command_utils import get_stdout
 
 
 def is_ascii(path: str) -> bool:
@@ -19,7 +20,7 @@ def file_exists(path: str) -> bool:
 def file_contains_text(path: str, text: str) -> bool:
     if not file_exists(path):
         return False
-    with(open(path, "r") as file):
+    with open(path, "r") as file:
         for line in file:
             if text in line:
                 return True

@@ -2,13 +2,13 @@ import sys
 import unittest
 from io import StringIO
 from pathlib import Path
-from packaging import version
 
-from colors import yellow, red
+from colors import red, yellow
+from packaging import version
 from packaging.version import Version
 
-from daktari.config import check_version_compatibility, parse_raw_config
 from daktari import __version__
+from daktari.config import check_version_compatibility, parse_raw_config
 
 config_path = Path("./.daktari.config")
 current_version: Version = Version(__version__)

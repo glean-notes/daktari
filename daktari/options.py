@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 from pathlib import Path
+
 from daktari import __version__
 
 

@@ -1,6 +1,7 @@
-import distro
 import logging
 from os import environ
+
+import distro
 
 
 class OS:

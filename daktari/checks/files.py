@@ -1,8 +1,7 @@
-from daktari.file_utils import file_exists
 from os.path import expanduser
-from pathlib import Path
 
 from daktari.check import Check, CheckResult
+from daktari.file_utils import file_exists
 from daktari.os import OS
 
 

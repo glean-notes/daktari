@@ -1,6 +1,6 @@
+import json
 import logging
 import re
-import json
 from typing import Optional
 
 from daktari.check import Check, CheckResult
