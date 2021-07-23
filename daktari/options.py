@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 from pathlib import Path
+from daktari import __version__
 
 
 def validate_as_file_path(parser: ArgumentParser, arg: str) -> Path:
@@ -21,3 +22,4 @@ argument_parser.add_argument(
     metavar="FILE",
     type=lambda arg: validate_as_file_path(argument_parser, arg),
 )
+argument_parser.add_argument("--version", action="version", version="%(prog)s {version}".format(version=__version__))
