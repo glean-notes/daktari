@@ -119,3 +119,15 @@ class EnvVarSet(Check):
             )
         else:
             return self.verify(check_env_var_exists(self.variable_name), f"{self.variable_name} is <not/> set")
+
+
+class YarnInstalled(Check):
+    name = "yarn.installed"
+
+    suggestions = {
+        OS.OS_X: "<cmd>brew install yarn</cmd>",
+        OS.GENERIC: "<cmd>npm install -g yarn</cmd>",
+    }
+
+    def check(self) -> CheckResult:
+        return self.verify_install("yarn")

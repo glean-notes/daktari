@@ -1,3 +1,4 @@
+from daktari.file_utils import file_exists
 from os.path import expanduser
 from pathlib import Path
 
@@ -13,4 +14,4 @@ class FileExists(Check):
         self.suggestions = {OS.GENERIC: suggestion}
 
     def check(self) -> CheckResult:
-        return self.verify(Path(self.file_path).exists(), f"{self.file_path} is <not/> present")
+        return self.verify(file_exists(self.file_path), f"{self.file_path} is <not/> present")

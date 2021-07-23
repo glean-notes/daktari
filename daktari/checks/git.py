@@ -1,8 +1,8 @@
 import logging
-
+from pathlib import Path
 from daktari.check import Check, CheckResult
 from daktari.command_utils import can_run_command, get_stdout
-from daktari.file_utils import is_ascii
+from daktari.file_utils import file_contains_text, is_ascii
 from daktari.os import OS
 
 
@@ -111,3 +111,16 @@ class PreCommitInstalled(Check):
 
     def check(self) -> CheckResult:
         return self.verify(can_run_command("pre-commit --version"), "pre-commit is <not/> installed")
+
+
+class PreCommitGitHooksInstalled(Check):
+    name = "preCommit.gitHooksInstalled"
+    depends_on = [PreCommitInstalled]
+
+    suggestions = {
+        OS.GENERIC: "<cmd>pre-commit install</cmd>",
+    }
+
+    def check(self) -> CheckResult:
+        git_hooks_installed = file_contains_text(".git/hooks/pre-commit", "pre-commit.com")
+        return self.verify(git_hooks_installed, "pre-commit Git hooks are <not/> installed")
