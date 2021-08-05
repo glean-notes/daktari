@@ -13,7 +13,7 @@ class GoogleCloudSdkInstalled(Check):
     }
 
     def check(self) -> CheckResult:
-        return self.verify(can_run_command("gcloud --version"), "Google Cloud SDK is <not/> installed")
+        return self.verify(can_run_command("gcloud --version"), "Google Cloud SDK is <not/> installed and on $PATH")
 
 
 class CloudSqlProxyInstalled(Check):
