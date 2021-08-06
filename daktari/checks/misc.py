@@ -132,3 +132,15 @@ class YarnInstalled(Check):
 
     def check(self) -> CheckResult:
         return self.verify_install("yarn")
+
+
+class ShfmtInstalled(Check):
+    name = "shfmt.installed"
+
+    suggestions = {
+        OS.OS_X: "<cmd>brew install shfmt</cmd>",
+        OS.GENERIC: "Install shfmt: https://github.com/mvdan/sh",
+    }
+
+    def check(self) -> CheckResult:
+        return self.verify_install("shfmt")
