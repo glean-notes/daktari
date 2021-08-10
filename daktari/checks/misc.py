@@ -139,6 +139,7 @@ class ShfmtInstalled(Check):
 
     suggestions = {
         OS.OS_X: "<cmd>brew install shfmt</cmd>",
+        OS.UBUNTU: "<cmd>snap install shfmt</cmd>",
         OS.GENERIC: "Install shfmt: https://github.com/mvdan/sh",
     }
 
