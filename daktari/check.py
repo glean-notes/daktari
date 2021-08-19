@@ -79,7 +79,7 @@ class Check:
         except ValueError as err:
             return self.failed(f"Invalid version specification: {err}")
 
-        return self.verify(version_matches, f"{application} version is <not/> {required_version}")
+        return self.verify(version_matches, f"{application} version is <not/> {required_version} ({installed_version})")
 
     def verify_install(self, program: str, version_flag: str = "--version") -> CheckResult:
         return self.verify(can_run_command(f"{program} {version_flag}"), f"{program} is <not/> installed")

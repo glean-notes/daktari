@@ -4,10 +4,11 @@ from typing import Optional
 from semver import VersionInfo
 
 from daktari.check import Check, CheckResult
-from daktari.command_utils import get_stderr
+from daktari.command_utils import get_stderr, run_command
 from daktari.os import OS
 
 java_version_pattern = re.compile('^.*version "(.*?)".*$', re.MULTILINE)
+javac_version_pattern = re.compile("^javac (.*)$", re.MULTILINE)
 one_dot_pattern = re.compile("1\\.([0-9]+)")
 other_pattern = re.compile("([0-9]+)")
 
@@ -15,6 +16,15 @@ other_pattern = re.compile("([0-9]+)")
 def get_java_version() -> Optional[VersionInfo]:
     version_output = get_stderr("java -version")
     return parse_java_version_output(version_output)
+
+
+def get_jdk_version() -> Optional[VersionInfo]:
+    try:
+        version_output = run_command("javac -version")
+    except Exception:
+        return None
+
+    return parse_javac_version_output(version_output.stdout + version_output.stderr)
 
 
 def parse_java_version_output(version_output: str) -> Optional[VersionInfo]:
@@ -25,6 +35,15 @@ def parse_java_version_output(version_output: str) -> Optional[VersionInfo]:
             logging.debug(f"Java version string: {version_string}")
             return parse_java_version_string(version_string)
     return None
+
+
+def parse_javac_version_output(version_output: str) -> Optional[VersionInfo]:
+    if version_output:
+        match = javac_version_pattern.search(version_output)
+        if match:
+            version_string = match.group(1)
+            logging.debug(f"JDK version string: {version_string}")
+            return parse_java_version_string(version_string)
 
 
 def parse_java_version_string(version_string: str) -> Optional[VersionInfo]:
@@ -55,3 +74,19 @@ class JavaVersion(Check):
         java_version = get_java_version()
         logging.info(f"Java version: {java_version}")
         return self.validate_semver_expression("Java", java_version, self.required_version)
+
+
+class JdkVersion(Check):
+    name = "jdk.version"
+
+    def __init__(self, required_version: str):
+        self.required_version = required_version
+
+    suggestions = {
+        OS.GENERIC: "Install Java JDK",
+    }
+
+    def check(self) -> CheckResult:
+        jdk_version = get_jdk_version()
+        logging.info(f"JDK version: {jdk_version}")
+        return self.validate_semver_expression("JDK", jdk_version, self.required_version)
