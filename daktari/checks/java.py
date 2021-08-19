@@ -27,7 +27,7 @@ def get_jdk_version() -> Optional[VersionInfo]:
     return parse_javac_version_output(version_output.stdout + version_output.stderr)
 
 
-def parse_java_version_output(version_output: str) -> Optional[VersionInfo]:
+def parse_java_version_output(version_output: Optional[str]) -> Optional[VersionInfo]:
     if version_output:
         match = java_version_pattern.search(version_output)
         if match:
@@ -37,13 +37,14 @@ def parse_java_version_output(version_output: str) -> Optional[VersionInfo]:
     return None
 
 
-def parse_javac_version_output(version_output: str) -> Optional[VersionInfo]:
+def parse_javac_version_output(version_output: Optional[str]) -> Optional[VersionInfo]:
     if version_output:
         match = javac_version_pattern.search(version_output)
         if match:
             version_string = match.group(1)
             logging.debug(f"JDK version string: {version_string}")
             return parse_java_version_string(version_string)
+    return None
 
 
 def parse_java_version_string(version_string: str) -> Optional[VersionInfo]:
