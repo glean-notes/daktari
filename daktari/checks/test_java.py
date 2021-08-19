@@ -1,6 +1,6 @@
 import unittest
 
-from .java import parse_java_version_output
+from .java import parse_java_version_output, parse_javac_version_output
 from semver import VersionInfo
 
 
