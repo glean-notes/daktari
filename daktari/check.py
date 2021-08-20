@@ -2,6 +2,7 @@ import abc
 import re
 from dataclasses import dataclass
 from enum import Enum
+from semver import VersionInfo
 from typing import Dict, List, Optional, Type, Union
 
 from daktari.command_utils import can_run_command
@@ -66,6 +67,19 @@ class Check:
             installed_version >= minimum_version,
             f"{application} version is <not/> >={minimum_version} ({installed_version})",
         )
+
+    def validate_semver_expression(
+        self, application: str, installed_version: Optional[VersionInfo], required_version: str
+    ) -> CheckResult:
+        if installed_version is None:
+            return self.failed(f"{application} is not installed")
+
+        try:
+            version_matches = installed_version.match(required_version)
+        except ValueError as err:
+            return self.failed(f"Invalid version specification: {err}")
+
+        return self.verify(version_matches, f"{application} version is <not/> {required_version} ({installed_version})")
 
     def verify_install(self, program: str, version_flag: str = "--version") -> CheckResult:
         return self.verify(can_run_command(f"{program} {version_flag}"), f"{program} is <not/> installed")
