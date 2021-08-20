@@ -64,8 +64,9 @@ def parse_legacy_java_number(version_string: str) -> Optional[int]:
 class JavaVersion(Check):
     name = "java.version"
 
-    def __init__(self, required_version: str):
+    def __init__(self, required_version: str, recommended_version: Optional[str] = None):
         self.required_version = required_version
+        self.recommended_version = recommended_version
 
     suggestions = {
         OS.GENERIC: "Install Java",
@@ -74,14 +75,15 @@ class JavaVersion(Check):
     def check(self) -> CheckResult:
         java_version = get_java_version()
         logging.info(f"Java version: {java_version}")
-        return self.validate_semver_expression("Java", java_version, self.required_version)
+        return self.validate_semver_expression("Java", java_version, self.required_version, self.recommended_version)
 
 
 class JdkVersion(Check):
     name = "jdk.version"
 
-    def __init__(self, required_version: str):
+    def __init__(self, required_version: str, recommended_version: Optional[str] = None):
         self.required_version = required_version
+        self.recommended_version = recommended_version
 
     suggestions = {
         OS.GENERIC: "Install Java JDK",
@@ -90,4 +92,4 @@ class JdkVersion(Check):
     def check(self) -> CheckResult:
         jdk_version = get_jdk_version()
         logging.info(f"JDK version: {jdk_version}")
-        return self.validate_semver_expression("JDK", jdk_version, self.required_version)
+        return self.validate_semver_expression("JDK", jdk_version, self.required_version, self.recommended_version)
