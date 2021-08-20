@@ -10,6 +10,7 @@ from daktari.command_utils import can_run_command
 
 class CheckStatus(Enum):
     PASS = "PASS"
+    PASS_WITH_WARNING = "PASS_WITH_WARNING"
     FAIL = "FAIL"
 
 
@@ -32,6 +33,9 @@ class Check:
 
     def failed(self, message: str) -> CheckResult:
         return CheckResult(self.name, CheckStatus.FAIL, message, self.suggestions)
+
+    def passed_with_warning(self, message: str) -> CheckResult:
+        return CheckResult(self.name, CheckStatus.PASS_WITH_WARNING, message, self.suggestions)
 
     def verify(self, passed: bool, dualMessage: str) -> CheckResult:
         pattern = re.compile(" <not/> ")

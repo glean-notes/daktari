@@ -1,21 +1,30 @@
 import re
-from typing import Dict, Optional
+from typing import Dict, Optional, Callable
 
-from colors import green, red, underline
+from colors import green, yellow, red, underline
 
 from daktari.check import CheckResult, CheckStatus
 from daktari.os import OS, detect_os
 
 
 def check_status_symbol(status: CheckStatus) -> str:
-    return "✅" if status == CheckStatus.PASS else "❌"
+    return {
+        CheckStatus.PASS: "✅",
+        CheckStatus.PASS_WITH_WARNING: "⚠️ ",
+        CheckStatus.FAIL: "❌",
+    }[status]
+
+
+def check_status_colour(status: CheckStatus) -> Callable:
+    return {
+        CheckStatus.PASS: green,
+        CheckStatus.PASS_WITH_WARNING: yellow,
+        CheckStatus.FAIL: red,
+    }[status]
 
 
 def get_most_specific_suggestion(this_os: str, suggestions: Dict[str, str]) -> Optional[str]:
-    def get_suggestion(os_to_match: str) -> Optional[str]:
-        return next((message for os, message in suggestions.items() if os == os_to_match), None)
-
-    return get_suggestion(this_os) or get_suggestion(OS.GENERIC)
+    return suggestions.get(this_os, suggestions.get(OS.GENERIC))
 
 
 def print_suggestion_text(text: str):
@@ -42,9 +51,9 @@ def print_suggestion_text(text: str):
 def print_check_result(result: CheckResult):
     this_os = detect_os()
     status_symbol = check_status_symbol(result.status)
-    colour = green if result.status == CheckStatus.PASS else red
+    colour = check_status_colour(result.status)
     print(f"{status_symbol} [{colour(result.name)}] {result.summary}")
-    if result.status == CheckStatus.FAIL:
+    if result.status in (CheckStatus.FAIL, CheckStatus.PASS_WITH_WARNING):
         suggestion = get_most_specific_suggestion(this_os, result.suggestions)
         if suggestion:
             print_suggestion_text(suggestion)

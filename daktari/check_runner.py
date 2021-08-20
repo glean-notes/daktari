@@ -37,7 +37,7 @@ class CheckRunner:
         logging.info(f"Running check {check.name}")
         result = check.check()
         print_check_result(result)
-        if result.status == CheckStatus.PASS:
+        if result.status in (CheckStatus.PASS, CheckStatus.PASS_WITH_WARNING):
             self.checks_passed.add(check.name)
         else:
             self.all_passed = False
