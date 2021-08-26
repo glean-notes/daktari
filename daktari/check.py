@@ -89,7 +89,7 @@ class Check:
             return self.failed(f"Invalid version specification: {err}")
 
         if not matches_required:
-            return self.failed(f"{application} version is not {required_version}")
+            return self.failed(f"{application} version is not {required_version} ({installed_version})")
 
         if not matches_recommended:
             return self.passed_with_warning(
