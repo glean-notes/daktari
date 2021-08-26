@@ -10,6 +10,7 @@ from daktari.command_utils import can_run_command
 
 class CheckStatus(Enum):
     PASS = "PASS"
+    PASS_WITH_WARNING = "PASS_WITH_WARNING"
     FAIL = "FAIL"
 
 
@@ -32,6 +33,9 @@ class Check:
 
     def failed(self, message: str) -> CheckResult:
         return CheckResult(self.name, CheckStatus.FAIL, message, self.suggestions)
+
+    def passed_with_warning(self, message: str) -> CheckResult:
+        return CheckResult(self.name, CheckStatus.PASS_WITH_WARNING, message, self.suggestions)
 
     def verify(self, passed: bool, dualMessage: str) -> CheckResult:
         pattern = re.compile(" <not/> ")
@@ -69,17 +73,30 @@ class Check:
         )
 
     def validate_semver_expression(
-        self, application: str, installed_version: Optional[VersionInfo], required_version: str
+        self,
+        application: str,
+        installed_version: Optional[VersionInfo],
+        required_version: str,
+        recommended_version: Optional[str] = None,
     ) -> CheckResult:
         if installed_version is None:
             return self.failed(f"{application} is not installed")
 
         try:
-            version_matches = installed_version.match(required_version)
+            matches_required = installed_version.match(required_version)
+            matches_recommended = recommended_version is None or installed_version.match(recommended_version)
         except ValueError as err:
             return self.failed(f"Invalid version specification: {err}")
 
-        return self.verify(version_matches, f"{application} version is <not/> {required_version} ({installed_version})")
+        if not matches_required:
+            return self.failed(f"{application} version is not {required_version} ({installed_version})")
+
+        if not matches_recommended:
+            return self.passed_with_warning(
+                f"{application} version is {installed_version}, {recommended_version} recommended"
+            )
+
+        return self.passed(f"{application} version is {required_version}")
 
     def verify_install(self, program: str, version_flag: str = "--version") -> CheckResult:
         return self.verify(can_run_command(f"{program} {version_flag}"), f"{program} is <not/> installed")
