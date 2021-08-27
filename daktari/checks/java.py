@@ -64,7 +64,7 @@ def parse_legacy_java_number(version_string: str) -> Optional[int]:
 class JavaVersion(Check):
     name = "java.version"
 
-    def __init__(self, required_version: str, recommended_version: Optional[str] = None):
+    def __init__(self, required_version: Optional[str] = None, recommended_version: Optional[str] = None):
         self.required_version = required_version
         self.recommended_version = recommended_version
 
