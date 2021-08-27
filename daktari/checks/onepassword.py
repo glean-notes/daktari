@@ -1,7 +1,7 @@
 import json
 import logging
-import re
 from pathlib import Path
+from semver import VersionInfo
 from typing import Optional
 
 from daktari.check import Check, CheckResult
@@ -13,8 +13,9 @@ from daktari.os import OS
 class OnePassInstalled(Check):
     name = "onepass.installed"
 
-    def __init__(self, minimum_version: Optional[float] = None):
-        self.minimum_version = minimum_version
+    def __init__(self, required_version: Optional[str] = None, recommended_version: Optional[str] = None):
+        self.required_version = required_version
+        self.recommended_version = recommended_version
         self.suggestions = {
             OS.GENERIC: "Install OP (1Password CLI): "
             "https://support.1password.com/command-line-getting-started/#set-up-the-command-line-tool",
@@ -22,20 +23,20 @@ class OnePassInstalled(Check):
 
     def check(self) -> CheckResult:
         installed_version = get_op_version()
-        return self.validate_minimum_version("op", installed_version, self.minimum_version)
-
-
-version_pattern = re.compile("([0-9]+.[0-9]+)")
+        return self.validate_semver_expression(
+            "1Password CLI", installed_version, self.required_version, self.recommended_version
+        )
 
 
 def get_op_version() -> Optional[float]:
     raw_version = get_stdout("op --version")
     if raw_version:
-        match = version_pattern.search(raw_version)
-        if match:
-            version_string = match.group(1)
-            logging.debug(f"OP Version: {version_string}")
-            return float(version_string)
+        try:
+            version = VersionInfo.parse(raw_version)
+        except ValueError:
+            return None
+        logging.debug(f"OP Version: {version}")
+        return version
     return None
 
 

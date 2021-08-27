@@ -76,14 +76,14 @@ class Check:
         self,
         application: str,
         installed_version: Optional[VersionInfo],
-        required_version: str,
+        required_version: Optional[str] = None,
         recommended_version: Optional[str] = None,
     ) -> CheckResult:
         if installed_version is None:
             return self.failed(f"{application} is not installed")
 
         try:
-            matches_required = installed_version.match(required_version)
+            matches_required = required_version is None or installed_version.match(required_version)
             matches_recommended = recommended_version is None or installed_version.match(recommended_version)
         except ValueError as err:
             return self.failed(f"Invalid version specification: {err}")
