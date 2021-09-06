@@ -33,7 +33,8 @@ def parse_raw_config(config_path: Path, raw_config: str) -> Optional[Config]:
 
     variables: Dict[str, Any] = {}
     try:
-        exec(raw_config, variables)
+        compiled_config = compile(raw_config, config_path, 'exec')
+        exec(compiled_config, variables)
     except Exception:
         print(red(f"❌  Failed to parse {config_path} - config is not valid."))
         logging.error(f"Exception reading {config_path}", exc_info=True)
