@@ -8,6 +8,7 @@ from daktari.check import Check, CheckResult
 from daktari.command_utils import get_stdout
 from daktari.file_utils import file_exists
 from daktari.os import OS
+from daktari.version_utils import try_parse_semver
 
 
 class OnePassInstalled(Check):
@@ -28,13 +29,10 @@ class OnePassInstalled(Check):
         )
 
 
-def get_op_version() -> Optional[float]:
+def get_op_version() -> Optional[VersionInfo]:
     raw_version = get_stdout("op --version")
     if raw_version:
-        try:
-            version = VersionInfo.parse(raw_version)
-        except ValueError:
-            return None
+        version = try_parse_semver(raw_version)
         logging.debug(f"OP Version: {version}")
         return version
     return None
