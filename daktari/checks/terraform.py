@@ -6,6 +6,7 @@ from typing import Optional
 from daktari.check import Check, CheckResult
 from daktari.command_utils import get_stdout
 from daktari.os import OS
+from daktari.version_utils import try_parse_semver
 
 
 class TfenvInstalled(Check):
@@ -60,11 +61,7 @@ def get_terraform_version() -> Optional[VersionInfo]:
     if raw_version:
         match = version_pattern.search(raw_version)
         if match:
-            version_string = match.group(1)
-            try:
-                version = VersionInfo.parse(version_string)
-            except ValueError:
-                return None
+            version = try_parse_semver(match.group(1))
             logging.debug(f"Terraform version: {version}")
             return version
     return None
