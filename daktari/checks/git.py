@@ -69,7 +69,7 @@ class GitLfsFilesDownloaded(Check):
         files_not_downloaded = [line.split()[2] for line in output.splitlines() if line.split()[1] == "-"]
         for file in files_not_downloaded:
             logging.info(f"Git LFS file not downloaded: {file}")
-        passed = len(files_not_downloaded) == 0 and False
+        passed = len(files_not_downloaded) == 0
         return self.verify(passed, "Git LFS files have <not/> been downloaded")
 
 
