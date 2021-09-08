@@ -157,11 +157,7 @@ class HostAliasesConfigured(Check):
         self.required_aliases = required_aliases
         hosts_path = Hosts.determine_hosts_path()
         entries_text = tabulate([(addr, name) for (name, addr) in self.required_aliases.items()], tablefmt="plain")
-        self.suggestions = {
-            OS.GENERIC: f"""Add the following entries to {hosts_path}:
-
-            {entries_text}"""
-        }
+        self.suggestions = {OS.GENERIC: f"Add the following entries to {hosts_path}:\n\n{entries_text}"}
 
     def check(self) -> CheckResult:
         hosts = Hosts()

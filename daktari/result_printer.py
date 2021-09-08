@@ -1,4 +1,5 @@
 import re
+import textwrap
 from typing import Dict, Optional, Callable
 
 from colors import green, yellow, red, underline
@@ -28,15 +29,17 @@ def get_most_specific_suggestion(this_os: str, suggestions: Dict[str, str]) -> O
 
 
 def print_suggestion_text(text: str):
+    text = textwrap.dedent(text.lstrip("\n").rstrip())
+
     pattern = re.compile("<cmd>(.+)</cmd>")
 
     def add_ansi_underline(match):
         return underline(match.group(1))
 
     replaced = pattern.sub(add_ansi_underline, text)
-    lines = [line.lstrip() for line in replaced.splitlines()]
+    lines = replaced.splitlines()
 
-    raw_lines = [line.lstrip() for line in re.compile("</?cmd>").sub("", text).splitlines()]
+    raw_lines = re.compile("</?cmd>").sub("", text).splitlines()
 
     max_width = max([len(line) for line in raw_lines])
     title = "💡 Suggestion "
