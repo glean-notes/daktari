@@ -32,7 +32,7 @@ class TestYarn(unittest.TestCase):
 
     def test_matches_scope_with_auth_token_required(self):
         template_scope = YarnNpmScope("scope", requireNpmAuthToken=True)
-        matching_yaml = {"npmAuth": "ABCD1234"}
+        matching_yaml = {"npmAuthToken": "ABCD1234"}
         non_matching_yaml = {}
 
         self.assertTrue(match_scope(template_scope, matching_yaml))
