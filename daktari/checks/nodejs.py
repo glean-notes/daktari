@@ -5,7 +5,7 @@ from semver import VersionInfo
 from daktari.check import Check, CheckResult
 from daktari.command_utils import get_stdout, run_command
 from daktari.os import OS
-from daktari.semver_utils import try_parse_semver
+from daktari.version_utils import try_parse_semver
 
 
 def get_nodejs_version() -> Optional[VersionInfo]:
