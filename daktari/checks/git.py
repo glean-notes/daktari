@@ -41,8 +41,10 @@ class GitLfsSetUpForUser(Check):
     depends_on = [GitLfsInstalled]
 
     suggestions = {
-        OS.GENERIC: """Set up Git LFS for your user account:
-                       <cmd>git lfs install</cmd>"""
+        OS.GENERIC: """
+            Set up Git LFS for your user account:
+            <cmd>git lfs install</cmd>
+            """
     }
 
     def check(self) -> CheckResult:
@@ -56,8 +58,10 @@ class GitLfsFilesDownloaded(Check):
     depends_on = [GitLfsSetUpForUser]
 
     suggestions = {
-        OS.GENERIC: """Download all Git LFS files and update working copy with the downloaded content:
-                       <cmd>git lfs pull</cmd>"""
+        OS.GENERIC: """
+            Download all Git LFS files and update working copy with the downloaded content:
+            <cmd>git lfs pull</cmd>
+            """
     }
 
     def check(self) -> CheckResult:
@@ -91,8 +95,10 @@ class GitCryptUnlocked(Check):
         self.fileToCheck = fileToCheck
 
     suggestions = {
-        OS.GENERIC: """Unlock this repository with:
-                       <cmd>git-crypt unlock</cmd>""",
+        OS.GENERIC: """
+            Unlock this repository with:
+            <cmd>git-crypt unlock</cmd>
+            """,
     }
 
     def check(self) -> CheckResult:
