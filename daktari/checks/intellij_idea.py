@@ -76,15 +76,15 @@ def get_intellij_idea_version_tarball() -> Optional[VersionInfo]:
         with open(product_info_path, "rb") as product_info_file:
             product_info = json.load(product_info_file)
     except IOError:
-        logging.debug("Failed to read IntelliJ IDEA product_info.json", exc_info=True)
+        logging.debug("Failed to read IntelliJ IDEA product-info.json", exc_info=True)
         return None
     except JSONDecodeError:
-        logging.debug("Failed to parse IntelliJ IDEA product_info.json", exc_info=True)
+        logging.debug("Failed to parse IntelliJ IDEA product-info.json", exc_info=True)
         return None
 
     version_str = product_info.get("version", None)
     version = try_parse_semver(version_str)
-    logging.debug(f"IntelliJ IDEA version (via product_info.json): {version}")
+    logging.debug(f"IntelliJ IDEA version (via product-info.json): {version}")
     return version
 
 
