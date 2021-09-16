@@ -96,7 +96,7 @@ class Check:
                 f"{application} version is {installed_version}, {recommended_version} recommended"
             )
 
-        return self.passed(f"{application} version is {required_version}")
+        return self.passed(f"{application} version is {installed_version}")
 
     def verify_install(self, program: str, version_flag: str = "--version") -> CheckResult:
         return self.verify(can_run_command(f"{program} {version_flag}"), f"{program} is <not/> installed")

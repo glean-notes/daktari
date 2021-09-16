@@ -12,3 +12,6 @@ tabulate==0.8.9
 types-tabulate==0.8.2
 PyYAML==5.4.1
 types-PyYAML==5.4.10
+pyobjc-framework-Cocoa==7.3; sys_platform == 'darwin'
+requests-unixsocket==0.2.0
+dpath==2.0.5
