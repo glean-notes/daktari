@@ -8,6 +8,8 @@ from semver import VersionInfo
 from typing import Optional
 
 from daktari.check import Check, CheckResult
+from daktari.checks.files import FilesExist
+from daktari.checks.xml import XmlFileXPathCheck
 from daktari.command_utils import CommandErrorException, run_command
 from daktari.os import OS, detect_os
 from daktari.version_utils import try_parse_semver
@@ -112,3 +114,38 @@ class IntelliJIdeaInstalled(Check):
         return self.validate_semver_expression(
             "IntelliJ IDEA", intellij_version, self.required_version, self.recommended_version
         )
+
+
+class IntelliJProjectImported(FilesExist):
+    name = "intellij.projectImported"
+    file_paths = [".idea/workspace.xml"]
+    pass_fail_message = "Project <not/> imported into IntelliJ"
+    depends_on = [IntelliJIdeaInstalled]
+    suggestions = {
+        OS.GENERIC: """
+            From the IntelliJ start screen, click 'Open or Import' and choose the glean directory
+            """
+    }
+
+
+class IntelliJNodePackageManagerConfigured(XmlFileXPathCheck):
+    name = "intellij.nodePackageManagerConfigured"
+    file_path = ".idea/workspace.xml"
+    xpath_query = "./component[@name='PropertiesComponent']/property[@name='nodejs_package_manager_path']"
+    depends_on = [IntelliJProjectImported]
+
+    def __init__(self, package_manager_path: str):
+        self.package_manager_path = package_manager_path
+        self.pass_fail_message = f"IntelliJ package manager has <not/> been set to {package_manager_path}"
+
+        self.suggestions = {
+            OS.GENERIC: f"""
+                Follow the steps to configure {self.package_manager_path} as your package manager:
+                https://www.jetbrains.com/help/idea/installing-and-removing-external-software-using-node-package-manager.html#ws_npm_yarn_set_yarn_default
+                """
+        }
+
+    def validate_query_result(self, result):
+        current_package_manager = None if result is None else result.attrib.get("value", None)
+        logging.debug(f"IntelliJ node package manager set to: {current_package_manager}")
+        return current_package_manager == self.package_manager_path
