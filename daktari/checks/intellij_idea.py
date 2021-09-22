@@ -123,7 +123,7 @@ class IntelliJProjectImported(FilesExist):
     depends_on = [IntelliJIdeaInstalled]
     suggestions = {
         OS.GENERIC: """
-            From the IntelliJ start screen, click 'Open or Import' and choose the glean directory
+            From the IntelliJ start screen, click 'Open or Import' and choose the repository root directory
             """
     }
 
