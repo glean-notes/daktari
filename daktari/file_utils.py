@@ -11,10 +11,7 @@ def is_ascii(path: str) -> bool:
 
 def file_exists(path: str) -> bool:
     testing_file = Path(path)
-    if testing_file.is_file():
-        return True
-    else:
-        return False
+    return testing_file.is_file()
 
 
 def file_contains_text(path: str, text: str) -> bool:
@@ -25,3 +22,8 @@ def file_contains_text(path: str, text: str) -> bool:
             if text in line:
                 return True
     return False
+
+
+def dir_exists(path: str) -> bool:
+    testing_dir = Path(path)
+    return testing_dir.is_dir()
