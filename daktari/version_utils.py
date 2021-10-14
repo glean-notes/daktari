@@ -1,5 +1,6 @@
-from semver import VersionInfo
 from typing import Optional
+
+from semver import VersionInfo
 
 
 def try_parse_semver(version_str: Optional[str]) -> Optional[VersionInfo]:

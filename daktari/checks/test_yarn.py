@@ -1,5 +1,6 @@
-from daktari.checks.yarn import YarnNpmScope, match_scope, yarnrc_contains_scope
 import unittest
+
+from daktari.checks.yarn import YarnNpmScope, match_scope, yarnrc_contains_scope
 
 TEST_SCOPE_NAME = "scope"
 TEST_REGISTRY_SERVER = "https://registry-server.glean.co"

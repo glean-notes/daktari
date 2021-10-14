@@ -1,8 +1,9 @@
 import json
 import logging
 import re
-from semver import VersionInfo
 from typing import Optional
+
+from semver import VersionInfo
 
 from daktari.check import Check, CheckResult
 from daktari.command_utils import get_stdout

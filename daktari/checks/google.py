@@ -1,7 +1,7 @@
 import json
-from json import JSONDecodeError
 import logging
 import os.path
+from json import JSONDecodeError
 
 from daktari.check import Check, CheckResult
 from daktari.command_utils import can_run_command

@@ -1,10 +1,14 @@
 import logging
-from tabulate import tabulate
 from typing import Dict, Optional
+
 from python_hosts import Hosts
+from semver import VersionInfo
+from tabulate import tabulate
 
 from daktari.check import Check, CheckResult
+from daktari.command_utils import get_stdout
 from daktari.os import OS, check_env_var_exists, get_env_var_value
+from daktari.version_utils import try_parse_semver
 
 
 class WatchmanInstalled(Check):
@@ -39,8 +43,24 @@ class KtlintInstalled(Check):
         OS.GENERIC: "Install ktlint: https://github.com/pinterest/ktlint#installation",
     }
 
+    def __init__(self, required_version: Optional[str] = None, recommended_version: Optional[str] = None):
+        self.required_version = required_version
+        self.recommended_version = recommended_version
+
     def check(self) -> CheckResult:
-        return self.verify_install("ktlint")
+        installed_version = get_ktlint_version()
+        return self.validate_semver_expression(
+            "ktlint", installed_version, self.required_version, self.recommended_version
+        )
+
+
+def get_ktlint_version() -> Optional[VersionInfo]:
+    raw_version = get_stdout("ktlint --version")
+    if raw_version:
+        version = try_parse_semver(raw_version)
+        logging.debug(f"ktlint version: {version}")
+        return version
+    return None
 
 
 class JqInstalled(Check):

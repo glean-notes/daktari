@@ -2,8 +2,9 @@ import abc
 import re
 from dataclasses import dataclass
 from enum import Enum
-from semver import VersionInfo
 from typing import Dict, List, Optional, Type, Union
+
+from semver import VersionInfo
 
 from daktari.command_utils import can_run_command
 
