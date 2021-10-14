@@ -1,8 +1,8 @@
 import re
 import textwrap
-from typing import Dict, Optional, Callable
+from typing import Callable, Dict, Optional
 
-from colors import green, yellow, red, underline
+from colors import green, red, underline, yellow
 
 from daktari.check import CheckResult, CheckStatus
 from daktari.os import OS, detect_os

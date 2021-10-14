@@ -1,10 +1,11 @@
 import logging
 import os
+from dataclasses import dataclass
 from typing import Any, Dict, Optional
+
 import yaml
 from yaml.error import YAMLError
 
-from dataclasses import dataclass
 from daktari.check import Check, CheckResult
 from daktari.file_utils import file_exists
 from daktari.os import OS

@@ -1,12 +1,13 @@
 import logging
-from tabulate import tabulate
 from typing import Dict, Optional
+
 from python_hosts import Hosts
 from semver import VersionInfo
+from tabulate import tabulate
 
 from daktari.check import Check, CheckResult
-from daktari.os import OS, check_env_var_exists, get_env_var_value
 from daktari.command_utils import get_stdout
+from daktari.os import OS, check_env_var_exists, get_env_var_value
 from daktari.version_utils import try_parse_semver
 
 

@@ -1,8 +1,9 @@
 import json
 import logging
 from pathlib import Path
-from semver import VersionInfo
 from typing import Optional
+
+from semver import VersionInfo
 
 from daktari.check import Check, CheckResult
 from daktari.command_utils import get_stdout

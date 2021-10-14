@@ -1,6 +1,7 @@
 import logging
 import re
 from typing import Optional
+
 from semver import VersionInfo
 
 from daktari.check import Check, CheckResult

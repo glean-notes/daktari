@@ -1,11 +1,12 @@
-import dpath.util
 import json
-from json.decoder import JSONDecodeError
 import logging
 import os.path
+from json.decoder import JSONDecodeError
 from pathlib import Path
-from semver import VersionInfo
 from typing import Optional
+
+import dpath.util
+from semver import VersionInfo
 
 from daktari.check import Check, CheckResult
 from daktari.checks.files import FilesExist
@@ -13,7 +14,6 @@ from daktari.checks.xml import XmlFileXPathCheck
 from daktari.command_utils import CommandErrorException, run_command
 from daktari.os import OS, detect_os
 from daktari.version_utils import try_parse_semver
-
 
 BUNDLE_ID_INTELLIJ_IDEA = "com.jetbrains.intellij"
 BUNDLE_ID_INTELLIJ_IDEA_CE = "com.jetbrains.intellij.ce"
