@@ -27,8 +27,17 @@ class MkcertInstalled(Check):
     name = "mkcert.installed"
 
     suggestions = {
-        OS.OS_X: "<cmd>brew install mkcert</cmd>",
-        OS.GENERIC: "Install mkcert: https://mkcert.dev/#installation",
+        OS.OS_X: """
+            Install mkcert:
+            <cmd>brew install mkcert</cmd>
+            Install the local CA in the system trust store:
+            <cmd>mkcert -install</cmd>
+            """,
+        OS.GENERIC: """
+            Install mkcert: https://mkcert.dev/#installation
+            Install the local CA in the system trust store:
+            <cmd>mkcert -install</cmd>
+            """,
     }
 
     def check(self) -> CheckResult:
