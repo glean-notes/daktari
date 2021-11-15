@@ -10,6 +10,7 @@ from daktari.os import OS
 
 java_version_pattern = re.compile('^.*version "(.*?)".*$', re.MULTILINE)
 javac_version_pattern = re.compile("^javac (.*)$", re.MULTILINE)
+
 one_dot_pattern = re.compile("1\\.([0-9]+)")
 other_pattern = re.compile("([0-9]+)")
 
@@ -52,13 +53,16 @@ def parse_java_version_string(version_string: str) -> Optional[VersionInfo]:
     try:
         return VersionInfo.parse(version_string)
     except ValueError:
-        return parse_legacy_java_number(version_string)
+        return parse_alternative_java_version_numbers(version_string)
 
 
-def parse_legacy_java_number(version_string: str) -> Optional[int]:
+def parse_alternative_java_version_numbers(version_string: str) -> Optional[int]:
     one_dot_match = one_dot_pattern.search(version_string)
     if one_dot_match:
         return VersionInfo(int(one_dot_match.group(1)))
+    other_pattern_match = other_pattern.search(version_string)
+    if other_pattern_match:
+        return VersionInfo(int(other_pattern_match.group(1)))
     return None
 
 

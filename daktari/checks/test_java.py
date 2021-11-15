@@ -15,6 +15,14 @@ OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
         version = parse_java_version_output(version_output)
         self.assertEqual(version, VersionInfo(8))
 
+    def test_parse_ubuntu_openjdk_17_version(self):
+        version_output = """openjdk version "17" 2021-09-14
+OpenJDK Runtime Environment (build 17+35-Ubuntu-121.04)
+OpenJDK 64-Bit Server VM (build 17+35-Ubuntu-121.04, mixed mode, sharing)
+"""
+        version = parse_java_version_output(version_output)
+        self.assertEqual(version, VersionInfo(17, 0, 0))
+
     def test_parse_java_semver_format_version(self):
         version_output = """openjdk version "11.0.9" 2020-10-20
 OpenJDK Runtime Environment AdoptOpenJDK (build 11.0.9+11)
