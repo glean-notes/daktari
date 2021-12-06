@@ -49,7 +49,7 @@ class GitLfsSetUpForUser(Check):
 
     def check(self) -> CheckResult:
         output = get_stdout("git lfs env")
-        passed = bool(output and "git config filter.lfs" in output)
+        passed = bool(output and "git-lfs filter-process" in output)
         return self.verify(passed, "Git LFS is <not/> set up for the current user")
 
 
