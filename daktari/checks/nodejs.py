@@ -73,7 +73,10 @@ class NodeJsVersion(Check):
 class NvmInstalled(Check):
     name = "nvm.installed"
 
-    suggestions = {OS.GENERIC: "Install nvm from: https://nvm.sh"}
+    suggestions = {
+        OS.GENERIC: "Install nvm from: https://nvm.sh",
+        OS.OS_X: "<cmd>brew install nvm</cmd>",
+    }
 
     def check(self) -> CheckResult:
         return self.verify(can_run_nvm(), "nvm is <not/> installed")
