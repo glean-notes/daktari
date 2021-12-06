@@ -28,6 +28,7 @@ class CloudSqlProxyInstalled(Check):
 
     suggestions = {
         OS.GENERIC: "Install Cloud SQL Proxy: <cmd>gcloud components install cloud_sql_proxy</cmd>",
+        OS.OS_X: "Install Cloud SQL Proxy: <cmd>gcloud components install cloud_sql_proxy</cmd> (you may need <cmd>softwareupdate --install-rosetta</cmd> on Apple silicon)",
     }
 
     def check(self) -> CheckResult:
