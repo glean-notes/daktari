@@ -73,13 +73,14 @@ def yarnrc_contains_scope(yarnrc: Dict[str, Any], scope: YarnNpmScope) -> bool:
 class YarnNpmScopeConfigured(Check):
     name = "yarn.npmScopeConfigured"
 
-    def __init__(self, scope: YarnNpmScope):
+    def __init__(self, scope: YarnNpmScope, tokenInstructions: Optional[str] = None):
         self.scope = scope
         self.yarnrc_suggestion = get_yarnrc_suggestion(scope)
+        tokenInstructionString = f"\n\n{tokenInstructions}" if tokenInstructions else ""
         self.suggestions = {
             OS.GENERIC: f"""Add the lines below to ~/.yarnrc.yml:
 
-{self.yarnrc_suggestion}"""
+{self.yarnrc_suggestion}{tokenInstructionString}"""
         }
 
     def check(self) -> CheckResult:
