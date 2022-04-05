@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from daktari.command_utils import get_stdout
@@ -25,5 +26,6 @@ def file_contains_text(path: str, text: str) -> bool:
 
 
 def dir_exists(path: str) -> bool:
+    logging.debug(f"Checking if path is a directory: {path}")
     testing_dir = Path(path)
     return testing_dir.is_dir()

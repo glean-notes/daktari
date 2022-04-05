@@ -12,6 +12,7 @@ from daktari.check import Check, CheckResult
 from daktari.checks.files import FilesExist
 from daktari.checks.xml import XmlFileXPathCheck
 from daktari.command_utils import CommandErrorException, run_command
+from daktari.file_utils import dir_exists
 from daktari.os import OS, detect_os
 from daktari.version_utils import try_parse_semver
 
@@ -149,3 +150,40 @@ class IntelliJNodePackageManagerConfigured(XmlFileXPathCheck):
         current_package_manager = None if result is None else result.attrib.get("value", None)
         logging.debug(f"IntelliJ node package manager set to: {current_package_manager}")
         return current_package_manager == self.package_manager_path
+
+
+class IntelliJPluginInstalled(Check):
+    depends_on = [IntelliJIdeaInstalled]
+
+    def __init__(self, plugin_name: str):
+        self.plugin_name = plugin_name
+        self.name = f"intellij.{plugin_name}.installed"
+        self.suggestions = {
+            OS.GENERIC: f'Install the IntelliJ plugin "{plugin_name}"',
+        }
+
+    def check(self) -> CheckResult:
+        intellij_version = get_intellij_idea_version()
+        if intellij_version is None:
+            return self.failed("IntelliJ is not installed")
+
+        plugins_dir = get_intellij_plugins_dir(intellij_version)
+        if plugins_dir is None:
+            return self.failed(f"Unable to determine plugins directory for IntelliJ {plugins_dir}")
+
+        full_dir = plugins_dir + "/" + self.plugin_name
+        passed = dir_exists(full_dir)
+        return self.verify(passed, f'Plugin "{self.plugin_name}" is <not/> installed')
+
+
+# Taken from
+# https://intellij-support.jetbrains.com/hc/en-us/articles/206544519-Directories-used-by-the-IDE-to-store-settings-caches-plugins-and-logs
+def get_intellij_plugins_dir(intellij_version: VersionInfo) -> Optional[str]:
+    major_minor_str = f"{intellij_version.major}.{intellij_version.minor}"
+    current_os = detect_os()
+    if current_os == OS.OS_X:
+        return os.path.expanduser(f"~/Library/Application Support/JetBrains/IntelliJIdea{major_minor_str}/plugins")
+    elif current_os == OS.UBUNTU:
+        return os.path.expanduser(f"~/.local/share/JetBrains/IntelliJIdea{major_minor_str}")
+    else:
+        return None
