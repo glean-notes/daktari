@@ -193,16 +193,23 @@ class DetektInstalled(Check):
         self.required_version = required_version
         self.recommended_version = recommended_version
         self.suggestions = {
-            OS.GENERIC: self.get_install_cmd(),
+            OS.OS_X: "brew install detekt",
+            OS.UBUNTU: self.get_linux_install_cmd(),
+            OS.GENERIC: "Install detekt: https://detekt.dev/cli.html#install-the-cli",
         }
 
-    def get_install_cmd(self) -> str:
+    def get_linux_install_cmd(self) -> str:
         version = self.install_version or "[desired version - see https://github.com/detekt/detekt/releases]"
-        return f"""DETEKT_VERSION={version} &&
-  curl -sSLO https://github.com/detekt/detekt/releases/download/v$DETEKT_VERSION/detekt-cli-$DETEKT_VERSION.zip &&
-  unzip detekt-cli-$DETEKT_VERSION.zip &&
-  chmod +x detekt-cli-$DETEKT_VERSION/bin/detekt-cli &&
-  sudo ln -s $PWD/detekt-cli-$DETEKT_VERSION/bin/detekt-cli /usr/local/bin/detekt"""
+        return f"""{{
+  DETEKT_VERSION={version}; \\
+  mkdir -p ~/.local/bin &&\\
+  cd ~/.local/bin &&\\
+  curl -sSLO https://github.com/detekt/detekt/releases/download/v$DETEKT_VERSION/detekt-cli-$DETEKT_VERSION.zip &&\\
+  unzip detekt-cli-$DETEKT_VERSION.zip &&\\
+  rm detekt-cli-$DETEKT_VERSION.zip &&\\
+  chmod +x detekt-cli-$DETEKT_VERSION/bin/detekt-cli &&\\
+  ln -s ~/.local/bin/detekt-cli-$DETEKT_VERSION/bin/detekt-cli ~/.local/bin/detekt
+}}"""
 
     def check(self) -> CheckResult:
         installed_version = get_simple_cli_version("detekt")

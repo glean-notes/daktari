@@ -42,12 +42,16 @@ def print_suggestion_text(text: str):
     raw_lines = re.compile("</?cmd>").sub("", text).splitlines()
 
     max_width = max([len(line) for line in raw_lines])
+
     title = "💡 Suggestion "
     print("┌─" + title + "─" * (max_width - len(title)) + "┐")
     for i, line in enumerate(lines):
         raw_line = raw_lines[i]
         padding = " " * (max_width - len(raw_line))
-        print(f"│ {line}{padding} │")
+        if len(raw_lines) > 1:
+            print(f"  {line}")
+        else:
+            print(f"│ {line}{padding} │")
     print("└" + "─" * (max_width + 2) + "┘")
 
 
