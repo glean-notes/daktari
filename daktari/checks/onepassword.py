@@ -1,15 +1,11 @@
 import json
-import logging
 from pathlib import Path
 from typing import Optional
 
-from semver import VersionInfo
-
 from daktari.check import Check, CheckResult
-from daktari.command_utils import get_stdout
 from daktari.file_utils import file_exists
 from daktari.os import OS
-from daktari.version_utils import try_parse_semver
+from daktari.version_utils import get_simple_cli_version
 
 
 class OnePassInstalled(Check):
@@ -24,19 +20,10 @@ class OnePassInstalled(Check):
         }
 
     def check(self) -> CheckResult:
-        installed_version = get_op_version()
+        installed_version = get_simple_cli_version("op")
         return self.validate_semver_expression(
             "1Password CLI", installed_version, self.required_version, self.recommended_version
         )
-
-
-def get_op_version() -> Optional[VersionInfo]:
-    raw_version = get_stdout("op --version")
-    if raw_version:
-        version = try_parse_semver(raw_version)
-        logging.debug(f"OP Version: {version}")
-        return version
-    return None
 
 
 class OPAccountExists(Check):
