@@ -69,13 +69,17 @@ def parse_alternative_java_version_numbers(version_string: str) -> Optional[int]
 class JavaVersion(Check):
     name = "java.version"
 
-    def __init__(self, required_version: Optional[str] = None, recommended_version: Optional[str] = None):
+    def __init__(
+        self,
+        required_version: Optional[str] = None,
+        recommended_version: Optional[str] = None,
+        java_instructions: Optional[str] = None,
+    ):
         self.required_version = required_version
         self.recommended_version = recommended_version
 
-    suggestions = {
-        OS.GENERIC: "Install Java",
-    }
+        java_instructions = f"\n\n{java_instructions}" if java_instructions else ""
+        self.suggestions = {OS.GENERIC: f"""Install Java{java_instructions}"""}
 
     def check(self) -> CheckResult:
         java_version = get_java_version()
