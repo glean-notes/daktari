@@ -2,13 +2,11 @@ import logging
 from typing import Dict, Optional
 
 from python_hosts import Hosts
-from semver import VersionInfo
 from tabulate import tabulate
 
 from daktari.check import Check, CheckResult
-from daktari.command_utils import get_stdout
 from daktari.os import OS, check_env_var_exists, get_env_var_value
-from daktari.version_utils import try_parse_semver
+from daktari.version_utils import get_simple_cli_version
 
 
 class WatchmanInstalled(Check):
@@ -57,19 +55,10 @@ class KtlintInstalled(Check):
         self.recommended_version = recommended_version
 
     def check(self) -> CheckResult:
-        installed_version = get_ktlint_version()
+        installed_version = get_simple_cli_version("ktlint")
         return self.validate_semver_expression(
             "ktlint", installed_version, self.required_version, self.recommended_version
         )
-
-
-def get_ktlint_version() -> Optional[VersionInfo]:
-    raw_version = get_stdout("ktlint --version")
-    if raw_version:
-        version = try_parse_semver(raw_version)
-        logging.debug(f"ktlint version: {version}")
-        return version
-    return None
 
 
 class JqInstalled(Check):
@@ -189,3 +178,41 @@ class HostAliasesConfigured(Check):
                 return self.failed(f"{hosts.hosts_path} alias {name} -> {address} not present")
 
         return self.passed(f"{hosts.hosts_path} aliases present")
+
+
+class DetektInstalled(Check):
+    name = "detekt.installed"
+
+    def __init__(
+        self,
+        required_version: Optional[str] = None,
+        recommended_version: Optional[str] = None,
+        install_version: Optional[str] = None,
+    ):
+        self.install_version = install_version
+        self.required_version = required_version
+        self.recommended_version = recommended_version
+        self.suggestions = {
+            OS.OS_X: "brew install detekt",
+            OS.UBUNTU: self.get_linux_install_cmd(),
+            OS.GENERIC: "Install detekt: https://detekt.dev/cli.html#install-the-cli",
+        }
+
+    def get_linux_install_cmd(self) -> str:
+        version = self.install_version or "[desired version - see https://github.com/detekt/detekt/releases]"
+        return f"""{{
+  DETEKT_VERSION={version}; \\
+  mkdir -p ~/.local/bin &&\\
+  cd ~/.local/bin &&\\
+  curl -sSLO https://github.com/detekt/detekt/releases/download/v$DETEKT_VERSION/detekt-cli-$DETEKT_VERSION.zip &&\\
+  unzip detekt-cli-$DETEKT_VERSION.zip &&\\
+  rm detekt-cli-$DETEKT_VERSION.zip &&\\
+  chmod +x detekt-cli-$DETEKT_VERSION/bin/detekt-cli &&\\
+  ln -s ~/.local/bin/detekt-cli-$DETEKT_VERSION/bin/detekt-cli ~/.local/bin/detekt
+}}"""
+
+    def check(self) -> CheckResult:
+        installed_version = get_simple_cli_version("detekt")
+        return self.validate_semver_expression(
+            "detekt", installed_version, self.required_version, self.recommended_version
+        )
