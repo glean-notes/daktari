@@ -73,13 +73,13 @@ class JavaVersion(Check):
         self,
         required_version: Optional[str] = None,
         recommended_version: Optional[str] = None,
-        javaInstructions: Optional[str] = None,
+        java_instructions: Optional[str] = None,
     ):
         self.required_version = required_version
         self.recommended_version = recommended_version
 
-        javaInstructionString = f"\n\n{javaInstructions}" if javaInstructions else ""
-        self.suggestions = {OS.GENERIC: f"""Install Java{javaInstructionString}"""}
+        java_instructions = f"\n\n{java_instructions}" if java_instructions else ""
+        self.suggestions = {OS.GENERIC: f"""Install Java{java_instructions}"""}
 
     def check(self) -> CheckResult:
         java_version = get_java_version()
