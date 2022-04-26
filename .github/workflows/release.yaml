@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Prep safe directory
+        run: |
+          git config --global --add safe.directory /github/workspace
       - name: Bump version and push tag
         uses: jaumann/github-bumpversion-action@v0.0.7
         env:
