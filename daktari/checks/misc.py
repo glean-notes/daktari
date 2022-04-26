@@ -193,12 +193,12 @@ class DetektInstalled(Check):
         self.required_version = required_version
         self.recommended_version = recommended_version
         self.suggestions = {
-            OS.OS_X: "brew install detekt",
-            OS.UBUNTU: self.get_linux_install_cmd(),
+            OS.OS_X: self.get_install_cmd(),
+            OS.UBUNTU: self.get_install_cmd(),
             OS.GENERIC: "Install detekt: https://detekt.dev/cli.html#install-the-cli",
         }
 
-    def get_linux_install_cmd(self) -> str:
+    def get_install_cmd(self) -> str:
         version = self.install_version or "[desired version - see https://github.com/detekt/detekt/releases]"
         return f"""{{
   DETEKT_VERSION={version}; \\
