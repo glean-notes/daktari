@@ -131,7 +131,7 @@ class IntelliJProjectImported(FilesExist):
 class IntelliJNodePackageManagerConfigured(XmlFileXPathCheck):
     name = "intellij.nodePackageManagerConfigured"
     file_path = ".idea/workspace.xml"
-    xpath_query = "./component[@name='PropertiesComponent']/property[@name='nodejs_package_manager_path']"
+    xpath_query = "./component[@name='PropertiesComponent']"
     depends_on = [IntelliJProjectImported]
 
     def __init__(self, package_manager_path: str):
@@ -146,6 +146,8 @@ class IntelliJNodePackageManagerConfigured(XmlFileXPathCheck):
         }
 
     def validate_query_result(self, result):
-        current_package_manager = None if result is None else result.attrib.get("value", None)
+        key_json = None if result is None else json.loads(result.text)
+        logging.debug(f"Raw properties json: {key_json}")
+        current_package_manager = str(key_json["keyToString"]["nodejs_package_manager_path"])
         logging.debug(f"IntelliJ node package manager set to: {current_package_manager}")
-        return current_package_manager == self.package_manager_path
+        return current_package_manager.__contains__(self.package_manager_path)
