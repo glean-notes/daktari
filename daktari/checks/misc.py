@@ -1,4 +1,5 @@
 import logging
+from os.path import expanduser
 from typing import Dict, Optional
 
 from python_hosts import Hosts
@@ -184,10 +185,10 @@ class DirectoryIsOnPath(Check):
     name = "directory.on.path"
 
     def __init__(self, directory: str):
-        self.directory = directory
+        self.directory = expanduser(directory)  # $PATH won't auto-expand ~
         self.suggestions = {
             OS.GENERIC: "Append the following line to your profile (~/.bashrc or ~/.zshrc): "
-            f'\n\nexport PATH="{directory}:$PATH"',
+            f'\n\nexport PATH="{self.directory}:$PATH"',
         }
 
     def check(self) -> CheckResult:
