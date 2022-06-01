@@ -52,7 +52,20 @@ class GitCryptInstalled(Check):
         return self.verify(can_run_command("git crypt version"), "git-crypt is <not/> installed")
 ```
 
+## Testing Daktari changes locally
+
+Having cloned the repo into `~/daktari`, you can make use of PYTHONPATH to run daktari using your local changes.
+
+To do this, navigate into a directory that has a `.daktari.py` (e.g. another repository intending to use your change) and run:
+
+```bash
+PYTHONPATH=~/daktari python3 -m daktari --debug
+```
+
 ## Release instructions
+
+Daktari is continuously deployed via a github action - see [release.yaml](.github/workflows/release.yaml). 
+In case of a need to manually release, the steps are:
 
 ```
 bumpversion --verbose patch
