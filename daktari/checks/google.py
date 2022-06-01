@@ -13,7 +13,15 @@ class GoogleCloudSdkInstalled(Check):
     name = "google.cloudSdkInstalled"
 
     suggestions = {
-        OS.OS_X: "<cmd>brew install --cask google-cloud-sdk</cmd>",
+        OS.OS_X: """<cmd>brew install --cask google-cloud-sdk</cmd>
+
+Then, add the gcloud components to your PATH.
+
+For bash users, add this to ~/.bashrc:
+source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.bash.inc"
+
+For zsh users, add this to ~/.zhsrc:
+source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc\" """,
         OS.UBUNTU: "<cmd>sudo snap install google-cloud-sdk --classic</cmd>",
         OS.GENERIC: "Install gcloud: https://cloud.google.com/sdk/docs/quickstart",
     }
