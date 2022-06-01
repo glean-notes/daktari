@@ -180,6 +180,21 @@ class HostAliasesConfigured(Check):
         return self.passed(f"{hosts.hosts_path} aliases present")
 
 
+class DirectoryIsOnPath(Check):
+    name = "directory.on.path"
+
+    def __init__(self, directory: str):
+        self.directory = directory
+        self.suggestions = {
+            OS.GENERIC: "Append the following line to your profile (~/.bashrc or ~/.zshrc): "
+            f'\n\nexport PATH="{directory}:$PATH"',
+        }
+
+    def check(self) -> CheckResult:
+        path_value = get_env_var_value("PATH")
+        return self.verify(path_value.__contains__(self.directory), f"{self.directory} is <not/> on the $PATH")
+
+
 class DetektInstalled(Check):
     name = "detekt.installed"
 
@@ -200,16 +215,16 @@ class DetektInstalled(Check):
 
     def get_install_cmd(self) -> str:
         version = self.install_version or "[desired version - see https://github.com/detekt/detekt/releases]"
-        return f"""{{
-  DETEKT_VERSION={version}; \\
-  mkdir -p ~/.local/bin &&\\
-  cd ~/.local/bin &&\\
-  curl -sSLO https://github.com/detekt/detekt/releases/download/v$DETEKT_VERSION/detekt-cli-$DETEKT_VERSION.zip &&\\
-  unzip detekt-cli-$DETEKT_VERSION.zip &&\\
-  rm detekt-cli-$DETEKT_VERSION.zip &&\\
-  chmod +x detekt-cli-$DETEKT_VERSION/bin/detekt-cli &&\\
-  ln -s ~/.local/bin/detekt-cli-$DETEKT_VERSION/bin/detekt-cli ~/.local/bin/detekt
-}}"""
+        url = "https://github.com/detekt/detekt/releases/download/v$DETEKT_VERSION/detekt-cli-$DETEKT_VERSION.zip"
+        return f"""DETEKT_VERSION={version}; \\
+LOCAL_BIN=~/.local/bin; \\
+TEMP_FILE=$(mktemp); \\
+mkdir -p "$LOCAL_BIN" &&\\
+curl -L {url} --output "$TEMP_FILE" &&\\
+unzip -u "$TEMP_FILE" -d "$LOCAL_BIN" &&\\
+rm "$TEMP_FILE" &&\\
+chmod +x "$LOCAL_BIN/detekt-cli-$DETEKT_VERSION/bin/detekt-cli" &&\\
+ln -f -s "$LOCAL_BIN/detekt-cli-$DETEKT_VERSION/bin/detekt-cli" "$LOCAL_BIN/detekt" """
 
     def check(self) -> CheckResult:
         installed_version = get_simple_cli_version("detekt")
