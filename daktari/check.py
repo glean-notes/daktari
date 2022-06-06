@@ -13,6 +13,7 @@ class CheckStatus(Enum):
     PASS = "PASS"
     PASS_WITH_WARNING = "PASS_WITH_WARNING"
     FAIL = "FAIL"
+    ERROR = "ERROR"
 
 
 @dataclass
