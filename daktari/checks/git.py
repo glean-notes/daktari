@@ -130,3 +130,45 @@ class PreCommitGitHooksInstalled(Check):
     def check(self) -> CheckResult:
         git_hooks_installed = file_contains_text(".git/hooks/pre-commit", "pre-commit.com")
         return self.verify(git_hooks_installed, "pre-commit Git hooks are <not/> installed")
+
+
+class GpgInstalled(Check):
+    name = "gpg.installed"
+
+    suggestions = {
+        OS.OS_X: "<cmd>brew install gpg2 gnupg pinentry-mac</cmd>",
+        OS.UBUNTU: "<cmd>sudo apt install gpg</cmd>",
+        OS.GENERIC: "Install gpg: https://gnupg.org/",
+    }
+
+    def check(self) -> CheckResult:
+        return self.verify_install("gpg")
+
+
+class GitCommitSigningSetUp(Check):
+    name = "git.commitSigningSetUp"
+    depends_on = [GpgInstalled]
+
+    suggestions = {
+        OS.OS_X: "Follow instructions to set up commit signing: "
+        "https://gist.github.com/troyfontaine/18c9146295168ee9ca2b30c00bd1b41e#file-2-using-gpg-md",
+        OS.UBUNTU: "Follow instructions to set up commit signing: "
+        "https://brain2life.hashnode.dev/how-to-sign-your-git-commits-in-ubuntu-2004-and-why-you-need-it",
+    }
+
+    def check(self) -> CheckResult:
+        key = get_stdout("git config user.signingkey")
+        passed = key is not None and key != ""
+        return self.verify(passed, "user.signingkey is <not/> set")
+
+
+class GitCommitAutoSigningEnabled(Check):
+    name = "git.commitAutoSigningEnabled"
+    depends_on = [GitCommitSigningSetUp]
+
+    suggestions = {OS.GENERIC: "<cmd>git config commit.gpgsign true</cmd>"}
+
+    def check(self) -> CheckResult:
+        setting = get_stdout("git config commit.gpgsign")
+        passed = setting is not None and setting.rstrip() == "true"
+        return self.verify(passed, "commit.gpgsign is <not/> enabled")
