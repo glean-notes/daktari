@@ -46,7 +46,7 @@ class CheckRunner:
         try:
             return check.check()
         except Exception as err:
-            logging.debug("Exception running check", exc_info=True)
+            logging.debug(f"Exception running check {check.name}", exc_info=True)
             return CheckResult(check.name, CheckStatus.ERROR, f"Check failed with unhandled {type(err).__name__}", {})
 
     def diagnose_missing_dependency(self, check: Check):
