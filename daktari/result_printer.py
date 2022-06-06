@@ -9,11 +9,9 @@ from daktari.os import OS, detect_os
 
 
 def check_status_symbol(status: CheckStatus) -> str:
-    return {
-        CheckStatus.PASS: "✅",
-        CheckStatus.PASS_WITH_WARNING: "⚠️ ",
-        CheckStatus.FAIL: "❌",
-    }[status]
+    return {CheckStatus.PASS: "✅", CheckStatus.PASS_WITH_WARNING: "⚠️ ", CheckStatus.FAIL: "❌", CheckStatus.ERROR: "💥"}[
+        status
+    ]
 
 
 def check_status_colour(status: CheckStatus) -> Callable:
@@ -21,6 +19,7 @@ def check_status_colour(status: CheckStatus) -> Callable:
         CheckStatus.PASS: green,
         CheckStatus.PASS_WITH_WARNING: yellow,
         CheckStatus.FAIL: red,
+        CheckStatus.ERROR: red,
     }[status]
 
 

@@ -3,7 +3,7 @@ from typing import List, Set
 
 from colors import yellow
 
-from daktari.check import Check, CheckStatus
+from daktari.check import Check, CheckStatus, CheckResult
 from daktari.check_sorter import sort_checks
 from daktari.os import detect_os
 from daktari.result_printer import print_check_result
@@ -35,12 +35,19 @@ class CheckRunner:
 
     def run_check(self, check: Check):
         logging.info(f"Running check {check.name}")
-        result = check.check()
+        result = self.run_check_in_try(check)
         print_check_result(result)
         if result.status in (CheckStatus.PASS, CheckStatus.PASS_WITH_WARNING):
             self.checks_passed.add(check.name)
         else:
             self.all_passed = False
+
+    def run_check_in_try(self, check: Check) -> CheckResult:
+        try:
+            return check.check()
+        except Exception as err:
+            logging.debug("Exception running check", exc_info=True)
+            return CheckResult(check.name, CheckStatus.ERROR, f"Check failed with unhandled {type(err).__name__}", {})
 
     def diagnose_missing_dependency(self, check: Check):
         all_checks = {check.name for check in self.checks}
