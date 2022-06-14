@@ -64,10 +64,11 @@ def match_scope(template: YarnNpmScope, scope: Dict[str, Any]) -> bool:
 
 def yarnrc_contains_scope(yarnrc: Dict[str, Any], scope: YarnNpmScope) -> bool:
     yarnrc_scopes = yarnrc.get("npmScopes", {})
-    for yarnrc_scope in yarnrc_scopes.values():
-        if match_scope(scope, yarnrc_scope):
-            return True
-    return False
+    yarnrc_scope = yarnrc_scopes.get(scope.name)
+    if yarnrc_scope is None:
+        return False
+
+    return match_scope(scope, yarnrc_scope)
 
 
 class YarnNpmScopeConfigured(Check):
