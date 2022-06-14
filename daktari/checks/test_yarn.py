@@ -52,11 +52,14 @@ class TestYarn(unittest.TestCase):
         nonexistent_scope_1 = YarnNpmScope("glean", npmRegistryServer="http://localhost")
         # Auth token required, none supplied:
         nonexistent_scope_2 = YarnNpmScope("glean", npmRegistryServer=TEST_REGISTRY_SERVER, requireNpmAuthToken=True)
+        # Wrong name
+        nonexistent_scope_3 = YarnNpmScope("walter")
 
         self.assertTrue(yarnrc_contains_scope(yarnrc, existing_scope_1))
         self.assertTrue(yarnrc_contains_scope(yarnrc, existing_scope_2))
         self.assertFalse(yarnrc_contains_scope(yarnrc, nonexistent_scope_1))
         self.assertFalse(yarnrc_contains_scope(yarnrc, nonexistent_scope_2))
+        self.assertFalse(yarnrc_contains_scope(yarnrc, nonexistent_scope_3))
 
 
 if __name__ == "__main__":
