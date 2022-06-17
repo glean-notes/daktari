@@ -42,6 +42,19 @@ class CloudSqlProxyInstalled(Check):
         return self.verify(can_run_command("cloud_sql_proxy --version"), "Cloud SQL Proxy is <not/> installed")
 
 
+class GkeGcloudAuthPluginInstalled(Check):
+    name = "google.gkeGcloudAuthPluginInstalled"
+    depends_on = [GoogleCloudSdkInstalled]
+
+    suggestions = {
+        OS.UBUNTU: "<cmd>sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin</cmd>",
+        OS.GENERIC: "<cmd>gcloud components install gke-gcloud-auth-plugin</cmd>",
+    }
+
+    def check(self) -> CheckResult:
+        return self.verify(can_run_command("gke-gcloud-auth-plugin --version "), "GKE auth plugin is <not/> installed")
+
+
 class DockerGoogleCloudAuthConfigured(Check):
     name = "google.dockerGCloudAuthConfigured"
     depends_on = [GoogleCloudSdkInstalled]
