@@ -26,7 +26,7 @@ class CheckResult:
 
 class Check:
     name: str
-    depends_on: List[Type] = []
+    depends_on: List[Type["Check"]] = []
     suggestions: Dict[str, str] = {}
     run_on: Optional[str] = None
 

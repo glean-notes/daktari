@@ -2,10 +2,12 @@ import logging
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Type, Union
 
+import yaml
 from colors import red, yellow
 from packaging import version
+from yaml import YAMLError
 
 from daktari import __version__
 from daktari.check import Check
@@ -20,11 +22,48 @@ class Config:
 
 
 version_regex = re.compile('daktari_version.*"([0-9.]+)"')
+LOCAL_CONFIG_PATH = "daktari-local.yml"
 
 
 def read_config(config_path: Path) -> Optional[Config]:
     raw_config = config_path.read_text()
-    return parse_raw_config(config_path, raw_config)
+    config = parse_raw_config(config_path, raw_config)
+    if config is None:
+        return config
+
+    return apply_local_config(config)
+
+
+def apply_local_config(config: Config) -> Optional[Config]:
+    if not Path(LOCAL_CONFIG_PATH).is_file():
+        return config
+
+    try:
+        with open(LOCAL_CONFIG_PATH, "rb") as local_config_file:
+            local_config = yaml.safe_load(local_config_file)
+    except YAMLError:
+        print(red(f"❌  Failed to parse {LOCAL_CONFIG_PATH} - config is not valid YAML. Error follows."))
+        logging.error(f"Exception reading {LOCAL_CONFIG_PATH}", exc_info=True)
+        return None
+
+    ignored_checks: List[str] = local_config["ignoredChecks"]
+    checks = remove_ignored_checks(config.checks, ignored_checks)
+    return Config(config.min_version, config.title, checks)
+
+
+def remove_ignored_checks(checks: List[Check], ignored_checks: List[str]) -> List[Check]:
+    return list(filter(lambda check: not check_should_be_ignored(check, ignored_checks), checks))
+
+
+def check_should_be_ignored(check: Check, ignored_checks: List[str]) -> bool:
+    dependents = get_all_dependent_check_names(check)
+    return any([dependent in ignored_checks for dependent in dependents])
+
+
+def get_all_dependent_check_names(check: Union[Check, Type[Check]]) -> List[str]:
+    dependents = [get_all_dependent_check_names(dep) for dep in check.depends_on]
+    flat_dependents = [item for sublist in dependents for item in sublist]
+    return flat_dependents + [check.name]
 
 
 def parse_raw_config(config_path: Path, raw_config: str) -> Optional[Config]:
