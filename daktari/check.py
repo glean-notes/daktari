@@ -117,3 +117,6 @@ class Check:
     def only_on(self, os: str) -> "Check":
         self.run_on = os
         return self
+
+    def __eq__(self, other):
+        return type(self) == type(other) and self.name == other.name

@@ -2,7 +2,7 @@ import logging
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any, Dict, List, Optional
 
 import yaml
 from colors import red, yellow
@@ -11,6 +11,7 @@ from yaml import YAMLError
 
 from daktari import __version__
 from daktari.check import Check
+from daktari.check_utils import get_all_dependent_check_names
 from daktari.result_printer import print_suggestion_text
 
 
@@ -46,7 +47,7 @@ def apply_local_config(config: Config) -> Optional[Config]:
         logging.error(f"Exception reading {LOCAL_CONFIG_PATH}", exc_info=True)
         return None
 
-    ignored_checks: List[str] = local_config["ignoredChecks"]
+    ignored_checks: List[str] = local_config.get("ignoredChecks", [])
     checks = remove_ignored_checks(config.checks, ignored_checks)
     return Config(config.min_version, config.title, checks)
 
@@ -58,12 +59,6 @@ def remove_ignored_checks(checks: List[Check], ignored_checks: List[str]) -> Lis
 def check_should_be_ignored(check: Check, ignored_checks: List[str]) -> bool:
     dependents = get_all_dependent_check_names(check)
     return any([dependent in ignored_checks for dependent in dependents])
-
-
-def get_all_dependent_check_names(check: Union[Check, Type[Check]]) -> List[str]:
-    dependents = [get_all_dependent_check_names(dep) for dep in check.depends_on]
-    flat_dependents = [item for sublist in dependents for item in sublist]
-    return flat_dependents + [check.name]
 
 
 def parse_raw_config(config_path: Path, raw_config: str) -> Optional[Config]:

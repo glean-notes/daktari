@@ -89,6 +89,34 @@ class TestConfig(unittest.TestCase):
                 fake_out, f"❌  Failed to parse {LOCAL_CONFIG_PATH} - config is not valid YAML. Error follows."
             )
 
+    def test_local_config_missing_ignored_checks(self):
+        self.write_to_local_config("someOtherSetting: []")
+
+        config = Config(None, None, TEST_CHECKS)
+        updated_config = apply_local_config(config)
+        self.assertEqual(config, updated_config)
+
+    def test_local_config_empty_ignored_checks(self):
+        self.write_to_local_config("ignoredChecks: []")
+
+        config = Config(None, None, TEST_CHECKS)
+        updated_config = apply_local_config(config)
+        self.assertEqual(config, updated_config)
+
+    def test_local_config_ignored_check_dynamic_name(self):
+        self.write_to_local_config("ignoredChecks: ['env.variableSet.SOME_ENV_VAR']")
+
+        config = Config(None, None, TEST_CHECKS)
+        updated_config = apply_local_config(config)
+        self.assertEqual([IntelliJIdeaInstalled(), IntelliJProjectImported()], updated_config.checks)
+
+    def test_local_config_ignored_check_with_dependants(self):
+        self.write_to_local_config("ignoredChecks: ['intellij.installed']")
+
+        config = Config(None, None, TEST_CHECKS)
+        updated_config = apply_local_config(config)
+        self.assertEqual([EnvVarSet(variable_name="SOME_ENV_VAR")], updated_config.checks)
+
     def write_to_local_config(self, contents: str):
         with open(LOCAL_CONFIG_PATH, "a") as log_file:
             log_file.write(contents)
