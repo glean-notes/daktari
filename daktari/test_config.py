@@ -103,6 +103,14 @@ class TestConfig(unittest.TestCase):
         updated_config = apply_local_config(config)
         self.assertEqual(config, updated_config)
 
+    def test_local_config_template(self):
+        template_text = Path("daktari-local-template.yml").read_text()
+        self.write_to_local_config(template_text)
+
+        config = Config(None, None, TEST_CHECKS)
+        updated_config = apply_local_config(config)
+        self.assertEqual(config, updated_config)
+
     def test_local_config_ignored_check_dynamic_name(self):
         self.write_to_local_config("ignoredChecks: ['env.variableSet.SOME_ENV_VAR']")
 
