@@ -108,7 +108,7 @@ class TestConfig(unittest.TestCase):
         self.assertEqual(config, updated_config)
 
     def test_local_config_template(self):
-        template_text = Path("resources/daktari-local-template.yml").read_text()
+        template_text = get_resource("daktari-local-template.yml")
         self.write_to_local_config(template_text)
 
         config = Config(None, None, TEST_CHECKS)
