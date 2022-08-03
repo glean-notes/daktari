@@ -12,6 +12,7 @@ from daktari import __version__
 from daktari.checks.intellij_idea import IntelliJIdeaInstalled, IntelliJProjectImported
 from daktari.checks.misc import EnvVarSet
 from daktari.config import check_version_compatibility, parse_raw_config, LOCAL_CONFIG_PATH, Config, apply_local_config
+from daktari.resource_utils import get_resource
 
 config_path = Path("./.daktari.config")
 current_version: Version = Version(__version__)
@@ -72,11 +73,14 @@ class TestConfig(unittest.TestCase):
             self.verify_error(fake_out, "❌  Failed to parse .daktari.config - config is not valid.")
 
     def test_local_config_does_not_exist(self):
-        with patch("sys.stdout", new=StringIO()) as fake_out:
-            config = Config(None, None, [])
-            updated_config = apply_local_config(config)
-            self.assertEqual(config, updated_config)
-            self.verify_no_logging(fake_out)
+        config = Config(None, None, TEST_CHECKS)
+        updated_config = apply_local_config(config)
+        self.assertEqual(config, updated_config)
+
+        expected_contents = get_resource("daktari-local-template.yml")
+        with open(LOCAL_CONFIG_PATH, "r", encoding="utf-8") as local_config_file:
+            actual_contents = local_config_file.read()
+            self.assertEqual(expected_contents, actual_contents)
 
     def test_local_config_invalid_yml(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
@@ -104,7 +108,7 @@ class TestConfig(unittest.TestCase):
         self.assertEqual(config, updated_config)
 
     def test_local_config_template(self):
-        template_text = Path("daktari-local-template.yml").read_text()
+        template_text = Path("resources/daktari-local-template.yml").read_text()
         self.write_to_local_config(template_text)
 
         config = Config(None, None, TEST_CHECKS)

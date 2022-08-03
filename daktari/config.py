@@ -12,6 +12,7 @@ from yaml import YAMLError
 from daktari import __version__
 from daktari.check import Check
 from daktari.check_utils import get_all_dependent_check_names
+from daktari.resource_utils import get_resource
 from daktari.result_printer import print_suggestion_text
 
 
@@ -37,6 +38,7 @@ def read_config(config_path: Path) -> Optional[Config]:
 
 def apply_local_config(config: Config) -> Optional[Config]:
     if not Path(LOCAL_CONFIG_PATH).is_file():
+        write_local_config_template()
         return config
 
     try:
@@ -50,6 +52,17 @@ def apply_local_config(config: Config) -> Optional[Config]:
     ignored_checks: List[str] = local_config.get("ignoredChecks", [])
     checks = remove_ignored_checks(config.checks, ignored_checks)
     return Config(config.min_version, config.title, checks)
+
+
+def write_local_config_template():
+    contents = get_resource("daktari-local-template.yml")
+    with open(LOCAL_CONFIG_PATH, "a") as config_file:
+        config_file.write(contents)
+
+    print(
+        f"ⓘ A local config file has been generated at {LOCAL_CONFIG_PATH}. "
+        f"Use this to override daktari behaviour - see the file for more details."
+    )
 
 
 def remove_ignored_checks(checks: List[Check], ignored_checks: List[str]) -> List[Check]:
