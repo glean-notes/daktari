@@ -1,6 +1,6 @@
 import logging
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -21,6 +21,7 @@ class Config:
     min_version: Optional[str]
     title: Optional[str]
     checks: List[Check]
+    printLocalFileMessage: bool = False
 
 
 version_regex = re.compile('daktari_version.*"([0-9.]+)"')
@@ -39,7 +40,7 @@ def read_config(config_path: Path) -> Optional[Config]:
 def apply_local_config(config: Config) -> Optional[Config]:
     if not Path(LOCAL_CONFIG_PATH).is_file():
         write_local_config_template()
-        return config
+        return replace(config, printLocalFileMessage=True)
 
     try:
         with open(LOCAL_CONFIG_PATH, "rb") as local_config_file:
@@ -51,18 +52,13 @@ def apply_local_config(config: Config) -> Optional[Config]:
 
     ignored_checks: List[str] = local_config.get("ignoredChecks", [])
     checks = remove_ignored_checks(config.checks, ignored_checks)
-    return Config(config.min_version, config.title, checks)
+    return replace(config, checks=checks)
 
 
 def write_local_config_template():
     contents = get_resource("daktari-local-template.yml")
     with open(LOCAL_CONFIG_PATH, "a") as config_file:
         config_file.write(contents)
-
-    print(
-        f"ⓘ A local config file has been generated at {LOCAL_CONFIG_PATH}. "
-        f"Use this to override daktari behaviour - see the file for more details."
-    )
 
 
 def remove_ignored_checks(checks: List[Check], ignored_checks: List[str]) -> List[Check]:
@@ -90,7 +86,7 @@ def parse_raw_config(config_path: Path, raw_config: str) -> Optional[Config]:
     checks = variables.get("checks", [])
     title = variables.get("title", None)
     min_version = variables.get("daktari_version", None)
-    return Config(min_version, title, checks)
+    return Config(min_version, title, checks, False)
 
 
 def check_version_compatibility(config_path: Path, raw_config: str) -> bool:

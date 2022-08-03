@@ -75,7 +75,7 @@ class TestConfig(unittest.TestCase):
     def test_local_config_does_not_exist(self):
         config = Config(None, None, TEST_CHECKS)
         updated_config = apply_local_config(config)
-        self.assertEqual(config, updated_config)
+        self.assertEqual(Config(None, None, TEST_CHECKS, True), updated_config)
 
         expected_contents = get_resource("daktari-local-template.yml")
         with open(LOCAL_CONFIG_PATH, "r", encoding="utf-8") as local_config_file:
