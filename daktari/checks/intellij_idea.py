@@ -60,7 +60,13 @@ def get_intellij_idea_version_snap() -> Optional[VersionInfo]:
         f"http+unix://%2Frun%2Fsnapd.socket/v2/snaps?snaps={SNAP_NAME_INTELLIJ_IDEA},{SNAP_NAME_INTELLIJ_IDEA_CE}"
     )
     snaps_info = snaps_req.json()
+    logging.debug(f"response from snapd: {snaps_info}")
     version_str = dpath.util.get(snaps_info, "/result/0/version", default=None)
+    logging.debug(f"raw snapd version: {version_str}")
+
+    if version_str.count(".") == 1:
+        version_str = version_str + ".0"
+
     version = try_parse_semver(version_str)
     logging.debug(f"IntelliJ IDEA version (via snapd): {version}")
     return version
