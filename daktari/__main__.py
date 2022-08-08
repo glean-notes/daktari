@@ -43,7 +43,10 @@ def print_messages(config: Config, args):
     ignored_count = len(config.ignored_checks)
     if ignored_count > 0:
         if args.show_ignored:
-            print(f"ⓘ  The following checks have been ignored: {config.ignored_checks}\n")
+            print(f"ⓘ  The following checks have been ignored:\n")
+            for check in config.ignored_checks:
+                print(f"[{check.name}]")
+            print("")
         else:
             print(f"ⓘ  {ignored_count} check(s) have been marked as ignored. Run with --show-ignored to list them.\n")
 
