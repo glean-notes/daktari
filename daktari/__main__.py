@@ -30,6 +30,7 @@ def main() -> int:
     print_messages(config, args)
 
     all_passed = run_checks(config.checks)
+    print("")
     return 0 if all_passed else 1
 
 
