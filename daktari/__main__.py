@@ -5,7 +5,7 @@ import sys
 from pyfiglet import Figlet
 
 from daktari.check_runner import run_checks
-from daktari.config import read_config, LOCAL_CONFIG_PATH
+from daktari.config import read_config, LOCAL_CONFIG_PATH, Config
 from daktari.options import argument_parser
 
 
@@ -27,15 +27,25 @@ def main() -> int:
     if config.title:
         print_logo(config.title)
 
+    print_messages(config, args)
+
+    all_passed = run_checks(config.checks)
+    return 0 if all_passed else 1
+
+
+def print_messages(config: Config, args):
     if config.printLocalFileMessage:
         print(
             f"ⓘ  A local config file has been generated at {LOCAL_CONFIG_PATH}. "
             f"Use this to override daktari behaviour - see the file for more details.\n"
         )
 
-    all_passed = run_checks(config.checks)
-    print("")
-    return 0 if all_passed else 1
+    ignored_count = len(config.ignored_checks)
+    if ignored_count > 0:
+        if args.show_ignored:
+            print(f"ⓘ  The following checks have been ignored: {config.ignored_checks}\n")
+        else:
+            print(f"ⓘ  {ignored_count} check(s) have been marked as ignored. Run with --show-ignored to list them.\n")
 
 
 if __name__ == "__main__":

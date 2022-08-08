@@ -1,6 +1,6 @@
 import logging
 import re
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, replace, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -21,6 +21,7 @@ class Config:
     min_version: Optional[str]
     title: Optional[str]
     checks: List[Check]
+    ignored_checks: List[Check] = field(default_factory=list)
     printLocalFileMessage: bool = False
 
 
@@ -51,8 +52,7 @@ def apply_local_config(config: Config) -> Optional[Config]:
         return None
 
     ignored_checks: List[str] = local_config.get("ignoredChecks", [])
-    checks = remove_ignored_checks(config.checks, ignored_checks)
-    return replace(config, checks=checks)
+    return remove_ignored_checks(config, ignored_checks)
 
 
 def write_local_config_template():
@@ -61,13 +61,15 @@ def write_local_config_template():
         config_file.write(contents)
 
 
-def remove_ignored_checks(checks: List[Check], ignored_checks: List[str]) -> List[Check]:
-    return list(filter(lambda check: not check_should_be_ignored(check, ignored_checks), checks))
+def remove_ignored_checks(config: Config, ignored_check_names: List[str]) -> Config:
+    ignored_checks = list(filter(lambda check: check_should_be_ignored(check, ignored_check_names), config.checks))
+    remaining_checks = [check for check in config.checks if check not in ignored_checks]
+    return replace(config, checks=remaining_checks, ignored_checks=ignored_checks)
 
 
-def check_should_be_ignored(check: Check, ignored_checks: List[str]) -> bool:
+def check_should_be_ignored(check: Check, ignored_check_names: List[str]) -> bool:
     dependents = get_all_dependent_check_names(check)
-    return any([dependent in ignored_checks for dependent in dependents])
+    return any([dependent in ignored_check_names for dependent in dependents])
 
 
 def parse_raw_config(config_path: Path, raw_config: str) -> Optional[Config]:
@@ -86,7 +88,7 @@ def parse_raw_config(config_path: Path, raw_config: str) -> Optional[Config]:
     checks = variables.get("checks", [])
     title = variables.get("title", None)
     min_version = variables.get("daktari_version", None)
-    return Config(min_version, title, checks, False)
+    return Config(min_version, title, checks)
 
 
 def check_version_compatibility(config_path: Path, raw_config: str) -> bool:
