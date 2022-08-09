@@ -22,5 +22,5 @@ def try_parse_semver(version_str: Optional[str]) -> Optional[VersionInfo]:
         return None
 
 
-def validate_version_string(version_str: str) -> str:
+def sanitise_version_string(version_str: str) -> str:
     return version_str + ".0" if version_str.count(".") == 1 else version_str
