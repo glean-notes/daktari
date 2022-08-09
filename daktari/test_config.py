@@ -9,6 +9,7 @@ from packaging.version import Version
 
 from daktari import __version__
 from daktari.config import check_version_compatibility, parse_raw_config
+from daktari.version_utils import sanitise_version_string
 
 config_path = Path("./.daktari.config")
 current_version: Version = Version(__version__)
@@ -57,6 +58,10 @@ class TestConfig(unittest.TestCase):
         result = parse_raw_config(config_path, "checks = [NonExistentCheck()]")
         self.assertEqual(result, None)
         self.verify_error("❌  Failed to parse .daktari.config - config is not valid.")
+
+    def test_version_number_sanitised(self):
+        result = sanitise_version_string("9.22")
+        self.assertEqual("9.22.0", result)
 
     def verify_no_logging(self):
         self.assertEqual(self.capturedOutput.getvalue(), "")
