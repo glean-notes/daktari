@@ -13,7 +13,7 @@ from daktari.checks.files import FilesExist
 from daktari.checks.xml import XmlFileXPathCheck
 from daktari.command_utils import CommandErrorException, run_command
 from daktari.os import OS, detect_os
-from daktari.version_utils import try_parse_semver
+from daktari.version_utils import try_parse_semver, sanitise_version_string
 
 BUNDLE_ID_INTELLIJ_IDEA = "com.jetbrains.intellij"
 BUNDLE_ID_INTELLIJ_IDEA_CE = "com.jetbrains.intellij.ce"
@@ -43,7 +43,10 @@ def get_intellij_idea_version_mac() -> Optional[VersionInfo]:
         from Foundation import NSBundle
 
         version_str = NSBundle.bundleWithURL_(intellij_url).objectForInfoDictionaryKey_("CFBundleShortVersionString")
+
+        version_str = sanitise_version_string(version_str)
         version = try_parse_semver(version_str)
+
         logging.debug(f"IntelliJ IDEA version (via NSBundle): {version}")
         return version
 
@@ -60,7 +63,12 @@ def get_intellij_idea_version_snap() -> Optional[VersionInfo]:
         f"http+unix://%2Frun%2Fsnapd.socket/v2/snaps?snaps={SNAP_NAME_INTELLIJ_IDEA},{SNAP_NAME_INTELLIJ_IDEA_CE}"
     )
     snaps_info = snaps_req.json()
+    logging.debug(f"response from snapd: {snaps_info}")
     version_str = dpath.util.get(snaps_info, "/result/0/version", default=None)
+    logging.debug(f"raw snapd version: {version_str}")
+
+    version_str = sanitise_version_string(version_str)
+
     version = try_parse_semver(version_str)
     logging.debug(f"IntelliJ IDEA version (via snapd): {version}")
     return version

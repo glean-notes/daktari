@@ -20,3 +20,7 @@ def try_parse_semver(version_str: Optional[str]) -> Optional[VersionInfo]:
         return None if version_str is None else VersionInfo.parse(version_str)
     except ValueError:
         return None
+
+
+def sanitise_version_string(version_str: str) -> str:
+    return version_str + ".0" if version_str.count(".") == 1 else version_str

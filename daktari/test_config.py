@@ -9,6 +9,7 @@ from packaging import version
 from packaging.version import Version
 
 from daktari import __version__
+from daktari.version_utils import sanitise_version_string
 from daktari.checks.intellij_idea import IntelliJIdeaInstalled, IntelliJProjectImported
 from daktari.checks.misc import EnvVarSet
 from daktari.config import check_version_compatibility, parse_raw_config, LOCAL_CONFIG_PATH, Config, apply_local_config
@@ -106,6 +107,10 @@ class TestConfig(unittest.TestCase):
         config = Config(None, None, TEST_CHECKS)
         updated_config = apply_local_config(config)
         self.assertEqual(config, updated_config)
+
+    def test_version_number_sanitised(self):
+        result = sanitise_version_string("9.22")
+        self.assertEqual("9.22.0", result)
 
     def test_local_config_template(self):
         template_text = get_resource("daktari-local-template.yml")
