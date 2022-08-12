@@ -1,6 +1,7 @@
 import unittest
 
 from daktari.check_sorter import sort_checks
+from daktari.check_utils import CyclicCheckException
 from daktari.test_check_factory import DummyCheck
 
 
@@ -12,7 +13,7 @@ class TestCheckSorter(unittest.TestCase):
         check_a.depends_on = [check_b]
         check_b.depends_on = [check_a]
 
-        with self.assertRaises(RecursionError):
+        with self.assertRaises(CyclicCheckException):
             sort_checks([check_a, check_b])
 
     def test_sorts_into_right_order(self):
