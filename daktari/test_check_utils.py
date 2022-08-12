@@ -1,6 +1,6 @@
 import unittest
 
-from daktari.check_utils import get_all_dependent_check_names
+from daktari.check_utils import get_all_dependent_check_names, CyclicCheckException
 from daktari.test_check_factory import DummyCheck
 
 
@@ -25,7 +25,7 @@ class TestCheckUtils(unittest.TestCase):
     def test_self_cycle(self):
         check = DummyCheck("A")
         check.depends_on = [check]
-        with self.assertRaises(RecursionError):
+        with self.assertRaises(CyclicCheckException):
             get_all_dependent_check_names(check)
 
     def test_simple_cycle(self):
@@ -34,7 +34,7 @@ class TestCheckUtils(unittest.TestCase):
 
         check_a.depends_on = [check_b]
         check_b.depends_on = [check_a]
-        with self.assertRaises(RecursionError):
+        with self.assertRaises(CyclicCheckException):
             get_all_dependent_check_names(check_a)
 
     def test_larger_cycle(self):
@@ -46,7 +46,7 @@ class TestCheckUtils(unittest.TestCase):
         check_b.depends_on = [check_c]
         check_c.depends_on = [check_a]
 
-        with self.assertRaises(RecursionError):
+        with self.assertRaises(CyclicCheckException):
             get_all_dependent_check_names(check_a)
 
     def test_depends_on_cycle(self):
@@ -60,7 +60,7 @@ class TestCheckUtils(unittest.TestCase):
         check_c.depends_on = [check_d]
         check_d.depends_on = [check_b]
 
-        with self.assertRaises(RecursionError):
+        with self.assertRaises(CyclicCheckException):
             get_all_dependent_check_names(check_a)
 
 
