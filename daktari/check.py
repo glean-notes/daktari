@@ -2,7 +2,7 @@ import abc
 import re
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Optional, Type, Union
+from typing import Dict, List, Optional, Type
 
 from semver import VersionInfo
 
@@ -39,40 +39,12 @@ class Check:
     def passed_with_warning(self, message: str) -> CheckResult:
         return CheckResult(self.name, CheckStatus.PASS_WITH_WARNING, message, self.suggestions)
 
-    def verify(self, passed: bool, dualMessage: str) -> CheckResult:
+    def verify(self, passed: bool, dual_message: str) -> CheckResult:
         pattern = re.compile(" <not/> ")
         if passed:
-            return self.passed(pattern.sub(" ", dualMessage))
+            return self.passed(pattern.sub(" ", dual_message))
         else:
-            return self.failed(pattern.sub(" not ", dualMessage))
-
-    def validate_required_version(
-        self, application: str, installed_version: Union[float, str, None], required_version: Union[float, str]
-    ) -> CheckResult:
-        if installed_version is None:
-            return self.failed(f"{application} is not installed")
-
-        if required_version == "":
-            return self.passed(f"{application} is installed")
-
-        return self.verify(
-            installed_version == required_version,
-            f"{application} version is <not/> ={required_version} ({installed_version})",
-        )
-
-    def validate_minimum_version(
-        self, application: str, installed_version: Optional[float], minimum_version: Optional[float]
-    ) -> CheckResult:
-        if installed_version is None:
-            return self.failed(f"{application} is not installed")
-
-        if minimum_version is None:
-            return self.passed(f"{application} is installed")
-
-        return self.verify(
-            installed_version >= minimum_version,
-            f"{application} version is <not/> >={minimum_version} ({installed_version})",
-        )
+            return self.failed(pattern.sub(" not ", dual_message))
 
     def validate_semver_expression(
         self,
