@@ -1,49 +1,67 @@
 import unittest
-from daktari.check import Check, CheckResult
+
 from daktari.check_utils import get_all_dependent_check_names
-
-
-###
-# Dummy checks set up with dependencies as follows (A <- B means "B depends on A")
-#
-#
-#   A <- B <- C <- E
-#             D <- E
-#
-class DummyCheck(Check):
-    def check(self) -> CheckResult:
-        return self.passed("no check")
-
-
-class CheckA(DummyCheck):
-    name = "A"
-
-
-class CheckB(DummyCheck):
-    name = "B"
-    depends_on = [CheckA]
-
-
-class CheckC(DummyCheck):
-    name = "C"
-    depends_on = [CheckB]
-
-
-class CheckD(DummyCheck):
-    name = "D"
-
-
-class CheckE(DummyCheck):
-    name = "E"
-    depends_on = [CheckC, CheckD]
+from daktari.test_check_factory import DummyCheck
 
 
 class TestCheckUtils(unittest.TestCase):
     def test_get_all_dependent_check_names(self):
-        self.assertEqual(["A"], get_all_dependent_check_names(CheckA))
-        self.assertEqual(["A", "B"], get_all_dependent_check_names(CheckB))
-        self.assertEqual(["A", "B", "C"], get_all_dependent_check_names(CheckC))
-        self.assertEqual(["A", "B", "C", "D", "E"], get_all_dependent_check_names(CheckE))
+        # Dummy checks set up with dependencies as follows (A <- B means "B depends on A")
+        #
+        #   A <- B <- C <- E
+        #             D <- E
+        #
+        check_a = DummyCheck("A")
+        check_b = DummyCheck("B", [check_a])
+        check_c = DummyCheck("C", [check_b])
+        check_d = DummyCheck("D")
+        check_e = DummyCheck("E", [check_c, check_d])
+
+        self.assertEqual(set(), get_all_dependent_check_names(check_a))
+        self.assertEqual({"A"}, get_all_dependent_check_names(check_b))
+        self.assertEqual({"A", "B"}, get_all_dependent_check_names(check_c))
+        self.assertEqual({"A", "B", "C", "D"}, get_all_dependent_check_names(check_e))
+
+    def test_self_cycle(self):
+        check = DummyCheck("A")
+        check.depends_on = [check]
+        with self.assertRaises(RecursionError):
+            get_all_dependent_check_names(check)
+
+    def test_simple_cycle(self):
+        check_a = DummyCheck("A")
+        check_b = DummyCheck("B")
+
+        check_a.depends_on = [check_b]
+        check_b.depends_on = [check_a]
+        with self.assertRaises(RecursionError):
+            get_all_dependent_check_names(check_a)
+
+    def test_larger_cycle(self):
+        check_a = DummyCheck("A")
+        check_b = DummyCheck("B")
+        check_c = DummyCheck("C")
+
+        check_a.depends_on = [check_b]
+        check_b.depends_on = [check_c]
+        check_c.depends_on = [check_a]
+
+        with self.assertRaises(RecursionError):
+            get_all_dependent_check_names(check_a)
+
+    def test_depends_on_cycle(self):
+        check_a = DummyCheck("A")
+        check_b = DummyCheck("B")
+        check_c = DummyCheck("C")
+        check_d = DummyCheck("D")
+
+        check_a.depends_on = [check_b]
+        check_b.depends_on = [check_c]
+        check_c.depends_on = [check_d]
+        check_d.depends_on = [check_b]
+
+        with self.assertRaises(RecursionError):
+            get_all_dependent_check_names(check_a)
 
 
 if __name__ == "__main__":
