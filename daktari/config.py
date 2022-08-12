@@ -69,7 +69,7 @@ def remove_ignored_checks(config: Config, ignored_check_names: List[str]) -> Con
 
 def check_should_be_ignored(check: Check, ignored_check_names: List[str]) -> bool:
     dependents = get_all_dependent_check_names(check)
-    return any([dependent in ignored_check_names for dependent in dependents])
+    return check.name in ignored_check_names or any([dependent in ignored_check_names for dependent in dependents])
 
 
 def parse_raw_config(config_path: Path, raw_config: str) -> Optional[Config]:
