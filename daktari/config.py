@@ -22,7 +22,7 @@ class Config:
     title: Optional[str]
     checks: List[Check]
     ignored_checks: List[Check] = field(default_factory=list)
-    printLocalFileMessage: bool = False
+    local_config_file_generated: bool = False
 
 
 version_regex = re.compile('daktari_version.*"([0-9.]+)"')
@@ -41,7 +41,7 @@ def read_config(config_path: Path) -> Optional[Config]:
 def apply_local_config(config: Config) -> Optional[Config]:
     if not Path(LOCAL_CONFIG_PATH).is_file():
         write_local_config_template()
-        return replace(config, printLocalFileMessage=True)
+        return replace(config, local_config_file_generated=True)
 
     try:
         with open(LOCAL_CONFIG_PATH, "rb") as local_config_file:

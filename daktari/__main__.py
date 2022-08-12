@@ -23,19 +23,18 @@ def main() -> int:
         return 1
 
     os.chdir(args.config_path.parent.absolute())
-
-    if config.title:
-        print_logo(config.title)
-
-    print_messages(config, args)
+    print_config_messages(config, args)
 
     all_passed = run_checks(config.checks)
     print("")
     return 0 if all_passed else 1
 
 
-def print_messages(config: Config, args):
-    if config.printLocalFileMessage:
+def print_config_messages(config: Config, args):
+    if config.title:
+        print_logo(config.title)
+
+    if config.local_config_file_generated:
         print(
             f"ⓘ  A local config file has been generated at {LOCAL_CONFIG_PATH}. "
             f"Use this to override daktari behaviour - see the file for more details.\n"

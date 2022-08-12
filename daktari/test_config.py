@@ -137,8 +137,8 @@ class TestConfig(unittest.TestCase):
         self.assertEqual([IntelliJIdeaInstalled(), IntelliJProjectImported()], updated_config.ignored_checks)
 
     def write_to_local_config(self, contents: str):
-        with open(LOCAL_CONFIG_PATH, "a") as log_file:
-            log_file.write(contents)
+        with open(LOCAL_CONFIG_PATH, "a") as local_config_file:
+            local_config_file.write(contents)
 
     def verify_no_logging(self, fake_out: StringIO):
         self.assertEqual(fake_out.getvalue(), "")
