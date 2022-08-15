@@ -5,10 +5,7 @@ from daktari.check_utils import get_all_dependent_check_names
 
 
 def dependency_graph(checks: List[Check]) -> Dict[str, Set[str]]:
-    graph: Dict[str, Set[str]] = {}
-    for check in checks:
-        graph[check.name] = get_all_dependent_check_names(check)
-    return graph
+    return {check.name: get_all_dependent_check_names(check) for check in checks}
 
 
 T = TypeVar("T")
