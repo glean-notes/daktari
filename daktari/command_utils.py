@@ -66,6 +66,7 @@ def get_stdout(command) -> Optional[str]:
     try:
         return run_command(command).stdout
     except Exception:
+        logging.debug("Exception running command", exc_info=True)
         return None
 
 
@@ -73,4 +74,5 @@ def get_stderr(command) -> Optional[str]:
     try:
         return run_command(command).stderr
     except Exception:
+        logging.debug("Exception running command", exc_info=True)
         return None
