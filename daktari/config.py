@@ -60,7 +60,7 @@ def apply_local_config(config: Config) -> Optional[Config]:
 
 def write_local_config_template():
     contents = get_resource(LOCAL_CONFIG_TEMPLATE)
-    with open(LOCAL_CONFIG_PATH, "a") as config_file:
+    with open(LOCAL_CONFIG_PATH, "w") as config_file:
         config_file.write(contents)
 
     print(

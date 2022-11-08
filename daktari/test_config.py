@@ -119,6 +119,15 @@ class TestConfig(unittest.TestCase):
             actual_contents = local_config_file.read()
             self.assertEqual(expected_contents, actual_contents)
 
+    def test_generate_local_config_overwrites(self):
+        write_local_config_template()
+        write_local_config_template()
+
+        expected_contents = get_resource(LOCAL_CONFIG_TEMPLATE)
+        with open(LOCAL_CONFIG_PATH, "r", encoding="utf-8") as local_config_file:
+            actual_contents = local_config_file.read()
+            self.assertEqual(expected_contents, actual_contents)
+
     def test_version_number_sanitised(self):
         result = sanitise_version_string("9.22")
         self.assertEqual("9.22.0", result)
