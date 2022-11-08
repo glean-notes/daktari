@@ -2,15 +2,8 @@ import unittest
 
 from semver import VersionInfo
 
-from daktari.check import Check, CheckResult, CheckStatus
-
-
-class DummyCheck(Check):
-    name = "application.installed"
-
-    def check(self) -> CheckResult:
-        pass
-
+from daktari.check import CheckResult, CheckStatus
+from daktari.test_check_factory import DummyCheck
 
 INSTALLED_VERSION = VersionInfo(10, 3, 1)
 
@@ -47,4 +40,4 @@ class TestConfig(unittest.TestCase):
         self._verify_result(result, CheckStatus.PASS, "Application version is 10.3.1")
 
     def _verify_result(self, result: CheckResult, expected_status: CheckStatus, expected_message: str):
-        self.assertEqual(result, CheckResult("application.installed", expected_status, expected_message, {}))
+        self.assertEqual(result, CheckResult("check.name", expected_status, expected_message, {}))

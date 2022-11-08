@@ -1,14 +1,18 @@
 import logging
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+import yaml
 from colors import red, yellow
 from packaging import version
+from yaml import YAMLError
 
 from daktari import __version__
 from daktari.check import Check
+from daktari.check_utils import get_all_dependent_check_names
+from daktari.resource_utils import get_resource
 from daktari.result_printer import print_suggestion_text
 
 
@@ -17,14 +21,63 @@ class Config:
     min_version: Optional[str]
     title: Optional[str]
     checks: List[Check]
+    ignored_checks: List[Check] = field(default_factory=list)
 
 
 version_regex = re.compile('daktari_version.*"([0-9.]+)"')
+LOCAL_CONFIG_PATH = ".daktari-local.yaml"
+LOCAL_CONFIG_TEMPLATE = "daktari-local-template.yaml"
 
 
 def read_config(config_path: Path) -> Optional[Config]:
     raw_config = config_path.read_text()
-    return parse_raw_config(config_path, raw_config)
+    config = parse_raw_config(config_path, raw_config)
+    if config is None:
+        return config
+
+    return apply_local_config(config)
+
+
+def apply_local_config(config: Config) -> Optional[Config]:
+    if not Path(LOCAL_CONFIG_PATH).is_file():
+        return config
+
+    try:
+        with open(LOCAL_CONFIG_PATH, "rb") as local_config_file:
+            local_config = yaml.safe_load(local_config_file)
+    except YAMLError:
+        print(red(f"❌  Failed to parse {LOCAL_CONFIG_PATH} - config is not valid YAML. Error follows."))
+        logging.error(f"Exception reading {LOCAL_CONFIG_PATH}", exc_info=True)
+        return None
+
+    # E.g. the file has been entirely commented out
+    if local_config is None:
+        return config
+
+    ignored_checks: List[str] = local_config.get("ignoredChecks", [])
+    return remove_ignored_checks(config, ignored_checks)
+
+
+def write_local_config_template():
+    contents = get_resource(LOCAL_CONFIG_TEMPLATE)
+    with open(LOCAL_CONFIG_PATH, "a") as config_file:
+        config_file.write(contents)
+
+    print(
+        f"A local config file has been generated at {LOCAL_CONFIG_PATH}. "
+        f"Use this to override daktari behaviour - see the file for more details."
+    )
+
+
+def remove_ignored_checks(config: Config, ignored_check_names: List[str]) -> Config:
+    ignored_checks = [check for check in config.checks if check_should_be_ignored(check, ignored_check_names)]
+    remaining_checks = [check for check in config.checks if check not in ignored_checks]
+    return replace(config, checks=remaining_checks, ignored_checks=ignored_checks)
+
+
+def check_should_be_ignored(check: Check, ignored_check_names: List[str]) -> bool:
+    dependents = get_all_dependent_check_names(check)
+    return check.name in ignored_check_names or any([dependent in ignored_check_names for dependent in dependents])
 
 
 def parse_raw_config(config_path: Path, raw_config: str) -> Optional[Config]:

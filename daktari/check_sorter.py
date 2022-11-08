@@ -1,15 +1,11 @@
 from typing import Dict, List, Set, TypeVar
 
 from daktari.check import Check
+from daktari.check_utils import get_all_dependent_check_names
 
 
 def dependency_graph(checks: List[Check]) -> Dict[str, Set[str]]:
-    graph: Dict[str, Set[str]] = {}
-    for check in checks:
-        graph[check.name] = set()
-        for dependency in check.depends_on:
-            graph[check.name] = graph[check.name].union({dependency.name})
-    return graph
+    return {check.name: get_all_dependent_check_names(check) for check in checks}
 
 
 T = TypeVar("T")

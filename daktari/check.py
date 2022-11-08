@@ -26,7 +26,7 @@ class CheckResult:
 
 class Check:
     name: str
-    depends_on: List[Type] = []
+    depends_on: List[Type["Check"]] = []
     suggestions: Dict[str, str] = {}
     run_on: Optional[str] = None
 
@@ -89,3 +89,6 @@ class Check:
     def only_on(self, os: str) -> "Check":
         self.run_on = os
         return self
+
+    def __eq__(self, other):
+        return type(self) == type(other) and self.name == other.name
