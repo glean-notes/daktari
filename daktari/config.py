@@ -70,7 +70,7 @@ def write_local_config_template():
 
 
 def remove_ignored_checks(config: Config, ignored_check_names: List[str]) -> Config:
-    ignored_checks = list(filter(lambda check: check_should_be_ignored(check, ignored_check_names), config.checks))
+    ignored_checks = [check for check in config.checks if check_should_be_ignored(check, ignored_check_names)]
     remaining_checks = [check for check in config.checks if check not in ignored_checks]
     return replace(config, checks=remaining_checks, ignored_checks=ignored_checks)
 
