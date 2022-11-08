@@ -113,7 +113,7 @@ class TestConfig(unittest.TestCase):
     def test_generate_local_config(self):
         write_local_config_template()
 
-        expected_contents = get_resource("daktari-local-template.yml")
+        expected_contents = get_resource("daktari-local-template.yaml")
         with open(LOCAL_CONFIG_PATH, "r", encoding="utf-8") as local_config_file:
             actual_contents = local_config_file.read()
             self.assertEqual(expected_contents, actual_contents)
@@ -123,7 +123,7 @@ class TestConfig(unittest.TestCase):
         self.assertEqual("9.22.0", result)
 
     def test_local_config_template(self):
-        template_text = get_resource("daktari-local-template.yml")
+        template_text = get_resource("daktari-local-template.yaml")
         self.write_to_local_config(template_text)
 
         config = Config(None, None, TEST_CHECKS)
