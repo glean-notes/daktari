@@ -157,6 +157,15 @@ class ShfmtInstalled(Check):
         return self.verify_install("shfmt")
 
 
+class Md5SumInstalled(Check):
+    name = "md5sum.installed"
+
+    suggestions = {OS.OS_X: "<cmd>brew install md5sha1sum</cmd>", OS.GENERIC: "Install md5sum"}
+
+    def check(self) -> CheckResult:
+        return self.verify_install("md5sum")
+
+
 class HostAliasesConfigured(Check):
     name = "hostAliases.configured"
 
