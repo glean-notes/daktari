@@ -12,7 +12,14 @@ from daktari import __version__
 from daktari.version_utils import sanitise_version_string
 from daktari.checks.intellij_idea import IntelliJIdeaInstalled, IntelliJProjectImported
 from daktari.checks.misc import EnvVarSet
-from daktari.config import check_version_compatibility, parse_raw_config, LOCAL_CONFIG_PATH, Config, apply_local_config
+from daktari.config import (
+    check_version_compatibility,
+    parse_raw_config,
+    LOCAL_CONFIG_PATH,
+    Config,
+    apply_local_config,
+    write_local_config_template,
+)
 from daktari.resource_utils import get_resource
 
 config_path = Path("./.daktari.config")
@@ -76,12 +83,7 @@ class TestConfig(unittest.TestCase):
     def test_local_config_does_not_exist(self):
         config = Config(None, None, TEST_CHECKS)
         updated_config = apply_local_config(config)
-        self.assertEqual(Config(None, None, TEST_CHECKS, [], True), updated_config)
-
-        expected_contents = get_resource("daktari-local-template.yml")
-        with open(LOCAL_CONFIG_PATH, "r", encoding="utf-8") as local_config_file:
-            actual_contents = local_config_file.read()
-            self.assertEqual(expected_contents, actual_contents)
+        self.assertEqual(config, updated_config)
 
     def test_local_config_invalid_yml(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
@@ -94,8 +96,8 @@ class TestConfig(unittest.TestCase):
                 fake_out, f"❌  Failed to parse {LOCAL_CONFIG_PATH} - config is not valid YAML. Error follows."
             )
 
-    def test_local_config_missing_ignored_checks(self):
-        self.write_to_local_config("someOtherSetting: []")
+    def test_local_config_empty_file(self):
+        self.write_to_local_config("")
 
         config = Config(None, None, TEST_CHECKS)
         updated_config = apply_local_config(config)
@@ -107,6 +109,14 @@ class TestConfig(unittest.TestCase):
         config = Config(None, None, TEST_CHECKS)
         updated_config = apply_local_config(config)
         self.assertEqual(config, updated_config)
+
+    def test_generate_local_config(self):
+        write_local_config_template()
+
+        expected_contents = get_resource("daktari-local-template.yml")
+        with open(LOCAL_CONFIG_PATH, "r", encoding="utf-8") as local_config_file:
+            actual_contents = local_config_file.read()
+            self.assertEqual(expected_contents, actual_contents)
 
     def test_version_number_sanitised(self):
         result = sanitise_version_string("9.22")

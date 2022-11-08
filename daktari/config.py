@@ -22,11 +22,10 @@ class Config:
     title: Optional[str]
     checks: List[Check]
     ignored_checks: List[Check] = field(default_factory=list)
-    local_config_file_generated: bool = False
 
 
 version_regex = re.compile('daktari_version.*"([0-9.]+)"')
-LOCAL_CONFIG_PATH = "daktari-local.yml"
+LOCAL_CONFIG_PATH = ".daktari-local.yml"
 
 
 def read_config(config_path: Path) -> Optional[Config]:
@@ -40,8 +39,7 @@ def read_config(config_path: Path) -> Optional[Config]:
 
 def apply_local_config(config: Config) -> Optional[Config]:
     if not Path(LOCAL_CONFIG_PATH).is_file():
-        write_local_config_template()
-        return replace(config, local_config_file_generated=True)
+        return config
 
     try:
         with open(LOCAL_CONFIG_PATH, "rb") as local_config_file:
@@ -51,6 +49,10 @@ def apply_local_config(config: Config) -> Optional[Config]:
         logging.error(f"Exception reading {LOCAL_CONFIG_PATH}", exc_info=True)
         return None
 
+    # E.g. the file has been entirely commented out
+    if local_config is None:
+        return config
+
     ignored_checks: List[str] = local_config.get("ignoredChecks", [])
     return remove_ignored_checks(config, ignored_checks)
 
@@ -59,6 +61,11 @@ def write_local_config_template():
     contents = get_resource("daktari-local-template.yml")
     with open(LOCAL_CONFIG_PATH, "a") as config_file:
         config_file.write(contents)
+
+    print(
+        f"A local config file has been generated at {LOCAL_CONFIG_PATH}. "
+        f"Use this to override daktari behaviour - see the file for more details."
+    )
 
 
 def remove_ignored_checks(config: Config, ignored_check_names: List[str]) -> Config:
