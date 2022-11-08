@@ -26,6 +26,7 @@ class Config:
 
 version_regex = re.compile('daktari_version.*"([0-9.]+)"')
 LOCAL_CONFIG_PATH = ".daktari-local.yaml"
+LOCAL_CONFIG_TEMPLATE = "daktari-local-template.yaml"
 
 
 def read_config(config_path: Path) -> Optional[Config]:
@@ -58,7 +59,7 @@ def apply_local_config(config: Config) -> Optional[Config]:
 
 
 def write_local_config_template():
-    contents = get_resource("daktari-local-template.yaml")
+    contents = get_resource(LOCAL_CONFIG_TEMPLATE)
     with open(LOCAL_CONFIG_PATH, "a") as config_file:
         config_file.write(contents)
 
