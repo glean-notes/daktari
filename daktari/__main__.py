@@ -19,7 +19,7 @@ def main() -> int:
     if args.debug:
         logging.basicConfig(level=logging.DEBUG)
 
-    if args.generate:
+    if args.generate_local_config:
         write_local_config_template()
         return 0
 
