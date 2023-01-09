@@ -144,3 +144,5 @@ cython_debug/
 
 .venv2
 *.pyz
+
+.direnv/
