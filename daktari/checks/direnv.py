@@ -16,7 +16,7 @@ class DirenvInstalled(Check):
         self.recommended_version = recommended_version
         self.suggestions = {
             OS.OS_X: "<cmd>brew install direnv</cmd>",
-            OS.GENERIC: "Install kubectl: https://direnv.net/#getting-started",
+            OS.GENERIC: "Install direnv: https://direnv.net/#getting-started",
         }
 
     def check(self) -> CheckResult:
@@ -28,6 +28,7 @@ class DirenvInstalled(Check):
 
 class DirenvAllowed(Check):
     name = "direnv.allowed"
+    depends_on = [DirenvInstalled]
 
     def __init__(self, parent_file_name: str):
         self.file_name = parent_file_name
@@ -36,4 +37,5 @@ class DirenvAllowed(Check):
     def check(self) -> CheckResult:
         direnv_status = get_stdout("direnv status")
         query = f"Found RC path .*/{self.parent_file_name}/.envrc\n.*\n.*\nFound RC allowed true"
-        return re.search(query, direnv_status) is not None
+        direnv_allowed = re.search(query, direnv_status) is not None
+        return self.verify(direnv_allowed, f"{self.parent_file_name} is <not/> allowed to use direnv")
