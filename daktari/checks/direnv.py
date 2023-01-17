@@ -6,6 +6,7 @@ from daktari.os import OS
 from daktari.check import Check, CheckResult
 from daktari.version_utils import get_simple_cli_version
 from typing import Optional
+from os import getcwd
 
 
 class DirenvInstalled(Check):
@@ -30,14 +31,14 @@ class DirenvAllowed(Check):
     name = "direnv.allowed"
     depends_on = [DirenvInstalled]
 
-    def __init__(self, parent_file_name: str):
-        self.parent_file_name = parent_file_name
+    def __init__(self):
         self.suggestions = {OS.GENERIC: "<cmd>direnv allow .</cmd>"}
 
     def check(self) -> CheckResult:
         direnv_status = get_stdout("direnv status")
         if direnv_status is None:
             return self.failed("direnv status returned no output")
-        query = f"Found RC path .*/{self.parent_file_name}/.envrc\n.*\n.*\nFound RC allowed true"
+        cwd = getcwd()
+        query = f"Found RC path {cwd}/.envrc\n.*\n.*\nFound RC allowed true"
         direnv_allowed = re.search(query, direnv_status) is not None
-        return self.verify(direnv_allowed, f"{self.parent_file_name} is <not/> allowed to use direnv")
+        return self.verify(direnv_allowed, f"{cwd} is <not/> allowed to use direnv")
