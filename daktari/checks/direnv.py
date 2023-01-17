@@ -16,7 +16,6 @@ class DirenvInstalled(Check):
         self.required_version = required_version
         self.recommended_version = recommended_version
         self.suggestions = {
-            OS.OS_X: "<cmd>brew install direnv</cmd>",
             OS.GENERIC: "Install direnv: https://direnv.net/#getting-started",
         }
 
