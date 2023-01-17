@@ -3,7 +3,7 @@ import unittest
 from semver import VersionInfo
 
 from daktari.check import CheckResult, CheckStatus
-from daktari.test_check_factory import DummyCheck
+from daktari.test_check_factory import DummyCheck, DummyCheck2
 
 INSTALLED_VERSION = VersionInfo(10, 3, 1)
 
@@ -38,6 +38,14 @@ class TestConfig(unittest.TestCase):
             "Application", INSTALLED_VERSION, required_version=">=10.0.0", recommended_version="<11.0.0"
         )
         self._verify_result(result, CheckStatus.PASS, "Application version is 10.3.1")
+
+    def test_with_dependencies_adds_dependency(self):
+        check = DummyCheck(depends_on=None).with_dependencies(DummyCheck, DummyCheck2)
+        self.assertEqual(check.depends_on, [DummyCheck, DummyCheck2])
+
+    def test_with_dependencies_keeps_existing_dependencies(self):
+        check = DummyCheck(depends_on=[DummyCheck]).with_dependencies(DummyCheck2)
+        self.assertEqual(check.depends_on, [DummyCheck, DummyCheck2])
 
     def _verify_result(self, result: CheckResult, expected_status: CheckStatus, expected_message: str):
         self.assertEqual(result, CheckResult("check.name", expected_status, expected_message, {}))
