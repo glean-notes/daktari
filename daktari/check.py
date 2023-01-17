@@ -1,5 +1,6 @@
 import abc
 import re
+from copy import deepcopy
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List, Optional, Type
@@ -29,6 +30,11 @@ class Check:
     depends_on: List[Type["Check"]] = []
     suggestions: Dict[str, str] = {}
     run_on: Optional[str] = None
+
+    def with_dependencies(self, *dependencies: Type["Check"]) -> "Check":
+        copy = deepcopy(self)
+        copy.depends_on = self.depends_on + list(dependencies)
+        return copy
 
     def passed(self, message: str) -> CheckResult:
         return CheckResult(self.name, CheckStatus.PASS, message, self.suggestions)
