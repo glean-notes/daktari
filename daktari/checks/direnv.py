@@ -31,12 +31,9 @@ class DirenvAllowed(Check):
 
     def __init__(self, parent_file_name: str):
         self.file_name = parent_file_name
-        self.suggestions = {
-            OS.GENERIC: "<cmd>direnv allow .</cmd>"
-        }
+        self.suggestions = {OS.GENERIC: "<cmd>direnv allow .</cmd>"}
 
     def check(self) -> CheckResult:
         direnv_status = get_stdout("direnv status")
         query = f"Found RC path .*/{self.parent_file_name}/.envrc\n.*\n.*\nFound RC allowed true"
         return re.search(query, direnv_status) is not None
-
