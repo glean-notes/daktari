@@ -30,8 +30,8 @@ class DirenvAllowed(Check):
     name = "direnv.allowed"
     depends_on = [DirenvInstalled]
 
-    def __init__(self, parent_file_name: Optional[str] = None):
-        self.file_name = parent_file_name
+    def __init__(self, parent_file_name: str):
+        self.parent_file_name = parent_file_name
         self.suggestions = {OS.GENERIC: "<cmd>direnv allow .</cmd>"}
 
     def check(self) -> CheckResult:
