@@ -1,17 +1,22 @@
 import logging
+import re
 from typing import Optional
 
 from semver import VersionInfo
 
 from daktari.command_utils import get_stdout
 
+generic_version_pattern = re.compile("([0-9.]+)")
+
 
 def get_simple_cli_version(binary_name: str) -> Optional[VersionInfo]:
     raw_version = get_stdout(f"{binary_name} --version")
     if raw_version:
-        version = try_parse_semver(raw_version)
-        logging.debug(f"{binary_name} version: {version}")
-        return version
+        match = generic_version_pattern.search(raw_version)
+        if match:
+            version = try_parse_semver(match.group(1))
+            logging.debug(f"{binary_name} version: {version}")
+            return version
     return None
 
 
