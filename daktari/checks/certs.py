@@ -1,7 +1,7 @@
 import logging
 import os
 from datetime import datetime
-from OpenSSL import crypto as c
+from OpenSSL import crypto
 
 from daktari.check import Check, CheckResult
 from daktari.os import OS
@@ -17,8 +17,8 @@ class CertificateIsNotExpired(Check):
         }
 
     def check(self) -> CheckResult:
-        with open(self.certificate_path, "r") as f:
-            cert = c.load_certificate(c.FILETYPE_PEM, f.read())
+        with open(self.certificate_path, "rb") as f:
+            cert = crypto.load_certificate(crypto.FILETYPE_PEM, f.read())
             logging.debug(f"Raw expiry: f{cert.get_notAfter()}")
 
             expiry = datetime.strptime(cert.get_notAfter().decode(), "%Y%m%d%H%M%SZ")
