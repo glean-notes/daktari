@@ -19,7 +19,13 @@ class CertificateIsNotExpired(Check):
     def check(self) -> CheckResult:
         with open(self.certificate_path, "rb") as f:
             cert = crypto.load_certificate(crypto.FILETYPE_PEM, f.read())
-            logging.debug(f"Raw expiry: f{cert.get_notAfter()}")
+            logging.debug(f"Raw expiry: f{cert.get_notAfter()!r}")
+
+            expiry_bytes = cert.get_notAfter()
+            if expiry_bytes is None:
+                return self.passed_with_warning(
+                    f"Unable to determine expiry date of {os.path.basename(self.certificate_path)}"
+                )
 
             expiry = datetime.strptime(cert.get_notAfter().decode(), "%Y%m%d%H%M%SZ")
             if expiry > datetime.now():
