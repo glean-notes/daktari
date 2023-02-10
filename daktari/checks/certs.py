@@ -27,7 +27,7 @@ class CertificateIsNotExpired(Check):
                     f"Unable to determine expiry date of {os.path.basename(self.certificate_path)}"
                 )
 
-            expiry = datetime.strptime(cert.get_notAfter().decode(), "%Y%m%d%H%M%SZ")
+            expiry = datetime.strptime(expiry_bytes.decode(), "%Y%m%d%H%M%SZ")
             if expiry > datetime.now():
                 return self.passed(f"{os.path.basename(self.certificate_path)} is not expired")
             else:
