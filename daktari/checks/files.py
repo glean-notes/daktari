@@ -1,4 +1,3 @@
-from os import getcwd
 from os.path import expanduser
 from typing import List
 
