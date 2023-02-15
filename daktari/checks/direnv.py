@@ -5,6 +5,7 @@ from daktari.command_utils import get_stdout
 from daktari.os import OS
 from daktari.check import Check, CheckResult
 from daktari.version_utils import get_simple_cli_version
+from daktari.file_utils import file_contains_text
 from typing import Optional
 from os import getcwd
 
@@ -26,9 +27,22 @@ class DirenvInstalled(Check):
         )
 
 
+class EnvrcContainsText(Check):
+    name = "direnv.envrc.containsText"
+
+    def __init__(self, expected_string: str, suggestion: str):
+        self.file_path = f"{getcwd()}/.envrc"
+        self.expected_string = expected_string
+        self.pass_fail_message = f"{self.file_path} does <not/> contain '{expected_string}'"
+        self.suggestions = {OS.GENERIC: suggestion}
+
+    def check(self) -> CheckResult:
+        return self.verify(file_contains_text(self.file_path, self.expected_string), self.pass_fail_message)
+
+
 class DirenvAllowed(Check):
     name = "direnv.allowed"
-    depends_on = [DirenvInstalled]
+    depends_on = [DirenvInstalled, EnvrcContainsText]
 
     def __init__(self):
         self.suggestions = {OS.GENERIC: "<cmd>direnv allow .</cmd>"}
