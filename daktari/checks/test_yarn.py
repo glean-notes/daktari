@@ -34,10 +34,15 @@ class TestYarn(unittest.TestCase):
     def test_matches_scope_with_auth_token_required(self):
         template_scope = YarnNpmScope("scope", requireNpmAuthToken=True)
         matching_yaml = {"npmAuthToken": "ABCD1234"}
-        non_matching_yaml = {}
+        non_matching_empty_yaml = {}
+        non_matching_default_token_yaml = {"npmAuthToken": "UPDATE WITH GITHUB ACCESS TOKEN"}
 
+        # Auth token provided
         self.assertTrue(match_scope(template_scope, matching_yaml))
-        self.assertFalse(match_scope(template_scope, non_matching_yaml))
+        # No auth token given
+        self.assertFalse(match_scope(template_scope, non_matching_empty_yaml))
+        # Scope is not updated from suggested yarnrc
+        self.assertFalse(match_scope(template_scope, non_matching_default_token_yaml))
 
     def test_finds_scope_in_yarnrc(self):
         yarnrc = {

@@ -43,7 +43,7 @@ def get_yarnrc_suggestion(scope: YarnNpmScope) -> str:
     if scope.npmPublishRegistry is not None:
         scope_yaml["npmPublishRegistry"] = scope.npmPublishRegistry
     if scope.requireNpmAuthToken:
-        scope_yaml["npmAuthToken"] = "TOKEN"
+        scope_yaml["npmAuthToken"] = "UPDATE WITH GITHUB ACCESS TOKEN"
     if scope.npmAlwaysAuth is not None:
         scope_yaml["npmAlwaysAuth"] = scope.npmAlwaysAuth
     yarnrc_yaml = {"npmScopes": {scope.name: scope_yaml}}
@@ -57,7 +57,9 @@ def match_scope(template: YarnNpmScope, scope: Dict[str, Any]) -> bool:
         return False
     if template.npmAlwaysAuth is not None and template.npmAlwaysAuth != scope.get("npmAlwaysAuth", None):
         return False
-    if template.requireNpmAuthToken and scope.get("npmAuthToken", "") == "":
+    if template.requireNpmAuthToken and scope.get("npmAuthToken") is None:
+        return False
+    if template.requireNpmAuthToken and scope.get("npmAuthToken", "").strip() == "UPDATE WITH GITHUB ACCESS TOKEN":
         return False
     return True
 
