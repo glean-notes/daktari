@@ -20,7 +20,7 @@ setuptools.setup(
     url="https://github.com/sonocent/daktari",
     packages=setuptools.find_packages(),
     install_requires=requirements,
-    python_requires=">=3.6",
+    python_requires=">=3.8",
     entry_points={
         "console_scripts": [
             "daktari = daktari.__main__:main",
