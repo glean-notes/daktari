@@ -1,9 +1,11 @@
 import logging
+from typing import Optional
 
 from daktari.check import Check, CheckResult
 from daktari.command_utils import can_run_command, get_stdout
 from daktari.file_utils import file_contains_text, is_ascii
 from daktari.os import OS
+from daktari.version_utils import get_simple_cli_version
 
 
 class GitInstalled(Check):
@@ -110,13 +112,20 @@ class PreCommitInstalled(Check):
     name = "preCommit.installed"
     depends_on = [GitInstalled]
 
+    def __init__(self, required_version: Optional[str] = None, recommended_version: Optional[str] = None):
+        self.required_version = required_version
+        self.recommended_version = recommended_version
+
     suggestions = {
         OS.OS_X: "<cmd>brew install pre-commit</cmd>",
         OS.GENERIC: "Install pre-commit: https://pre-commit.com/#installation",
     }
 
     def check(self) -> CheckResult:
-        return self.verify(can_run_command("pre-commit --version"), "pre-commit is <not/> installed")
+        installed_version = get_simple_cli_version("pre-commit")
+        return self.validate_semver_expression(
+            "pre-commit", installed_version, self.required_version, self.recommended_version
+        )
 
 
 class PreCommitGitHooksInstalled(Check):
