@@ -3,6 +3,13 @@ from daktari.file_utils import file_contains_text, get_absolute_path
 from daktari.os import OS, detect_os
 
 
+def is_ssh_configured_to_use_macos_keychain(ssh_config_path: str = "~/.ssh/config") -> bool:
+    absolute_ssh_config_path = get_absolute_path(ssh_config_path)
+    return file_contains_text(absolute_ssh_config_path, "IgnoreUnknown UseKeychain") and file_contains_text(
+        absolute_ssh_config_path, "UseKeychain yes"
+    )
+
+
 class SSHConfigSetup(Check):
     name = "ssh.config.setup"
 
@@ -21,9 +28,6 @@ class SSHConfigSetup(Check):
         if detect_os() != OS.OS_X:
             return self.passed("Setup not required on non-Macbook devices")
         else:
-            ssh_config_path = get_absolute_path("~/.ssh/config")
-            if not file_contains_text(ssh_config_path, "IgnoreUnknown UseKeychain") or not file_contains_text(
-                ssh_config_path, "UseKeychain yes"
-            ):
+            if not is_ssh_configured_to_use_macos_keychain():
                 return self.failed("'IgnoreUnknown UseKeychain' or 'UseKeychain yes' not present in ~/.ssh/config")
             return self.passed("~/.ssh/config setup correctly")
