@@ -1,0 +1,17 @@
+version: 2
+enable-beta-ecosystems: true
+updates:
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    labels:
+      - 'dev-review-required'
+      - 'dependencies'
+  - package-ecosystem: 'pip'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    labels:
+      - 'dev-review-required'
+      - 'dependencies'

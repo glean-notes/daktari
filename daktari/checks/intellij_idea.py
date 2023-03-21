@@ -149,7 +149,7 @@ class IntelliJNodePackageManagerConfigured(XmlFileXPathCheck):
         self.suggestions = {
             OS.GENERIC: f"""
                 Follow the steps to configure {self.package_manager_path} as your package manager:
-                https://www.jetbrains.com/help/idea/installing-and-removing-external-software-using-node-package-manager.html#ws_npm_yarn_set_yarn_default
+                https://www.jetbrains.com/help/idea/installing-and-removing-external-software-using-node-package-manager.html#ws_npm_yarn_configure_package_manager
                 """
         }
 
