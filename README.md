@@ -35,7 +35,7 @@ $ daktari
 
 ## Custom Check
 
-You can write a custom check as a Python class within `.daktari.py`, and include it in your list of checks. Example check implementation:
+You can write a custom check as a Python class within `.daktari.py`, and include it in your list of checks. Example of a check implementation:
 
 ```python
 class GitCryptInstalled(Check):
