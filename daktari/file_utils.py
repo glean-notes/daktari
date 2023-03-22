@@ -2,6 +2,12 @@ from pathlib import Path
 
 from daktari.command_utils import get_stdout
 
+import os
+
+
+def get_absolute_path(path: str) -> str:
+    return os.path.expanduser(path)
+
 
 def is_ascii(path: str) -> bool:
     file_output = get_stdout(["file", path]) or ""
