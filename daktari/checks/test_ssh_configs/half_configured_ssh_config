@@ -1,0 +1,5 @@
+Host *
+   AddKeysToAgent yes
+   IgnoreUnknown UseKeychain
+   UseKeychain no
+   IdentityFile ~/.ssh/id_rsa
