@@ -102,6 +102,9 @@ class NodeJsVersionMatchesNvmrc(Check):
             return self.failed(f'node.js version "{nvmrc_version}" is not installed')
 
         active_version = get_nodejs_version()
+        if active_version is None:
+            return self.failed(f'node.js version "{nvmrc_version}" is not installed')
+
         if active_version != expected_version:
             return self.failed(f'the active node.js version is {active_version}, "{nvmrc_version}" is required')
 
