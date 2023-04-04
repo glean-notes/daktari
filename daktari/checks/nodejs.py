@@ -1,7 +1,7 @@
 import logging
-from typing import List, Optional
+from typing import List, Optional, Union
 
-from semver import VersionInfo
+from semver import VersionInfo, Version
 
 from daktari.check import Check, CheckResult
 from daktari.command_utils import get_stdout, run_command
@@ -41,7 +41,7 @@ def nvm_resolve_version(version: str) -> Optional[VersionInfo]:
     return try_parse_semver(resolved_version)
 
 
-def get_nvmrc_version() -> Optional[VersionInfo]:
+def get_nvmrc_version() -> Optional[str]:
     try:
         with open(".nvmrc", "r") as nvmrc_file:
             nvmrc_ver = nvmrc_file.readline().strip()

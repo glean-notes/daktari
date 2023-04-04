@@ -2,7 +2,7 @@ import logging
 import re
 from typing import Optional
 
-from semver import VersionInfo
+from semver import VersionInfo, Version
 
 from daktari.check import Check, CheckResult
 from daktari.command_utils import get_stderr, run_command
@@ -56,7 +56,7 @@ def parse_java_version_string(version_string: str) -> Optional[VersionInfo]:
         return parse_alternative_java_version_numbers(version_string)
 
 
-def parse_alternative_java_version_numbers(version_string: str) -> Optional[int]:
+def parse_alternative_java_version_numbers(version_string: str) -> Optional[Version]:
     one_dot_match = one_dot_pattern.search(version_string)
     if one_dot_match:
         return VersionInfo(int(one_dot_match.group(1)))

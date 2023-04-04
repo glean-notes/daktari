@@ -2,6 +2,8 @@ import logging
 import re
 from typing import Optional
 
+from semver import Version
+
 from daktari.check import Check, CheckResult
 from daktari.command_utils import get_stdout
 from daktari.os import OS
@@ -27,7 +29,7 @@ class DockerInstalled(Check):
 major_version_pattern = re.compile("Docker version ([0-9.]+)")
 
 
-def get_docker_version() -> Optional[int]:
+def get_docker_version() -> Optional[Version]:
     raw_version = get_stdout("docker --version")
     if raw_version:
         match = major_version_pattern.search(raw_version)

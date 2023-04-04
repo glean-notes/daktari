@@ -30,7 +30,7 @@ jobs:
         source venv/bin/activate && flake8 setup.py daktari
     - name: black
       run: |
-        source venv/bin/activate && black -l 120 .
+        source venv/bin/activate && black -l 120 --check .
     - name: mypy
       run: |
        source venv/bin/activate &&  mypy daktari
