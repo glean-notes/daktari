@@ -1,7 +1,7 @@
 import logging
-from typing import List, Optional, Union
+from typing import List, Optional
 
-from semver import VersionInfo, Version
+from semver import VersionInfo
 
 from daktari.check import Check, CheckResult
 from daktari.command_utils import get_stdout, run_command
