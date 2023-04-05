@@ -41,7 +41,7 @@ def nvm_resolve_version(version: str) -> Optional[VersionInfo]:
     return try_parse_semver(resolved_version)
 
 
-def get_nvmrc_version() -> Optional[VersionInfo]:
+def get_nvmrc_version() -> Optional[str]:
     try:
         with open(".nvmrc", "r") as nvmrc_file:
             nvmrc_ver = nvmrc_file.readline().strip()
@@ -102,6 +102,9 @@ class NodeJsVersionMatchesNvmrc(Check):
             return self.failed(f'node.js version "{nvmrc_version}" is not installed')
 
         active_version = get_nodejs_version()
+        if active_version is None:
+            return self.failed(f'node.js version "{nvmrc_version}" is not installed')
+
         if active_version != expected_version:
             return self.failed(f'the active node.js version is {active_version}, "{nvmrc_version}" is required')
 

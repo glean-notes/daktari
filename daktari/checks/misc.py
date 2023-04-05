@@ -183,7 +183,7 @@ class HostAliasesConfigured(Check):
             for name in entry.names:
                 entries_dict[name] = entry.address
         logging.debug(f"Hosts file entries: {entries_dict}")
-        for (name, address) in self.required_aliases.items():
+        for name, address in self.required_aliases.items():
             if entries_dict.get(name) != address:
                 return self.failed(f"{hosts.hosts_path} alias {name} -> {address} not present")
 

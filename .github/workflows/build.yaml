@@ -28,7 +28,7 @@ jobs:
         flake8 setup.py daktari
     - name: black
       run: |
-        black -l 120 .
+        black -l 120 --check .
     - name: mypy
       run: |
         mypy daktari

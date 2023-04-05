@@ -37,7 +37,6 @@ class OPAccountExists(Check):
         }
 
     def check(self) -> CheckResult:
-
         home = str(Path.home())
         possible_paths = [f"{home}/.op/config", f"{home}/.config/op/config"]
 

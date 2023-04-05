@@ -56,7 +56,7 @@ def parse_java_version_string(version_string: str) -> Optional[VersionInfo]:
         return parse_alternative_java_version_numbers(version_string)
 
 
-def parse_alternative_java_version_numbers(version_string: str) -> Optional[int]:
+def parse_alternative_java_version_numbers(version_string: str) -> Optional[VersionInfo]:
     one_dot_match = one_dot_pattern.search(version_string)
     if one_dot_match:
         return VersionInfo(int(one_dot_match.group(1)))
