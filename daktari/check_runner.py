@@ -14,11 +14,11 @@ def run_checks(checks: List[Check], hide_passing_checks: bool) -> bool:
 
 
 class CheckRunner:
-    def __init__(self, checks: List[Check], hide_passing_checks: bool):
+    def __init__(self, checks: List[Check], quiet_mode: bool):
         self.checks = [check for check in checks if check.run_on is None or check.run_on == detect_os()]
         self.all_passed = True
         self.checks_passed: Set[str] = set()
-        self.quiet_mode = hide_passing_checks
+        self.quiet_mode = quiet_mode
 
     def run(self) -> bool:
         for idx, check in enumerate(sort_checks(self.checks)):
