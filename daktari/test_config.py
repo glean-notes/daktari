@@ -1,5 +1,6 @@
 import os
 import unittest
+from dataclasses import replace
 from io import StringIO
 from pathlib import Path
 from unittest.mock import patch
@@ -110,6 +111,14 @@ class TestConfig(unittest.TestCase):
         config = Config(None, None, TEST_CHECKS)
         updated_config = apply_local_config(config)
         self.assertEqual(config, updated_config)
+
+    def test_local_config_always_quiet(self):
+        self.write_to_local_config("alwaysQuiet: true")
+
+        config = Config(None, None, TEST_CHECKS)
+        expected_config = replace(config, quiet_mode=True)
+        updated_config = apply_local_config(config)
+        self.assertEqual(expected_config, updated_config)
 
     def test_generate_local_config(self):
         write_local_config_template()

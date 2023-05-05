@@ -7,3 +7,6 @@
 ignoredChecks:
  - example.check
  - example.check.two
+
+# Update to make daktari always run in quiet mode (equivalent to --quiet flag)
+alwaysQuiet: false

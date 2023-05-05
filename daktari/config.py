@@ -22,6 +22,7 @@ class Config:
     title: Optional[str]
     checks: List[Check]
     ignored_checks: List[Check] = field(default_factory=list)
+    quiet_mode: bool = False
 
 
 version_regex = re.compile('daktari_version.*"([0-9.]+)"')
@@ -55,7 +56,12 @@ def apply_local_config(config: Config) -> Optional[Config]:
         return config
 
     ignored_checks: List[str] = local_config.get("ignoredChecks", [])
-    return remove_ignored_checks(config, ignored_checks)
+    updated_config = remove_ignored_checks(config, ignored_checks)
+
+    if local_config.get("alwaysQuiet", False):
+        updated_config = replace(updated_config, quiet_mode=True)
+
+    return updated_config
 
 
 def write_local_config_template():
