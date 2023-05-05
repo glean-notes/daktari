@@ -4,7 +4,7 @@ import sys
 
 from pyfiglet import Figlet
 
-from daktari.check_runner import run_checks
+from daktari.check_runner import run_checks, CheckRunner
 from daktari.config import read_config, Config, write_local_config_template
 from daktari.options import argument_parser
 
@@ -30,7 +30,15 @@ def main() -> int:
     os.chdir(args.config_path.parent.absolute())
     print_config_messages(config, args)
 
-    all_passed = run_checks(config.checks)
+    core_result = run_checks(config.checks)
+    all_passed = core_result.all_passed
+
+    for group_name, group_checks in config.extra_checks.items():
+        print(f"\n{group_name}\n")
+        runner = CheckRunner(group_checks, core_result.checks_passed)
+        runner.run()
+        all_passed = runner.all_passed and all_passed
+
     print("")
     return 0 if all_passed else 1
 

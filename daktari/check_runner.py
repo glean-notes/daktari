@@ -1,5 +1,5 @@
 import logging
-from typing import List, Set
+from typing import List, Set, Optional
 
 from colors import yellow
 
@@ -9,15 +9,11 @@ from daktari.os import detect_os
 from daktari.result_printer import print_check_result
 
 
-def run_checks(checks: List[Check]) -> bool:
-    return CheckRunner(checks).run()
-
-
 class CheckRunner:
-    def __init__(self, checks: List[Check]):
+    def __init__(self, checks: List[Check], checks_passed: Optional[Set[str]] = None):
         self.checks = checks
         self.all_passed = True
-        self.checks_passed: Set[str] = set()
+        self.checks_passed: Set[str] = checks_passed or set()
 
     def run(self) -> bool:
         for check in sort_checks(self.checks):
@@ -57,3 +53,9 @@ class CheckRunner:
             print(f"⚠️  [{yellow(check.name)}] skipped due to missing dependent checks: {', '.join(missing_checks)}")
         else:
             print(f"⚠️  [{yellow(check.name)}] skipped due to previous failures")
+
+
+def run_checks(checks: List[Check]) -> CheckRunner:
+    runner = CheckRunner(checks)
+    runner.run()
+    return runner

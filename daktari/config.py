@@ -21,6 +21,7 @@ class Config:
     min_version: Optional[str]
     title: Optional[str]
     checks: List[Check]
+    extra_checks: Dict[str, List[Check]]
     ignored_checks: List[Check] = field(default_factory=list)
 
 
@@ -72,7 +73,14 @@ def write_local_config_template():
 def remove_ignored_checks(config: Config, ignored_check_names: List[str]) -> Config:
     ignored_checks = [check for check in config.checks if check_should_be_ignored(check, ignored_check_names)]
     remaining_checks = [check for check in config.checks if check not in ignored_checks]
-    return replace(config, checks=remaining_checks, ignored_checks=ignored_checks)
+
+    filtered_extra_checks = {}
+    for key, checks in config.extra_checks.items():
+        ignored_extra_checks = [check for check in checks if check_should_be_ignored(check, ignored_check_names)]
+        filtered_extra_checks[key] = [check for check in checks if check not in ignored_extra_checks]
+        ignored_checks += ignored_extra_checks
+
+    return replace(config, checks=remaining_checks, ignored_checks=ignored_checks, extra_checks=filtered_extra_checks)
 
 
 def check_should_be_ignored(check: Check, ignored_check_names: List[str]) -> bool:
@@ -94,9 +102,10 @@ def parse_raw_config(config_path: Path, raw_config: str) -> Optional[Config]:
         return None
 
     checks = variables.get("checks", [])
+    extra_checks = variables.get("extra_checks", {})
     title = variables.get("title", None)
     min_version = variables.get("daktari_version", None)
-    return Config(min_version, title, checks)
+    return Config(min_version, title, checks, extra_checks)
 
 
 def check_version_compatibility(config_path: Path, raw_config: str) -> bool:
