@@ -9,38 +9,38 @@ from daktari.os import detect_os
 from daktari.result_printer import print_check_result
 
 
-def run_checks(checks: List[Check]) -> bool:
-    return CheckRunner(checks).run()
+def run_checks(checks: List[Check], hide_passing_checks: bool) -> bool:
+    return CheckRunner(checks, hide_passing_checks).run()
 
 
 class CheckRunner:
-    def __init__(self, checks: List[Check]):
-        self.checks = checks
+    def __init__(self, checks: List[Check], hide_passing_checks: bool):
+        self.checks = [check for check in checks if check.run_on is None or check.run_on == detect_os()]
         self.all_passed = True
         self.checks_passed: Set[str] = set()
+        self.quiet_mode = hide_passing_checks
 
     def run(self) -> bool:
-        for check in sort_checks(self.checks):
-            self.try_run_check(check)
+        for idx, check in enumerate(sort_checks(self.checks)):
+            self.try_run_check(idx, check)
         return self.all_passed
 
-    def try_run_check(self, check: Check):
-        if check.run_on and check.run_on != detect_os():
-            return
+    def try_run_check(self, idx: int, check: Check):
         dependencies_met = all([dependency.name in self.checks_passed for dependency in check.depends_on])
         if dependencies_met:
-            self.run_check(check)
+            self.run_check(idx, check)
         else:
             self.diagnose_missing_dependency(check)
 
-    def run_check(self, check: Check):
+    def run_check(self, idx: int, check: Check):
         logging.info(f"Running check {check.name}")
         result = self.run_check_in_try(check)
-        print_check_result(result)
         if result.status in (CheckStatus.PASS, CheckStatus.PASS_WITH_WARNING):
             self.checks_passed.add(check.name)
         else:
             self.all_passed = False
+
+        print_check_result(result, self.quiet_mode, idx, len(self.checks))
 
     def run_check_in_try(self, check: Check) -> CheckResult:
         try:

@@ -54,12 +54,29 @@ def print_suggestion_text(text: str):
     print("└" + "─" * (max_width + 2) + "┘")
 
 
-def print_check_result(result: CheckResult):
+def print_check_result(result: CheckResult, quiet_mode: bool, idx: int, total_checks: int):
     this_os = detect_os()
     status_symbol = check_status_symbol(result.status)
     colour = check_status_colour(result.status)
-    print(f"{status_symbol} [{colour(result.name)}] {result.summary}")
-    if result.status in (CheckStatus.FAIL, CheckStatus.PASS_WITH_WARNING):
-        suggestion = get_most_specific_suggestion(this_os, result.suggestions)
-        if suggestion:
-            print_suggestion_text(suggestion)
+    if result.status != CheckStatus.PASS or not quiet_mode:
+        print(f"{status_symbol} [{colour(result.name)}] {result.summary}")
+        if result.status in (CheckStatus.FAIL, CheckStatus.PASS_WITH_WARNING):
+            suggestion = get_most_specific_suggestion(this_os, result.suggestions)
+            if suggestion:
+                print_suggestion_text(suggestion)
+        if quiet_mode:
+            print("")
+
+    if quiet_mode:
+        progress_bar(idx + 1, total_checks)
+
+
+def progress_bar(current, total, bar_length=25):
+    fraction = current / total
+
+    arrow = int(fraction * bar_length - 1) * "-" + ">"
+    padding = int(bar_length - len(arrow)) * " "
+
+    ending = "\n" if current == total else "\r"
+
+    print(f"Progress: [{arrow}{padding}] {int(fraction*100)}%  ({current}/{total})", end=ending)
