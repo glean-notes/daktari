@@ -68,7 +68,12 @@ def print_check_result(result: CheckResult, quiet_mode: bool, idx: int, total_ch
             print("")
 
     if quiet_mode:
-        print(progress_bar(idx + 1, total_checks), end="\r")
+        print_progress_bar(idx + 1, total_checks)
+
+
+def print_progress_bar(current: int, total: int):
+    end_char = "\r" if current < total else "\n"
+    print(progress_bar(current, total), end=end_char)
 
 
 def progress_bar(current: int, total: int) -> str:
