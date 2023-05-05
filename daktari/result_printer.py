@@ -68,15 +68,13 @@ def print_check_result(result: CheckResult, quiet_mode: bool, idx: int, total_ch
             print("")
 
     if quiet_mode:
-        progress_bar(idx + 1, total_checks)
+        print(progress_bar(idx + 1, total_checks), end="\r")
 
 
-def progress_bar(current, total, bar_length=25):
+def progress_bar(current: int, total: int) -> str:
     fraction = current / total
 
-    arrow = int(fraction * bar_length - 1) * "-" + ">"
-    padding = int(bar_length - len(arrow)) * " "
+    arrow = int(fraction * 25 - 1) * "-" + ">"
+    padding = int(25 - len(arrow)) * " "
 
-    ending = "\n" if current == total else "\r"
-
-    print(f"Progress: [{arrow}{padding}] {int(fraction*100)}%  ({current}/{total})", end=ending)
+    return f"Progress: [{arrow}{padding}] {int(fraction*100)}%  ({current}/{total})"
