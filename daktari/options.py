@@ -21,6 +21,9 @@ argument_parser.add_argument(
     "-i", "--show-ignored", action="store_true", help="show checks affected by ignoredChecks local setting"
 )
 argument_parser.add_argument(
+    "-q", "--quiet", action="store_true", dest="quiet_mode", help="only show failed checks and overall progress"
+)
+argument_parser.add_argument(
     "-c",
     "--config",
     default=".daktari.py",
