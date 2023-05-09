@@ -71,7 +71,7 @@ class TestCheckRunner(unittest.TestCase):
             checks = [DummyCheck("check.one", succeed=True)]
             result = run_checks(checks, quiet_mode=True, fail_fast=False)
             self.assertTrue(result)
-            self.assertNotIn(f"✅", fake_out.getvalue())
+            self.assertNotIn("✅", fake_out.getvalue())
 
     def test_outputs_failure_in_quiet_mode(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
