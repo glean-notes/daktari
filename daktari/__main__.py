@@ -46,7 +46,7 @@ def print_config_messages(config: Config, args):
             for check in config.ignored_checks:
                 print(f"[{check.name}]")
             print("")
-        else:
+        elif not args.quiet_mode:
             print(f"ⓘ  {ignored_count} check(s) have been marked as ignored. Run with --show-ignored to list them.\n")
 
 
