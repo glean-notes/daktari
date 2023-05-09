@@ -24,6 +24,9 @@ argument_parser.add_argument(
     "-q", "--quiet", action="store_true", dest="quiet_mode", help="only show failed checks and overall progress"
 )
 argument_parser.add_argument(
+    "-f", "--fail-fast", action="store_true", dest="fail_fast", help="stop running checks after the first failure"
+)
+argument_parser.add_argument(
     "-c",
     "--config",
     default=".daktari.py",

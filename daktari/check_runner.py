@@ -9,20 +9,24 @@ from daktari.os import detect_os
 from daktari.result_printer import print_check_result
 
 
-def run_checks(checks: List[Check], hide_passing_checks: bool) -> bool:
-    return CheckRunner(checks, hide_passing_checks).run()
+def run_checks(checks: List[Check], quiet_mode: bool, fail_fast: bool) -> bool:
+    return CheckRunner(checks, quiet_mode, fail_fast).run()
 
 
 class CheckRunner:
-    def __init__(self, checks: List[Check], quiet_mode: bool):
+    def __init__(self, checks: List[Check], quiet_mode: bool, fail_fast: bool):
         self.checks = [check for check in checks if check.run_on is None or check.run_on == detect_os()]
         self.all_passed = True
         self.checks_passed: Set[str] = set()
         self.quiet_mode = quiet_mode
+        self.fail_fast = fail_fast
 
     def run(self) -> bool:
         for idx, check in enumerate(sort_checks(self.checks)):
             self.try_run_check(idx, check)
+            if self.fail_fast and not self.all_passed:
+                break
+
         return self.all_passed
 
     def try_run_check(self, idx: int, check: Check):

@@ -30,7 +30,7 @@ def main() -> int:
     os.chdir(args.config_path.parent.absolute())
     print_config_messages(config, args)
 
-    all_passed = run_checks(config.checks, args.quiet_mode or config.quiet_mode)
+    all_passed = run_checks(config.checks, args.quiet_mode or config.quiet_mode, args.fail_fast)
     print("")
     return 0 if all_passed else 1
 
