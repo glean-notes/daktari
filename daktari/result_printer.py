@@ -54,7 +54,7 @@ def print_suggestion_text(text: str):
     print("└" + "─" * (max_width + 2) + "┘")
 
 
-def print_check_result(result: CheckResult, quiet_mode: bool, idx: int, total_checks: int):
+def print_check_result(result: CheckResult, early_exit: bool, quiet_mode: bool, idx: int, total_checks: int):
     this_os = detect_os()
     status_symbol = check_status_symbol(result.status)
     colour = check_status_colour(result.status)
@@ -68,18 +68,21 @@ def print_check_result(result: CheckResult, quiet_mode: bool, idx: int, total_ch
             print("")
 
     if quiet_mode:
-        print_progress_bar(idx + 1, total_checks)
+        print_progress_bar(early_exit, idx + 1, total_checks)
+    elif early_exit:
+        print("ⓘ  Exited early due to --fail-fast flag")
 
 
-def print_progress_bar(current: int, total: int):
-    end_char = "\r" if current < total else "\n"
-    print(progress_bar(current, total), end=end_char)
+def print_progress_bar(early_exit: bool, current: int, total: int):
+    end_char = "\n" if current == total or early_exit else "\r"
+    print(progress_bar(current, total, early_exit), end=end_char)
 
 
-def progress_bar(current: int, total: int) -> str:
+def progress_bar(current: int, total: int, early_exit: bool) -> str:
     fraction = current / total
 
-    arrow = int(fraction * 25 - 1) * "-" + ">"
+    arrow_head = "x" if early_exit else ">"
+    arrow = int(fraction * 25 - 1) * "-" + arrow_head
     padding = int(25 - len(arrow)) * " "
 
     return f"Progress: [{arrow}{padding}] {int(fraction*100)}%  ({current}/{total})"

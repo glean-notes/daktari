@@ -24,10 +24,13 @@ class CheckRunner:
     def run(self) -> bool:
         for idx, check in enumerate(sort_checks(self.checks)):
             self.try_run_check(idx, check)
-            if self.fail_fast and not self.all_passed:
+            if self.early_exit():
                 break
 
         return self.all_passed
+
+    def early_exit(self) -> bool:
+        return self.fail_fast and not self.all_passed
 
     def try_run_check(self, idx: int, check: Check):
         dependencies_met = all([dependency.name in self.checks_passed for dependency in check.depends_on])
@@ -44,7 +47,7 @@ class CheckRunner:
         else:
             self.all_passed = False
 
-        print_check_result(result, self.quiet_mode, idx, len(self.checks))
+        print_check_result(result, self.early_exit(), self.quiet_mode, idx, len(self.checks))
 
     def run_check_in_try(self, check: Check) -> CheckResult:
         try:
