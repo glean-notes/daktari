@@ -9,21 +9,28 @@ from daktari.os import detect_os
 from daktari.result_printer import print_check_result
 
 
-def run_checks(checks: List[Check], hide_passing_checks: bool) -> bool:
-    return CheckRunner(checks, hide_passing_checks).run()
+def run_checks(checks: List[Check], quiet_mode: bool, fail_fast: bool) -> bool:
+    return CheckRunner(checks, quiet_mode, fail_fast).run()
 
 
 class CheckRunner:
-    def __init__(self, checks: List[Check], quiet_mode: bool):
+    def __init__(self, checks: List[Check], quiet_mode: bool, fail_fast: bool):
         self.checks = [check for check in checks if check.run_on is None or check.run_on == detect_os()]
         self.all_passed = True
         self.checks_passed: Set[str] = set()
         self.quiet_mode = quiet_mode
+        self.fail_fast = fail_fast
 
     def run(self) -> bool:
         for idx, check in enumerate(sort_checks(self.checks)):
             self.try_run_check(idx, check)
+            if self.early_exit():
+                break
+
         return self.all_passed
+
+    def early_exit(self) -> bool:
+        return self.fail_fast and not self.all_passed
 
     def try_run_check(self, idx: int, check: Check):
         dependencies_met = all([dependency.name in self.checks_passed for dependency in check.depends_on])
@@ -40,7 +47,7 @@ class CheckRunner:
         else:
             self.all_passed = False
 
-        print_check_result(result, self.quiet_mode, idx, len(self.checks))
+        print_check_result(result, self.early_exit(), self.quiet_mode, idx, len(self.checks))
 
     def run_check_in_try(self, check: Check) -> CheckResult:
         try:
