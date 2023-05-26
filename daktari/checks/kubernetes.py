@@ -6,7 +6,7 @@ from typing import Optional
 from semver import VersionInfo
 
 from daktari.check import Check, CheckResult
-from daktari.command_utils import get_stdout
+from daktari.command_utils import get_stdout, can_run_command
 from daktari.os import OS
 from daktari.version_utils import try_parse_semver
 
@@ -52,7 +52,11 @@ class KubectlContextExists(Check):
     def check(self) -> CheckResult:
         output = get_stdout("kubectl config get-contexts")
         passed = bool(output and self.context_name in output)
-        return self.verify(passed, f"{self.context_name} is <not/> configured for the current user")
+        if not passed:
+            return self.failed(f"{self.context_name} is <not/> configured for the current user")
+
+        can_connect = can_run_command(f"kubectl get ns --context {self.context_name}")
+        return self.verify(can_connect, f"Could <not/> connect to context {self.context_name}")
 
 
 class HelmInstalled(Check):
