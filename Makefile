@@ -6,7 +6,7 @@ venv/touchfile: requirements.txt
 	touch venv/touchfile
 
 test: venv
-	. venv/bin/activate; python3 -m pytest .
+	. venv/bin/activate; python3 -m unittest discover
 
 black: venv
 	. venv/bin/activate; python3 -m black -l 120 --check .
