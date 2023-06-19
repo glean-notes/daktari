@@ -61,6 +61,7 @@ class KtlintInstalled(Check):
             "ktlint", installed_version, self.required_version, self.recommended_version
         )
 
+
 class CmakeInstalled(Check):
     name = "cmake.installed"
 
@@ -79,6 +80,7 @@ class CmakeInstalled(Check):
         return self.validate_semver_expression(
             "cmake", installed_version, self.required_version, self.recommended_version
         )
+
 
 class JqInstalled(Check):
     name = "jq.installed"
