@@ -61,6 +61,24 @@ class KtlintInstalled(Check):
             "ktlint", installed_version, self.required_version, self.recommended_version
         )
 
+class CmakeInstalled(Check):
+    name = "cmake.installed"
+
+    suggestions = {
+        OS.OS_X: "<cmd>brew install cmake</cmd>",
+        OS.UBUNTU: "<cmd>apt-get install cmake</cmd>",
+        OS.GENERIC: "Install cmake: https://cmake.org/install/",
+    }
+
+    def __init__(self, required_version: Optional[str] = None, recommended_version: Optional[str] = None):
+        self.required_version = required_version
+        self.recommended_version = recommended_version
+
+    def check(self) -> CheckResult:
+        installed_version = get_simple_cli_version("cmake")
+        return self.validate_semver_expression(
+            "cmake", installed_version, self.required_version, self.recommended_version
+        )
 
 class JqInstalled(Check):
     name = "jq.installed"
