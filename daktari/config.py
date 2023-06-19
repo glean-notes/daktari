@@ -112,14 +112,11 @@ def check_version_compatibility(config_path: Path, raw_config: str) -> bool:
         print(yellow(f"⚠️  No minimum version found in {config_path}. {disclaimer}"))
         return True
 
-    my_version = None
-    required_version = None
+    my_version = version.parse(__version__)
+    required_version = version.parse(match.group(1))
 
-    try:
-        my_version = version.parse(__version__)
-        required_version = version.parse(match.group(1))
-    except version.InvalidVersion:
-        print(red(f"❌  Invalid daktari_version in {config_path}: {match.group(1)}"))
+    if not isinstance(required_version, version.Version):
+        print(red(f"❌  Invalid daktari_version in {config_path}: {required_version}"))
         return False
 
     logging.debug(f"Doing version check. Mine [{my_version}], required [{required_version}]")
