@@ -59,7 +59,8 @@ class DockerGoogleCloudAuthConfigured(Check):
     name = "google.dockerGCloudAuthConfigured"
     depends_on = [GoogleCloudSdkInstalled]
 
-    def __init__(self, cloud_project, region, registry="europe-west2-docker.pkg.dev"):
+    def __init__(self, cloud_project, region, registry):
+        self.registry = registry
         self.suggestions = {
             OS.GENERIC: f"""
                 Setup gcloud authentication and docker credential helper for gcloud.
@@ -95,10 +96,7 @@ class DockerGoogleCloudAuthConfigured(Check):
             logging.error(f"Exception parsing {docker_config_path}", exc_info=True)
             return self.failed(f"Failed to parse {docker_config_path}")
 
-        if docker_config.get("credHelpers", {}).get("gcr.io") != "gcloud":
-            return self.failed("docker gcloud auth not configured")
-
-        if docker_config.get("credHelpers", {}).get("europe-west2-docker.pkg.dev") != "gcloud":
-            return self.failed("docker gcloud auth for europe-west2-docker.pkg.dev not configured")
+        if docker_config.get("credHelpers", {}).get(self.registry) != "gcloud":
+            return self.failed("docker gcloud auth for {self.registry} not configured")
 
         return self.passed("docker gcloud auth configured")
