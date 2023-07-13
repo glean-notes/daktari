@@ -9,6 +9,7 @@ from daktari.check import Check, CheckResult
 from daktari.command_utils import get_stdout, can_run_command
 from daktari.os import OS
 from daktari.version_utils import try_parse_semver
+from daktari.checks.google import GkeGcloudAuthPluginInstalled
 
 
 class KubectlInstalled(Check):
@@ -44,6 +45,8 @@ def get_kubectl_version() -> Optional[VersionInfo]:
 
 
 class KubectlContextExists(Check):
+    depends_on = [GkeGcloudAuthPluginInstalled]
+
     def __init__(self, context_name: str, provision_command: str = ""):
         self.context_name = context_name
         self.name = f"kubectl.contextExists.{context_name}"

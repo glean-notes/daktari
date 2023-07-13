@@ -44,13 +44,9 @@ def print_suggestion_text(text: str):
 
     title = "💡 Suggestion "
     print("┌─" + title + "─" * (max_width - len(title)) + "┐")
-    for i, line in enumerate(lines):
-        raw_line = raw_lines[i]
-        padding = " " * (max_width - len(raw_line))
-        if len(raw_lines) > 1:
-            print(f"  {line}")
-        else:
-            print(f"│ {line}{padding} │")
+    for line in lines:
+        print(f"  {line}")
+
     print("└" + "─" * (max_width + 2) + "┘")
 
 

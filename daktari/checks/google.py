@@ -6,7 +6,7 @@ from json import JSONDecodeError
 from daktari.check import Check, CheckResult
 from daktari.command_utils import can_run_command
 from daktari.file_utils import file_exists
-from daktari.os import OS, detect_os
+from daktari.os import OS
 
 
 class GoogleCloudSdkInstalled(Check):
@@ -59,30 +59,29 @@ class DockerGoogleCloudAuthConfigured(Check):
     name = "google.dockerGCloudAuthConfigured"
     depends_on = [GoogleCloudSdkInstalled]
 
-    def __init__(self, cloud_project, region, region_number):
+    def __init__(self, cloud_project, region, registry):
+        self.registry = registry
         self.suggestions = {
-            OS.OS_X: f"""
-                Setup gcloud auth and add gcloud auth helper to docker config. Run:
-                <cmd>gcloud init</cmd>
-                Select '{cloud_project}' as the cloud project.
-                Select '{region}' as the region ({region_number}). Then run:
-                <cmd>gcloud auth configure-docker</cmd>
-                """,
             OS.GENERIC: f"""
-                On Linux you should be running docker with sudo.
-                If you haven't already initialise gcloud as root:
-                <cmd>sudo gcloud init</cmd>
-                Select '{cloud_project}' as the cloud project.
-                Select '{region}' as the region ({region_number}).
-                Then create the docker config as root:
-                <cmd>sudo gcloud auth configure-docker</cmd>
-                """,
+                Setup gcloud authentication and docker credential helper for gcloud.
+                The following commands will open your browser and ask you to login and approve.
+                Run:
+                <cmd>rm -r ~/.config/gcloud</cmd>
+                <cmd>gcloud auth login</cmd>
+                <cmd>gcloud config set project {cloud_project}</cmd>
+                <cmd>gcloud config set --quiet compute/zone {region}</cmd>
+                <cmd>gcloud auth application-default login</cmd>
+                <cmd>gcloud auth configure-docker {registry}</cmd>
+                """
         }
 
     def check(self) -> CheckResult:
-        if detect_os() != OS.OS_X:
-            return self.passed_with_warning("Not checking docker gcloud configuration as it might require sudo")
+        # Logged in with gcloud
+        google_config_path = os.path.expanduser("~/.config/gcloud/application_default_credentials.json")
+        if not file_exists(google_config_path):
+            return self.failed(f"{google_config_path} does not exist")
 
+        # Docker configured correctly
         docker_config_path = os.path.expanduser("~/.docker/config.json")
         if not file_exists(docker_config_path):
             return self.failed(f"{docker_config_path} does not exist")
@@ -97,7 +96,7 @@ class DockerGoogleCloudAuthConfigured(Check):
             logging.error(f"Exception parsing {docker_config_path}", exc_info=True)
             return self.failed(f"Failed to parse {docker_config_path}")
 
-        if docker_config.get("credHelpers", {}).get("gcr.io") != "gcloud":
-            return self.failed("docker gcloud auth not configured")
+        if docker_config.get("credHelpers", {}).get(self.registry) != "gcloud":
+            return self.failed("docker gcloud auth for {self.registry} not configured")
 
         return self.passed("docker gcloud auth configured")
