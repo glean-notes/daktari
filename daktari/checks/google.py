@@ -6,7 +6,7 @@ from json import JSONDecodeError
 from daktari.check import Check, CheckResult
 from daktari.command_utils import can_run_command
 from daktari.file_utils import file_exists
-from daktari.os import OS, detect_os
+from daktari.os import OS
 
 
 class GoogleCloudSdkInstalled(Check):
@@ -62,7 +62,7 @@ class DockerGoogleCloudAuthConfigured(Check):
     def __init__(self, cloud_project, region, registry="europe-west2-docker.pkg.dev"):
         self.suggestions = {
             OS.GENERIC: f"""
-                Setup gcloud authentication and docker credential helper for gcloud. 
+                Setup gcloud authentication and docker credential helper for gcloud.
                 The following commands will open your browser and ask you to login and approve.
                 Run:
                 <cmd>rm -r ~/.config/gcloud</cmd>
