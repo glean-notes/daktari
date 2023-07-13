@@ -15,11 +15,13 @@ class OnePassInstalled(Check):
         self.required_version = required_version
         self.recommended_version = recommended_version
         self.suggestions = {
-            OS.GENERIC: "Install OP (1Password CLI): "
-            "https://support.1password.com/command-line-getting-started/#set-up-the-command-line-tool",
-            OS.OS_X: "Use this command to update 1pass-cli to correct version: "
-            "brew tap glean-notes/homebrew-tap git@github.com:glean-notes/homebrew-tap && "
-            "brew reinstall glean-notes/homebrew-tap/1password-cli",
+            OS.GENERIC: """
+                Install OP (1Password CLI):
+                https://support.1password.com/command-line-getting-started/#set-up-the-command-line-tool""",
+            OS.OS_X: """
+                Use these commands to update 1pass-cli to correct version:
+                brew tap glean-notes/homebrew-tap git@github.com:glean-notes/homebrew-tap 
+                brew reinstall glean-notes/homebrew-tap/1password-cli""",
         }
 
     def check(self) -> CheckResult:
