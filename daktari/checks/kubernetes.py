@@ -68,7 +68,7 @@ class KubectlNoExtraneousContexts(Check):
         self.name = "kubectl.noExtraneousContexts"
 
     def check(self) -> CheckResult:
-        output = get_stdout("kubectl config get-contexts")
+        output = get_stdout("kubectl config get-contexts -o name")
         if not output:
             return self.failed("Failed to list kubectl contexts")
 
@@ -81,7 +81,7 @@ class KubectlNoExtraneousContexts(Check):
             self.suggestions = {
                 OS.GENERIC: suggestion,
             }
-            return self.passed_with_warning(f"Extraneous kubectl contexts found: {', '.join(extraneous_contexts)}")
+            return self.passed_with_warning(f"{len(extraneous_contexts)} extraneous kubectl context(s) found")
 
         return self.passed("No extraneous kubectl contexts found")
 
