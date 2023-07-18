@@ -3,6 +3,7 @@ from pathlib import Path
 from daktari.command_utils import get_stdout
 
 import os
+import re
 
 
 def get_absolute_path(path: str) -> str:
@@ -26,6 +27,16 @@ def file_contains_text(path: str, text: str) -> bool:
     with open(path, "r") as file:
         for line in file:
             if text in line:
+                return True
+    return False
+
+
+def file_contains_text_regex(path: str, regex: str) -> bool:
+    if not file_exists(path):
+        return False
+    with open(path, "r") as file:
+        for line in file:
+            if re.search(regex, line):
                 return True
     return False
 
