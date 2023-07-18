@@ -1,7 +1,7 @@
 import json
 import logging
 import re
-from typing import Optional
+from typing import Optional, List
 
 from semver import VersionInfo
 
@@ -60,6 +60,30 @@ class KubectlContextExists(Check):
 
         can_connect = can_run_command(f"kubectl get ns --context {self.context_name}")
         return self.verify(can_connect, f"Could <not/> connect to context {self.context_name}")
+
+
+class KubectlNoExtraneousContexts(Check):
+    def __init__(self, expected_contexts: List[str]):
+        self.expected_contexts = expected_contexts
+        self.name = "kubectl.noExtraneousContexts"
+
+    def check(self) -> CheckResult:
+        output = get_stdout("kubectl config get-contexts -o name")
+        if not output:
+            return self.failed("Failed to list kubectl contexts")
+
+        contexts = output.splitlines()
+        extraneous_contexts = list(filter(lambda context: context not in self.expected_contexts, contexts))
+        if extraneous_contexts:
+            suggestion = "\n".join(
+                f"<cmd>kubectl config delete-context {context}</cmd>" for context in extraneous_contexts
+            )
+            self.suggestions = {
+                OS.GENERIC: suggestion,
+            }
+            return self.passed_with_warning(f"{len(extraneous_contexts)} extraneous kubectl context(s) found")
+
+        return self.passed("No extraneous kubectl contexts found")
 
 
 class HelmInstalled(Check):
