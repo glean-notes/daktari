@@ -108,11 +108,14 @@ def parse_raw_config(config_path: Path, raw_config: str) -> Optional[Config]:
 
 
 def is_python_version_on_path() -> bool:
-    path = os.getenv("PATH").lower()
+    path = (os.getenv("PATH") or "").lower()
     try:
         python3_version_raw = run_command(["python3", "--version"]).stdout.rstrip("\n")
-        python3_version = re.search("3\\.\\d+\\.\\d+", python3_version_raw).group()
-        python3_version_minor = ".".join(python3_version.split(".")[0:2])
+        python3_version = re.search("3\\.\\d+\\.\\d+", python3_version_raw)
+        if python3_version:
+            python3_version_minor = ".".join(python3_version.group().split(".")[0:2])
+        else:
+            return False
     except CommandErrorException:
         logging.debug("Could not run 'python3 --version'", exc_info=True)
         return False
