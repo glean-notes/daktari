@@ -1,5 +1,6 @@
 import logging
 import re
+import os
 from dataclasses import dataclass, replace, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -14,6 +15,7 @@ from daktari.check import Check
 from daktari.check_utils import get_all_dependent_check_names
 from daktari.resource_utils import get_resource
 from daktari.result_printer import print_suggestion_text
+from daktari.command_utils import CommandErrorException, run_command
 
 
 @dataclass
@@ -105,6 +107,30 @@ def parse_raw_config(config_path: Path, raw_config: str) -> Optional[Config]:
     return Config(min_version, title, checks)
 
 
+def is_python_version_on_path() -> bool:
+    path = os.getenv("PATH").lower()
+    try:
+        python3_version_raw = run_command(["python3", "--version"]).stdout.rstrip("\n")
+        python3_version = re.search("3\.\d+\.\d+", python3_version_raw).group()
+        python3_version_minor = ".".join(python3_version.split(".")[0:2])
+    except CommandErrorException:
+        logging.debug("Could not run 'python3 --version'", exc_info=True)
+        return False
+
+    if re.search("python.?3", path):
+        if python3_version_minor in path:
+            logging.debug(f"Python 3 version is {python3_version_minor}. This was detected as being on the PATH.")
+            return True
+        else:
+            logging.debug(f"Python 3 version is {python3_version_minor}. This was NOT detected as being on the PATH.")
+            logging.debug(f"It is likely the terminal will be unable to locate a newly installed version of Daktari")
+            return False
+    else:
+        logging.debug("Python 3 does not appear to be on your PATH")
+        logging.debug("Assuming Daktari is install elsewhere in a non-versioned location")
+        return True
+
+
 def check_version_compatibility(config_path: Path, raw_config: str) -> bool:
     match = version_regex.search(raw_config)
     disclaimer = "Specifying daktari_version is recommended to ensure team members have compatible versions installed."
@@ -119,6 +145,17 @@ def check_version_compatibility(config_path: Path, raw_config: str) -> bool:
         print(red(f"❌  Invalid daktari_version in {config_path}: {required_version}"))
         return False
 
+    if not is_python_version_on_path():
+        print(
+            yellow(
+                f"⚠️  A Python version was detected on your PATH. "
+                f"However the version on your PATH does not match the current version of Python 3 installed. "
+                f"It is possible Daktari is/will be installed under a directory not on your PATH. "
+                f"You may need to update your PATH to use the currently install Python version. "
+                f"E.g. /Users/username/Library/Python/3.11/bin"
+            )
+        )
+
     logging.debug(f"Doing version check. Mine [{my_version}], required [{required_version}]")
     if required_version > my_version:
         print(
@@ -127,7 +164,7 @@ def check_version_compatibility(config_path: Path, raw_config: str) -> bool:
                 f"too old for this project (needs at least {required_version}). "
             )
         )
-        print_suggestion_text("pip install daktari -U")
+        print_suggestion_text("python3 -m pip install daktari -U")
         return False
 
     return True
