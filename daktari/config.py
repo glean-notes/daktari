@@ -111,7 +111,7 @@ def is_python_version_on_path() -> bool:
     path = os.getenv("PATH").lower()
     try:
         python3_version_raw = run_command(["python3", "--version"]).stdout.rstrip("\n")
-        python3_version = re.search("3\.\d+\.\d+", python3_version_raw).group()
+        python3_version = re.search("3\\.\\d+\\.\\d+", python3_version_raw).group()
         python3_version_minor = ".".join(python3_version.split(".")[0:2])
     except CommandErrorException:
         logging.debug("Could not run 'python3 --version'", exc_info=True)
@@ -123,7 +123,7 @@ def is_python_version_on_path() -> bool:
             return True
         else:
             logging.debug(f"Python 3 version is {python3_version_minor}. This was NOT detected as being on the PATH.")
-            logging.debug(f"It is likely the terminal will be unable to locate a newly installed version of Daktari")
+            logging.debug("It is likely the terminal will be unable to locate a newly installed version of Daktari")
             return False
     else:
         logging.debug("Python 3 does not appear to be on your PATH")
@@ -148,11 +148,11 @@ def check_version_compatibility(config_path: Path, raw_config: str) -> bool:
     if not is_python_version_on_path():
         print(
             yellow(
-                f"⚠️  A Python version was detected on your PATH. "
-                f"However the version on your PATH does not match the current version of Python 3 installed. "
-                f"It is possible Daktari is/will be installed under a directory not on your PATH. "
-                f"You may need to update your PATH to use the currently install Python version. "
-                f"E.g. /Users/username/Library/Python/3.11/bin"
+                "⚠️  A Python version was detected on your PATH. "
+                "However the version on your PATH does not match the current version of Python 3 installed. "
+                "It is possible Daktari is/will be installed under a directory not on your PATH. "
+                "You may need to update your PATH to use the currently install Python version. "
+                "E.g. /Users/username/Library/Python/3.11/bin"
             )
         )
 
