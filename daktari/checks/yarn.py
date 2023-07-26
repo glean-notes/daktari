@@ -109,7 +109,7 @@ class YarnNmpGithubTokenValid(Check):
         self.suggestions = {
             OS.GENERIC: "Please check the token was copied correctly from GitHub."
             " Ensure the token hasn't expired, or has been revoked."
-            " Also ensure it has the correct permissions to read packages."
+            " Also, ensure it has the correct permissions to read packages."
         }
 
     def check(self) -> CheckResult:
