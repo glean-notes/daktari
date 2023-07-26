@@ -9,6 +9,7 @@ from yaml.error import YAMLError
 from daktari.check import Check, CheckResult
 from daktari.file_utils import file_exists
 from daktari.os import OS
+import requests
 
 
 class YarnInstalled(Check):
@@ -87,18 +88,65 @@ class YarnNpmScopeConfigured(Check):
         }
 
     def check(self) -> CheckResult:
-        yarnrc_path = get_yarnrc_path()
-        if not file_exists(yarnrc_path):
-            return self.failed("~/.yarnrc.yml does not exist")
-
         try:
-            with open(yarnrc_path, "rb") as yarnrc_file:
-                yarnrc = yaml.safe_load(yarnrc_file)
-        except YAMLError:
-            logging.error(f"Exception reading {yarnrc_path}", exc_info=True)
-            return self.failed("Failed to parse yarnrc")
+            yarnrc = get_yarnrc_contents()
+        except Exception as e:
+            return self.failed(str(e))
 
         if not yarnrc_contains_scope(yarnrc, self.scope):
             return self.failed(f"Scope {self.scope.name} not configured in yarnrc")
 
         return self.passed(f"Scope {self.scope.name} configured in yarnrc")
+
+
+class YarnNmpGithubTokenValid(Check):
+    name = "yarn.npmGithubTokenValid"
+    depends_on = [YarnNpmScopeConfigured]
+
+    def __init__(self, github_org: str, scope_name: str):
+        self.github_organisation = github_org
+        self.github_token = get_yarnrc_token_for_scope(scope_name)
+        self.suggestions = {
+            OS.GENERIC: "Please check the token was copied correctly from GitHub."
+            " Ensure the token hasn't expired, or has been revoked."
+            " Also ensure it has the correct permissions to read packages."
+        }
+
+    def check(self) -> CheckResult:
+        headers = {
+            "Authorization": f"Bearer {self.github_token}",
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+        }
+        logging.debug(f"Checking the validity of Yarn token {self.github_token} with the Github API")
+        response = requests.get(
+            f"https://api.github.com/orgs/{self.github_organisation}/packages?package_type=npm", headers=headers
+        )
+        if response.status_code == 200:
+            logging.debug(f"API call returned: {response.text}")
+            return self.passed("Github Yarn token is valid")
+        else:
+            return self.failed(f"Github Yarn token is not valid: {response.text}")
+
+
+def get_yarnrc_contents() -> dict:
+    yarnrc_path = get_yarnrc_path()
+    if not file_exists(yarnrc_path):
+        raise Exception("~/.yarnrc.yml does not exist")
+
+    try:
+        with open(yarnrc_path, "rb") as yarnrc_file:
+            return yaml.safe_load(yarnrc_file)
+    except YAMLError:
+        logging.error(f"Exception reading {yarnrc_path}", exc_info=True)
+        raise Exception("Failed to parse yarnrc")
+
+
+def get_yarnrc_token_for_scope(scope_name: str) -> Optional[str]:
+    yarnrc = get_yarnrc_contents()
+    yarnrc_scopes = yarnrc.get("npmScopes", {})
+    yarnrc_scope = yarnrc_scopes.get(scope_name)
+    if yarnrc_scope is None:
+        raise Exception(f"Scope {scope_name} not configured in yarnrc")
+
+    return yarnrc_scope.get("npmAuthToken", None)
