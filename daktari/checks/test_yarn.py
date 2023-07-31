@@ -3,7 +3,7 @@ from unittest import mock
 import responses
 
 from daktari.check import CheckStatus
-from daktari.checks.yarn import YarnNpmScope, match_scope, yarnrc_contains_scope, YarnNmpGithubTokenValid
+from daktari.checks.yarn import YarnNpmScope, match_scope, yarnrc_contains_scope, YarnNpmGithubTokenValid
 
 TEST_SCOPE_NAME = "scope"
 TEST_REGISTRY_SERVER = "https://registry-server.glean.co"
@@ -74,11 +74,11 @@ class TestYarn(unittest.TestCase):
     def test_returns_expected_result_based_on_http_status(self, mock_get_yarnrc_token_for_scope):
         mock_get_yarnrc_token_for_scope.return_value = "mock-token"
         responses.add(method="GET", url="https://api.github.com/orgs/mock-org/packages?package_type=npm", status=401)
-        result = YarnNmpGithubTokenValid("mock-org", "mock-token").check()
+        result = YarnNpmGithubTokenValid("mock-org", "mock-token").check()
         self.assertEqual(result.status, CheckStatus.FAIL)
 
         responses.add(method="GET", url="https://api.github.com/orgs/mock-org/packages?package_type=npm", status=200)
-        result = YarnNmpGithubTokenValid("mock-org", "mock-token").check()
+        result = YarnNpmGithubTokenValid("mock-org", "mock-token").check()
         self.assertEqual(result.status, CheckStatus.PASS)
 
 

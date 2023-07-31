@@ -99,7 +99,7 @@ class YarnNpmScopeConfigured(Check):
         return self.passed(f"Scope {self.scope.name} configured in yarnrc")
 
 
-class YarnNmpGithubTokenValid(Check):
+class YarnNpmGithubTokenValid(Check):
     name = "yarn.npmGithubTokenValid"
     depends_on = [YarnNpmScopeConfigured]
 
@@ -132,7 +132,7 @@ class YarnNmpGithubTokenValid(Check):
 def get_yarnrc_contents() -> dict:
     yarnrc_path = get_yarnrc_path()
     if not file_exists(yarnrc_path):
-        raise Exception("~/.yarnrc.yml does not exist")
+        raise Exception(f"{yarnrc_path} does not exist")
 
     try:
         with open(yarnrc_path, "rb") as yarnrc_file:
