@@ -38,28 +38,3 @@ jobs:
     - name: execute git check
       run: |
         python3 -m daktari --debug --config .ci-config.py
-
-
-  dependabot:
-    timeout-minutes: 20
-    runs-on: [self-hosted, kitchen-sink]
-    needs: [build]
-    if: github.actor == 'dependabot[bot]' && always()
-    env:
-      GITHUB_REPOSITORY_NAME: daktari
-    steps:
-    - uses: actions/checkout@master
-    - uses: technote-space/workflow-conclusion-action@v3
-    - name: Fetch Secrets
-      uses: mcmarkj/1password-actions@v2.0.4
-      with:
-        connect-server-url: 'https://opconnector.glean.ninja/'
-        connect-server-token: ${{ secrets.VAULT_TOKEN }}
-        export-env-vars: true
-        secret-path: |
-          glean-secrets-development > github.ci-login > username | GIT_USR
-          glean-secrets-development > github.ci-login > password | GIT_PSW
-    - name: Dependabot Checks
-      env:
-        DEPENDABOT_METADATA: ''
-      run: glean-py-utils dependabot_checks --status="${{ env.WORKFLOW_CONCLUSION }}" --merge
