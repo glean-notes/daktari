@@ -111,7 +111,7 @@ def is_python_version_on_path() -> bool:
     path = (os.getenv("PATH") or "").lower()
     try:
         python3_version_raw = run_command(["python3", "--version"]).stdout.rstrip("\n")
-        python3_version = re.search("3\\.\\d+\\.\\d+", python3_version_raw)
+        python3_version = re.search(r"3\.\d+\.\d+", python3_version_raw)
         if python3_version:
             python3_version_minor = ".".join(python3_version.group().split(".")[0:2])
         else:
@@ -130,7 +130,7 @@ def is_python_version_on_path() -> bool:
             return False
     else:
         logging.debug("Python 3 does not appear to be on your PATH")
-        logging.debug("Assuming Daktari is install elsewhere in a non-versioned location")
+        logging.debug("Assuming Python is installed elsewhere in a non-versioned location")
         return True
 
 
