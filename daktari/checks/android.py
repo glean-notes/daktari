@@ -12,7 +12,7 @@ class AndroidNdkHomeSet(Check):
             Export {self.variable_name} in your shell config.
             The expected value is ANDROID_SDK_HOME/ndk/{self.expected_version}.
             If you manage your android sdk using Android Studio, you can find your ANDROID_SDK_HOME by going to 
-            Tools > SDK Manager and copying the Android SDK location. 
+            Tools > SDK Manager and copying the Android SDK location.
             You may need to check under SDK Tools that you have the NDK installed.
             """
         }
