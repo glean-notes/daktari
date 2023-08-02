@@ -26,5 +26,6 @@ class ConanProfileDetected(Check):
         self.depends_on = [ConanInstalled]
 
     def check(self) -> CheckResult:
-        expected_profile_detected = self.expected_string in get_stdout("conan profile list")
+        output = get_stdout("conan profile list")
+        expected_profile_detected = output is not None and self.expected_string in output
         return self.verify(expected_profile_detected, f"conan profile {self.expected_string} <not/> detected")
