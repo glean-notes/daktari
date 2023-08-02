@@ -3,7 +3,6 @@ from typing import Optional
 from daktari.check import Check, CheckResult
 from daktari.command_utils import get_stdout
 from daktari.os import OS
-from daktari.version_utils import get_simple_cli_version
 
 
 class ConanInstalled(Check):
