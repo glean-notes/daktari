@@ -25,6 +25,7 @@ class ConanInstalled(Check):
 
 class ConanProfileDetected(Check):
     name = "conan.profileDetected"
+    depends_on = [ConanInstalled]
 
     def __init__(self, expected_string: str):
         self.suggestions = {OS.GENERIC: "<cmd>conan profile detect</cmd>"}
