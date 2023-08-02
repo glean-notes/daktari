@@ -1,3 +1,11 @@
+from typing import Optional
+
+from daktari.check import Check, CheckResult
+from daktari.command_utils import get_stdout
+from daktari.os import OS
+from daktari.version_utils import get_simple_cli_version
+
+
 class ConanInstalled(Check):
     name = "conan.installed"
 
@@ -9,6 +17,7 @@ class ConanInstalled(Check):
         }
 
     def check(self) -> CheckResult:
+        installed_version = get_simple_cli_version("direnv")
         return self.validate_semver_expression(
             "conan", installed_version, self.required_version, self.recommended_version
         )
@@ -19,7 +28,8 @@ class ConanProfileDetected(Check):
 
     def __init__(self, expected_string: str):
         self.suggestions = {OS.GENERIC: "<cmd>conan profile detect</cmd>"}
+        self.expected_string = expected_string
 
     def check(self) -> CheckResult:
-        default_profile_detected = "default" in get_stdout("conan profile list")
-        return self.verify(default_profile_detected, "Default conan profile <not /> detected")
+        expected_profile_detected = self.expected_string in get_stdout("conan profile list")
+        return self.verify(expected_profile_detected, f"conan profile ${self.expected_string} <not /> detected")
