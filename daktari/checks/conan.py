@@ -12,9 +12,7 @@ class ConanInstalled(Check):
     def __init__(self, required_version: Optional[str] = None, recommended_version: Optional[str] = None):
         self.required_version = required_version
         self.recommended_version = recommended_version
-        self.suggestions = {
-            OS.GENERIC: "Install conan: <cmd>pip install conan</cmd>"
-        }
+        self.suggestions = {OS.GENERIC: "Install conan: <cmd>pip install conan</cmd>"}
 
     def check(self) -> CheckResult:
         installed_version = get_simple_cli_version("direnv")
