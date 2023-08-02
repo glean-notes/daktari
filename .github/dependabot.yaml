@@ -13,4 +13,5 @@ updates:
     schedule:
       interval: 'weekly'
     labels:
+      - 'dev-review-required'
       - 'dependencies'
