@@ -42,5 +42,5 @@ def file_contains_text_regex(path: str, regex: str) -> bool:
 
 
 def dir_exists(path: str) -> bool:
-    testing_dir = Path(path)
+    testing_dir = Path(os.path.expandvars(path))
     return testing_dir.is_dir()
