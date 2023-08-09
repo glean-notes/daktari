@@ -3,7 +3,8 @@ from daktari.os import OS, get_env_var_value
 
 
 class AndroidNdkHomeSet(Check):
-    name = 'android.ndkHomeSet'
+    name = "android.ndkHomeSet"
+
     def __init__(self, expected_version):
         self.name = "env.variableSet.androidNdkHome"
         self.variable_name = "ANDROID_NDK_HOME"
