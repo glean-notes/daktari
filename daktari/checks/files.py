@@ -31,7 +31,7 @@ class DirsExist(Check):
     pass_fail_message = ""
 
     def check(self) -> CheckResult:
-        dirs_exist = all([dir_exists(expanduser(dir_path)) for dir_path in self.dir_paths])
+        dirs_exist = all([dir_exists(dir_path) for dir_path in self.dir_paths])
         return self.verify(dirs_exist, self.pass_fail_message)
 
 
