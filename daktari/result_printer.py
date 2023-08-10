@@ -70,6 +70,7 @@ def print_check_result(result: CheckResult, early_exit: bool, quiet_mode: bool, 
 
 
 def print_progress_bar(early_exit: bool, current: int, total: int):
+    # trick taken from https://stackoverflow.com/questions/5419389/how-to-overwrite-the-previous-print-to-stdout
     clear_to_end_of_line = "\x1b[1K"
     end_char = "\n" if current == total or early_exit else f"{clear_to_end_of_line}\r"
     print(progress_bar(current, total, early_exit), end=end_char)
