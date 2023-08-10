@@ -8,6 +8,9 @@ from daktari.check import CheckResult, CheckStatus
 from daktari.os import OS, detect_os
 
 
+clear_line_prefix = "\33[2K\r"
+
+
 def check_status_symbol(status: CheckStatus) -> str:
     return {CheckStatus.PASS: "✅", CheckStatus.PASS_WITH_WARNING: "⚠️ ", CheckStatus.FAIL: "❌", CheckStatus.ERROR: "💥"}[
         status
@@ -55,7 +58,7 @@ def print_check_result(result: CheckResult, early_exit: bool, quiet_mode: bool, 
     status_symbol = check_status_symbol(result.status)
     colour = check_status_colour(result.status)
     if result.status != CheckStatus.PASS or not quiet_mode:
-        print(f"{status_symbol} [{colour(result.name)}] {result.summary}")
+        print(f"{clear_line_prefix}{status_symbol} [{colour(result.name)}] {result.summary}")
         if result.status in (CheckStatus.FAIL, CheckStatus.PASS_WITH_WARNING):
             suggestion = get_most_specific_suggestion(this_os, result.suggestions)
             if suggestion:

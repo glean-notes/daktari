@@ -1,8 +1,6 @@
 import logging
 from typing import List, Set
 
-from colors import yellow
-
 from daktari.check import Check, CheckStatus, CheckResult
 from daktari.check_sorter import sort_checks
 from daktari.os import detect_os
@@ -34,12 +32,10 @@ class CheckRunner:
 
     def try_run_check(self, idx: int, check: Check):
         dependencies_met = all([dependency.name in self.checks_passed for dependency in check.depends_on])
-        if dependencies_met:
-            self.run_check(idx, check)
-        else:
-            self.diagnose_missing_dependency(check)
+        result = self.run_check(check) if dependencies_met else self.diagnose_missing_dependency(check)
+        print_check_result(result, self.early_exit(), self.quiet_mode, idx, len(self.checks))
 
-    def run_check(self, idx: int, check: Check):
+    def run_check(self, check: Check) -> CheckResult:
         logging.info(f"Running check {check.name}")
         result = self.run_check_in_try(check)
         if result.status in (CheckStatus.PASS, CheckStatus.PASS_WITH_WARNING):
@@ -47,7 +43,7 @@ class CheckRunner:
         else:
             self.all_passed = False
 
-        print_check_result(result, self.early_exit(), self.quiet_mode, idx, len(self.checks))
+        return result
 
     def run_check_in_try(self, check: Check) -> CheckResult:
         try:
@@ -56,11 +52,14 @@ class CheckRunner:
             logging.debug(f"Exception running check {check.name}", exc_info=True)
             return CheckResult(check.name, CheckStatus.ERROR, f"Check failed with unhandled {type(err).__name__}", {})
 
-    def diagnose_missing_dependency(self, check: Check):
+    def diagnose_missing_dependency(self, check: Check) -> CheckResult:
         all_checks = {check.name for check in self.checks}
         check_dependencies = {dependency.name for dependency in check.depends_on}
         missing_checks = check_dependencies.difference(all_checks)
-        if check_dependencies.difference(all_checks):
-            print(f"⚠️  [{yellow(check.name)}] skipped due to missing dependent checks: {', '.join(missing_checks)}")
-        else:
-            print(f"⚠️  [{yellow(check.name)}] skipped due to previous failures")
+
+        summary = (
+            f"skipped due to missing dependent checks: {', '.join(missing_checks)}"
+            if missing_checks
+            else "skipped due to previous failures"
+        )
+        return CheckResult(check.name, CheckStatus.PASS_WITH_WARNING, summary, {})
