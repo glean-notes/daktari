@@ -1,5 +1,6 @@
 import re
 import textwrap
+import pyclip
 from typing import Callable, Dict, Optional
 
 from colors import green, red, underline, yellow
@@ -30,7 +31,7 @@ def get_most_specific_suggestion(this_os: str, suggestions: Dict[str, str]) -> O
     return suggestions.get(this_os, suggestions.get(OS.GENERIC))
 
 
-def print_suggestion_text(text: str):
+def print_suggestion_text(text: str, add_to_clipboard: bool):
     text = textwrap.dedent(text.lstrip("\n").rstrip())
 
     pattern = re.compile("<cmd>(.+)</cmd>")
@@ -49,11 +50,16 @@ def print_suggestion_text(text: str):
     print("┌─" + title + "─" * (max_width - len(title)) + "┐")
     for line in lines:
         print(f"  {line}")
+        if add_to_clipboard:
+            pyclip.copy(line)
+            add_to_clipboard = False
 
     print("└" + "─" * (max_width + 2) + "┘")
 
 
-def print_check_result(result: CheckResult, early_exit: bool, quiet_mode: bool, idx: int, total_checks: int):
+def print_check_result(
+    result: CheckResult, early_exit: bool, quiet_mode: bool, idx: int, total_checks: int, clipboard: bool
+):
     this_os = detect_os()
     status_symbol = check_status_symbol(result.status)
     colour = check_status_colour(result.status)
@@ -62,7 +68,7 @@ def print_check_result(result: CheckResult, early_exit: bool, quiet_mode: bool, 
         if result.status in (CheckStatus.FAIL, CheckStatus.PASS_WITH_WARNING):
             suggestion = get_most_specific_suggestion(this_os, result.suggestions)
             if suggestion:
-                print_suggestion_text(suggestion)
+                print_suggestion_text(suggestion, clipboard)
         if quiet_mode:
             print("")
 
