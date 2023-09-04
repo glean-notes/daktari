@@ -38,7 +38,7 @@ version_pattern = re.compile("Client Version: v(.*)")
 
 
 def get_kubectl_version() -> Optional[VersionInfo]:
-    raw_version = get_stdout("kubectl version --client=true --short")
+    raw_version = get_stdout("kubectl version --client=true")
     if raw_version:
         match = version_pattern.search(raw_version)
         if match:

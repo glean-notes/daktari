@@ -167,7 +167,7 @@ def check_version_compatibility(config_path: Path, raw_config: str) -> bool:
                 f"too old for this project (needs at least {required_version}). "
             )
         )
-        print_suggestion_text("python3 -m pip install daktari -U", False)
+        print_suggestion_text("python3 -m pip install daktari -U")
         return False
 
     return True

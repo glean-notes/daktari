@@ -31,7 +31,7 @@ class Check:
     depends_on: List[Type["Check"]] = []
     suggestions: Dict[str, str] = {}
     run_on: Optional[str] = None
-    command_suggestions: Optional[Dict[str, str]] = {}
+    command_suggestions: Dict[str, str] = {}
 
     def with_dependencies(self, *dependencies: Type["Check"]) -> "Check":
         copy = deepcopy(self)
