@@ -18,13 +18,10 @@ class DirenvInstalled(Check):
         self.recommended_version = recommended_version
         self.suggestions = {
             OS.GENERIC: "Install direnv: https://direnv.net/#getting-started",
-            OS.OS_X: "Install direnv using brew: brew install direnv",
-            OS.OS_X: "Install direnv using apt-get: sudo apt-get install direnv",
+            OS.OS_X: "Install direnv using brew: <cmd>brew install direnv</cmd>",
+            OS.OS_X: "Install direnv using apt-get: <cmd>sudo apt-get install direnv</cmd>",
         }
-        self.command_suggestions = {
-            OS.OS_X: "brew install direnv",
-            OS.UBUNTU: "sudo apt-get install direnv",
-        }
+
 
     def check(self) -> CheckResult:
         installed_version = get_simple_cli_version("direnv")
@@ -52,7 +49,6 @@ class DirenvAllowed(Check):
 
     def __init__(self):
         self.suggestions = {OS.GENERIC: "<cmd>direnv allow .</cmd>"}
-        self.command_suggestions = {OS.GENERIC: "direnv allow ."}
 
     def check(self) -> CheckResult:
         direnv_status = get_stdout("direnv status")

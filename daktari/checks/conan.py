@@ -12,7 +12,6 @@ class ConanInstalled(Check):
         self.required_version = required_version
         self.recommended_version = recommended_version
         self.suggestions = {OS.GENERIC: "Install conan: <cmd>pip install conan</cmd>"}
-        self.command_suggestions = {OS.GENERIC: "pip install conan"}
 
     def check(self) -> CheckResult:
         return self.verify_install("conan")
@@ -23,7 +22,6 @@ class ConanProfileDetected(Check):
 
     def __init__(self, expected_string: str):
         self.suggestions = {OS.GENERIC: "<cmd>conan profile detect</cmd>"}
-        self.command_suggestions = {OS.GENERIC: "conan profile detect"}
         self.expected_string = expected_string
         self.depends_on = [ConanInstalled]
 

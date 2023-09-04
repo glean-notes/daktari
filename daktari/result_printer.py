@@ -53,12 +53,16 @@ def print_suggestion_text(text: str):
     print("└" + "─" * (max_width + 2) + "┘")
 
 
-def copy_to_clipboard(command_suggestion: Optional[str]):
-    if command_suggestion is not None:
-        pyclip.copy(command_suggestion)
-        print("ⓘ  Command copied to clipboard")
-    else:
-        print("ⓘ  No command available to copy to clipboard")
+def copy_to_clipboard(suggestion: Optional[str]):
+    if suggestion is not None:
+        command_regex = re.compile(r"\<cmd\>(.*?)\<\/cmd\>")
+        results = command_regex.findall(suggestion)
+        if len(results) > 0:
+            pyclip.copy("\n".join(results))
+            print("ⓘ  Command copied to clipboard")
+            return
+
+    print("ⓘ  No command available to copy to clipboard")
 
 
 def print_check_result(
@@ -71,12 +75,11 @@ def print_check_result(
         print(f"{clear_line_prefix}{status_symbol} [{colour(result.name)}] {result.summary}")
         if result.status in (CheckStatus.FAIL, CheckStatus.PASS_WITH_WARNING):
             suggestion = get_most_specific_suggestion(this_os, result.suggestions)
-            command_suggestion = get_most_specific_suggestion(this_os, result.command_suggestions)
             if suggestion:
                 print_suggestion_text(suggestion)
 
             if clipboard:
-                copy_to_clipboard(command_suggestion)
+                copy_to_clipboard(suggestion)
 
         if quiet_mode:
             print("")

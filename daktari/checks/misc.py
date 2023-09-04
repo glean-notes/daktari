@@ -216,12 +216,22 @@ class DirectoryIsOnPath(Check):
     def __init__(self, directory: str):
         self.directory = expanduser(directory)  # $PATH won't auto-expand ~
         self.suggestions = {
-            OS.GENERIC: "Append the following line to your profile (~/.bashrc or ~/.zshrc): "
-            f'\n\nexport PATH="{self.directory}:$PATH"',
-        }
-        self.command_suggestions = {
-            OS.UBUNTU: f"echo 'export PATH=\"{self.directory}:$PATH\"' >> ~/.bashrc && source ~/.bashrc",
-            OS.OS_X: f"echo 'export PATH=\"{self.directory}:$PATH\"' >> ~/.zshrc && source ~/.zshrc",
+            OS.GENERIC: f"""
+                Append the following line to your profile (~/.bashrc or ~/.zshrc):
+                export PATH="{self.directory}:$PATH
+                """,
+            OS.UBUNTU: """
+                Append the following line to your profile (~/.bashrc):
+                export PATH="{self.directory}:$PATH"
+                For first time setup, you can run this:
+                <cmd>echo 'export PATH="{self.directory}:$PATH"' >> ~/.bashrc && source ~/.bashrc</cmd>
+                """,
+            OS.OS_X: """
+                Append the following line to your profile (~/.zshrc):
+                export PATH="{self.directory}:$PATH"
+                For first time setup, you can run this:
+                <cmd>echo 'export PATH="{self.directory}:$PATH"' >> ~/.zshrc && source ~/.zshrc</cmd>
+                """,
         }
 
     def check(self) -> CheckResult:
@@ -246,20 +256,21 @@ class DetektInstalled(Check):
             OS.UBUNTU: self.get_install_cmd(),
             OS.GENERIC: "Install detekt: https://detekt.dev/cli.html#install-the-cli",
         }
-        self.command_suggestions = {OS.OS_X: self.get_install_cmd(), OS.UBUNTU: self.get_install_cmd()}
 
     def get_install_cmd(self) -> str:
         version = self.install_version or "[desired version - see https://github.com/detekt/detekt/releases]"
         url = "https://github.com/detekt/detekt/releases/download/v$DETEKT_VERSION/detekt-cli-$DETEKT_VERSION.zip"
-        return f"""DETEKT_VERSION={version}; \\
-LOCAL_BIN=~/.local/bin; \\
-TEMP_FILE=$(mktemp); \\
-mkdir -p "$LOCAL_BIN" &&\\
-curl -L {url} --output "$TEMP_FILE" &&\\
-unzip -u "$TEMP_FILE" -d "$LOCAL_BIN" &&\\
-rm "$TEMP_FILE" &&\\
-chmod +x "$LOCAL_BIN/detekt-cli-$DETEKT_VERSION/bin/detekt-cli" &&\\
-ln -f -s "$LOCAL_BIN/detekt-cli-$DETEKT_VERSION/bin/detekt-cli" "$LOCAL_BIN/detekt" """
+        return f"""
+            <cmd>DETEKT_VERSION={version}</cmd>
+            <cmd>LOCAL_BIN=~/.local/bin</cmd>
+            <cmd>TEMP_FILE=$(mktemp)</cmd>
+            <cmd>mkdir -p "$LOCAL_BIN"</cmd>
+            <cmd>curl -L {url} --output "$TEMP_FILE"</cmd>
+            <cmd>unzip -u "$TEMP_FILE" -d "$LOCAL_BIN"</cmd>
+            <cmd>rm "$TEMP_FILE"</cmd>
+            <cmd>chmod +x "$LOCAL_BIN/detekt-cli-$DETEKT_VERSION/bin/detekt-cli"</cmd>
+            <cmd>ln -f -s "$LOCAL_BIN/detekt-cli-$DETEKT_VERSION/bin/detekt-cli" "$LOCAL_BIN/detekt"</cmd>
+            """
 
     def check(self) -> CheckResult:
         installed_version = get_simple_cli_version("detekt")

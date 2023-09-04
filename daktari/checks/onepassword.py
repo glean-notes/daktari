@@ -45,9 +45,6 @@ class OPAccountExists(Check):
         self.suggestions = {
             OS.GENERIC: f"<cmd>op signin {context_name}.1password.com <your-email-here></cmd>",
         }
-        self.command_suggestions = {
-            OS.GENERIC: f"op signin {context_name}.1password.com <email>",
-        }
 
     def check(self) -> CheckResult:
         home = str(Path.home())

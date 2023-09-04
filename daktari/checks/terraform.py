@@ -43,13 +43,11 @@ class TerraformInstalled(Check):
             logging.debug(f"Terraform version required from .terraform-version file is: {tfenv_version}")
             self.required_version = f"=={tfenv_version}"
             self.suggestions = {OS.GENERIC: "<cmd>tfenv install</cmd>"}
-            self.command_suggestions = {OS.GENERIC: "tfenv install"}
         else:
             self.suggestions = {
                 OS.OS_X: "<cmd>brew tap hashicorp/tap && brew install hashicorp/tap/terraform</cmd>",
                 OS.GENERIC: "Install Terraform: https://learn.hashicorp.com/tutorials/terraform/install-cli",
             }
-            self.command_suggestions = {OS.OS_X: "brew tap hashicorp/tap && brew install hashicorp/tap/terraform"}
 
     def check(self) -> CheckResult:
         installed_version = get_terraform_version()
