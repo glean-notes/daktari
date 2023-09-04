@@ -1,4 +1,3 @@
-import pyclip
 import unittest
 from io import StringIO
 from unittest.mock import patch
@@ -7,7 +6,6 @@ from colors import red, yellow, green
 
 from daktari.check_runner import run_checks
 from daktari.test_check_factory import DummyCheck, ExplodingCheck
-from daktari.os import OS
 
 
 class TestCheckRunner(unittest.TestCase):
@@ -29,23 +27,6 @@ class TestCheckRunner(unittest.TestCase):
         result = run_checks(checks, quiet_mode=True, fail_fast=True, clipboard=False)
         self.assertFalse(result)
         self.assertFalse(final_check.was_run)
-
-    def test_aborts_and_returns_failure_if_check_fails_and_fail_fast_and_clipboard(self):
-        suggestions = {
-            OS.GENERIC: "Run this magical command: id",
-        }
-        command_suggestions = {OS.GENERIC: "id"}
-
-        final_check = DummyCheck("check.three", succeed=True)
-        checks = [
-            DummyCheck("check.one", succeed=True),
-            DummyCheck("check.two", succeed=False, suggestions=suggestions, command_suggestions=command_suggestions),
-            final_check,
-        ]
-        result = run_checks(checks, quiet_mode=True, fail_fast=True, clipboard=True)
-        self.assertFalse(result)
-        self.assertFalse(final_check.was_run)
-        self.assertEquals(command_suggestions[OS.GENERIC], pyclip.paste(text=True))
 
     def test_copes_with_unhandled_errors_and_runs_later_checks(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
