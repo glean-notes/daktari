@@ -23,6 +23,11 @@ class OnePassInstalled(Check):
                 brew tap glean-notes/homebrew-tap git@github.com:glean-notes/homebrew-tap
                 brew reinstall glean-notes/homebrew-tap/1password-cli""",
         }
+        self.command_suggestion = {
+            OS.OS_X: """
+                brew tap glean-notes/homebrew-tap git@github.com:glean-notes/homebrew-tap
+                brew reinstall glean-notes/homebrew-tap/1password-cli"""
+        }
 
     def check(self) -> CheckResult:
         installed_version = get_simple_cli_version("op")
@@ -39,6 +44,9 @@ class OPAccountExists(Check):
         self.context_name = context_name
         self.suggestions = {
             OS.GENERIC: f"<cmd>op signin {context_name}.1password.com <your-email-here></cmd>",
+        }
+        self.command_suggestions = {
+            OS.GENERIC: f"op signin {context_name}.1password.com <email>",
         }
 
     def check(self) -> CheckResult:

@@ -31,7 +31,7 @@ def get_most_specific_suggestion(this_os: str, suggestions: Dict[str, str]) -> O
     return suggestions.get(this_os, suggestions.get(OS.GENERIC))
 
 
-def print_suggestion_text(text: str, add_to_clipboard: bool):
+def print_suggestion_text(text: str, command_suggestion: str):
     text = textwrap.dedent(text.lstrip("\n").rstrip())
 
     pattern = re.compile("<cmd>(.+)</cmd>")
@@ -50,9 +50,8 @@ def print_suggestion_text(text: str, add_to_clipboard: bool):
     print("┌─" + title + "─" * (max_width - len(title)) + "┐")
     for line in lines:
         print(f"  {line}")
-        if add_to_clipboard:
-            pyclip.copy(line)
-            add_to_clipboard = False
+        if command_suggestion is not None:
+            pyclip.copy(command_suggestion)
 
     print("└" + "─" * (max_width + 2) + "┘")
 
@@ -67,15 +66,21 @@ def print_check_result(
         print(f"{clear_line_prefix}{status_symbol} [{colour(result.name)}] {result.summary}")
         if result.status in (CheckStatus.FAIL, CheckStatus.PASS_WITH_WARNING):
             suggestion = get_most_specific_suggestion(this_os, result.suggestions)
+            command_suggestion = get_most_specific_suggestion(this_os, result.command_suggestions)
             if suggestion:
-                print_suggestion_text(suggestion, clipboard)
+                print_suggestion_text(suggestion, command_suggestion)
+                if command_suggestion is not None:
+                    print("ⓘ  Command copied to clipboard")
+                else:
+                    print("ⓘ  No command available to copy to clipboard")
+
         if quiet_mode:
             print("")
 
     if quiet_mode:
         print_progress_bar(early_exit, idx + 1, total_checks)
-    elif early_exit:
-        print("ⓘ  Exited early due to --fail-fast flag")
+    elif early_exit or clipboard:
+        print("ⓘ  Exited early due to --clipboard and/or --fail-fast flag")
 
 
 def print_progress_bar(early_exit: bool, current: int, total: int):

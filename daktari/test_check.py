@@ -48,4 +48,4 @@ class TestConfig(unittest.TestCase):
         self.assertEqual(check.depends_on, [DummyCheck, DummyCheck2])
 
     def _verify_result(self, result: CheckResult, expected_status: CheckStatus, expected_message: str):
-        self.assertEqual(result, CheckResult("check.name", expected_status, expected_message, {}))
+        self.assertEqual(result, CheckResult("check.name", expected_status, expected_message, {}, {}))

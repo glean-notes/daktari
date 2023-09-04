@@ -11,6 +11,10 @@ class PythonInstalled(Check):
             OS.UBUNTU: f"<cmd>sudo apt install python{required_version}-dev</cmd>",
             OS.GENERIC: f"Download python {required_version}: https://www.python.org/downloads/",
         }
+        self.command_suggestions = {
+            OS.OS_X: f"brew install python{required_version}",
+            OS.UBUNTU: f"sudo apt install python{required_version}-dev",
+        }
 
     def check(self) -> CheckResult:
         return self.verify_install(f"python{self.required_version}")

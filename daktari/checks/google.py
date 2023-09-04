@@ -74,6 +74,16 @@ class DockerGoogleCloudAuthConfigured(Check):
                 <cmd>gcloud auth configure-docker {registry}</cmd>
                 """
         }
+        self.command_suggestions = {
+            OS.GENERIC: f"""
+                rm -r ~/.config/gcloud
+                gcloud auth login
+                gcloud config set project {cloud_project}
+                gcloud config set --quiet compute/zone {region}
+                gcloud auth application-default login
+                gcloud auth configure-docker {registry}
+                """
+        }
 
     def check(self) -> CheckResult:
         # Logged in with gcloud

@@ -23,6 +23,7 @@ class CheckResult:
     status: CheckStatus
     summary: str
     suggestions: Dict[str, str]
+    command_suggestions: Dict[str, str]
 
 
 class Check:
@@ -30,6 +31,7 @@ class Check:
     depends_on: List[Type["Check"]] = []
     suggestions: Dict[str, str] = {}
     run_on: Optional[str] = None
+    command_suggestions: Optional[Dict[str, str]] = {}
 
     def with_dependencies(self, *dependencies: Type["Check"]) -> "Check":
         copy = deepcopy(self)
@@ -37,13 +39,15 @@ class Check:
         return copy
 
     def passed(self, message: str) -> CheckResult:
-        return CheckResult(self.name, CheckStatus.PASS, message, self.suggestions)
+        return CheckResult(self.name, CheckStatus.PASS, message, self.suggestions, self.command_suggestions)
 
     def failed(self, message: str) -> CheckResult:
-        return CheckResult(self.name, CheckStatus.FAIL, message, self.suggestions)
+        return CheckResult(self.name, CheckStatus.FAIL, message, self.suggestions, self.command_suggestions)
 
     def passed_with_warning(self, message: str) -> CheckResult:
-        return CheckResult(self.name, CheckStatus.PASS_WITH_WARNING, message, self.suggestions)
+        return CheckResult(
+            self.name, CheckStatus.PASS_WITH_WARNING, message, self.suggestions, self.command_suggestions
+        )
 
     def verify(self, passed: bool, dual_message: str) -> CheckResult:
         pattern = re.compile(" <not/> ")

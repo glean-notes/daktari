@@ -219,6 +219,10 @@ class DirectoryIsOnPath(Check):
             OS.GENERIC: "Append the following line to your profile (~/.bashrc or ~/.zshrc): "
             f'\n\nexport PATH="{self.directory}:$PATH"',
         }
+        self.command_suggestions = {
+            OS.UBUNTU: f"echo 'export PATH=\"{self.directory}:$PATH\"' >> ~/.bashrc && source ~/.bashrc",
+            OS.OS_X: f"echo 'export PATH=\"{self.directory}:$PATH\"' >> ~/.zshrc && source ~/.zshrc",
+        }
 
     def check(self) -> CheckResult:
         path_value = get_env_var_value("PATH")
@@ -242,6 +246,7 @@ class DetektInstalled(Check):
             OS.UBUNTU: self.get_install_cmd(),
             OS.GENERIC: "Install detekt: https://detekt.dev/cli.html#install-the-cli",
         }
+        self.command_suggestions = {OS.OS_X: self.get_install_cmd(), OS.UBUNTU: self.get_install_cmd()}
 
     def get_install_cmd(self) -> str:
         version = self.install_version or "[desired version - see https://github.com/detekt/detekt/releases]"

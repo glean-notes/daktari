@@ -22,6 +22,10 @@ class KubectlInstalled(Check):
             OS.UBUNTU: "<cmd>sudo snap install kubectl --classic</cmd>",
             OS.GENERIC: "Install kubectl: https://kubernetes.io/docs/tasks/tools/#kubectl",
         }
+        self.command_suggestions = {
+            OS.OS_X: "brew install kubectl",
+            OS.UBUNTU: "sudo snap install kubectl --classic",
+        }
 
     def check(self) -> CheckResult:
         installed_version = get_kubectl_version()
@@ -51,6 +55,7 @@ class KubectlContextExists(Check):
         self.context_name = context_name
         self.name = f"kubectl.contextExists.{context_name}"
         self.suggestions = {OS.GENERIC: provision_command}
+        self.command_suggestions = {OS.GENERIC: provision_command}
 
     def check(self) -> CheckResult:
         output = get_stdout("kubectl config get-contexts")
@@ -78,8 +83,14 @@ class KubectlNoExtraneousContexts(Check):
             suggestion = "\n".join(
                 f"<cmd>kubectl config delete-context {context}</cmd>" for context in extraneous_contexts
             )
+            command_suggestion = "\n".join(
+                f"kubectl config delete-context {context}" for context in extraneous_contexts
+            )
             self.suggestions = {
                 OS.GENERIC: suggestion,
+            }
+            self.command_suggestions = {
+                OS.GENERIC: command_suggestion,
             }
             return self.passed_with_warning(f"{len(extraneous_contexts)} extraneous kubectl context(s) found")
 
@@ -96,6 +107,10 @@ class HelmInstalled(Check):
             OS.OS_X: "<cmd>brew install helm</cmd>",
             OS.UBUNTU: "<cmd>sudo snap install helm --classic</cmd>",
             OS.GENERIC: "Install Helm: https://helm.sh/docs/intro/install/",
+        }
+        self.command_suggestions = {
+            OS.OS_X: "brew install helm",
+            OS.UBUNTU: "sudo snap install helm --classic",
         }
 
     def check(self) -> CheckResult:
@@ -128,6 +143,9 @@ class HelmRepoExists(Check):
         self.name = f"helm.repoExists.{repo_name}"
         self.suggestions = {
             OS.GENERIC: f"<cmd>helm repo add {repo_name} {repo_url} --force-update</cmd>",
+        }
+        self.command_suggestions = {
+            OS.GENERIC: f"helm repo add {repo_name} {repo_url} --force-update",
         }
 
     def check(self) -> CheckResult:

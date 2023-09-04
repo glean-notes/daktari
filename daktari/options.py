@@ -27,7 +27,7 @@ argument_parser.add_argument(
     "-f", "--fail-fast", action="store_true", dest="fail_fast", help="stop running checks after the first failure"
 )
 argument_parser.add_argument(
-    "-cb", "--clipboard", action="store_true", dest="clipboard", help="copies suggestion commands to clipboard"
+    "-b", "--clipboard", action="store_true", dest="clipboard", help="copies suggestion commands to clipboard"
 )
 argument_parser.add_argument(
     "-c",
