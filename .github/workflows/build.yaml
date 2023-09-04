@@ -34,6 +34,7 @@ jobs:
         mypy daktari
     - name: test
       run: |
+        sudo apt-get install -y xclip
         python -m unittest discover
     - name: execute git check
       run: |
