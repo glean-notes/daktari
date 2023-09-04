@@ -22,7 +22,6 @@ class DirenvInstalled(Check):
             OS.OS_X: "Install direnv using apt-get: <cmd>sudo apt-get install direnv</cmd>",
         }
 
-
     def check(self) -> CheckResult:
         installed_version = get_simple_cli_version("direnv")
         return self.validate_semver_expression(

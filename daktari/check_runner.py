@@ -53,9 +53,7 @@ class CheckRunner:
             return check.check()
         except Exception as err:
             logging.debug(f"Exception running check {check.name}", exc_info=True)
-            return CheckResult(
-                check.name, CheckStatus.ERROR, f"Check failed with unhandled {type(err).__name__}", {}, {}
-            )
+            return CheckResult(check.name, CheckStatus.ERROR, f"Check failed with unhandled {type(err).__name__}", {})
 
     def diagnose_missing_dependency(self, check: Check) -> CheckResult:
         all_checks = {check.name for check in self.checks}
@@ -67,4 +65,4 @@ class CheckRunner:
             if missing_checks
             else "skipped due to previous failures"
         )
-        return CheckResult(check.name, CheckStatus.PASS_WITH_WARNING, summary, {}, {})
+        return CheckResult(check.name, CheckStatus.PASS_WITH_WARNING, summary, {})

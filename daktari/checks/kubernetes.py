@@ -130,7 +130,6 @@ class HelmRepoExists(Check):
             OS.GENERIC: f"<cmd>helm repo add {repo_name} {repo_url} --force-update</cmd>",
         }
 
-
     def check(self) -> CheckResult:
         output = get_stdout("helm repo list -o json")
         if not output:
