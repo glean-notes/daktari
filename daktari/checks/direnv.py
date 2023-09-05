@@ -19,7 +19,7 @@ class DirenvInstalled(Check):
         self.suggestions = {
             OS.GENERIC: "Install direnv: https://direnv.net/#getting-started",
             OS.OS_X: "Install direnv using brew: <cmd>brew install direnv</cmd>",
-            OS.OS_X: "Install direnv using apt-get: <cmd>sudo apt-get install direnv</cmd>",
+            OS.UBUNTU: "Install direnv using apt-get: <cmd>sudo apt-get install direnv</cmd>",
         }
 
     def check(self) -> CheckResult:
