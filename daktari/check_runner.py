@@ -7,20 +7,17 @@ from daktari.os import detect_os
 from daktari.result_printer import print_check_result
 
 
-def run_checks(checks: List[Check], quiet_mode: bool, fail_fast: bool, clipboard: bool) -> bool:
-    return CheckRunner(checks, quiet_mode, fail_fast, clipboard).run()
+def run_checks(checks: List[Check], quiet_mode: bool, fail_fast: bool) -> bool:
+    return CheckRunner(checks, quiet_mode, fail_fast).run()
 
 
 class CheckRunner:
-    def __init__(self, checks: List[Check], quiet_mode: bool, fail_fast: bool, clipboard: bool):
+    def __init__(self, checks: List[Check], quiet_mode: bool, fail_fast: bool):
         self.checks = [check for check in checks if check.run_on is None or check.run_on == detect_os()]
         self.all_passed = True
         self.checks_passed: Set[str] = set()
         self.quiet_mode = quiet_mode
         self.fail_fast = fail_fast
-        self.clipboard = clipboard
-        if clipboard:
-            self.fail_fast = True
 
     def run(self) -> bool:
         for idx, check in enumerate(sort_checks(self.checks)):
@@ -36,7 +33,7 @@ class CheckRunner:
     def try_run_check(self, idx: int, check: Check):
         dependencies_met = all([dependency.name in self.checks_passed for dependency in check.depends_on])
         result = self.run_check(check) if dependencies_met else self.diagnose_missing_dependency(check)
-        print_check_result(result, self.early_exit(), self.quiet_mode, idx, len(self.checks), self.clipboard)
+        print_check_result(result, self.early_exit(), self.quiet_mode, idx, len(self.checks))
 
     def run_check(self, check: Check) -> CheckResult:
         logging.info(f"Running check {check.name}")

@@ -66,8 +66,7 @@ def copy_to_clipboard(suggestion: Optional[str]):
 
 
 def print_check_result(
-    result: CheckResult, early_exit: bool, quiet_mode: bool, idx: int, total_checks: int, clipboard: bool
-):
+    result: CheckResult, early_exit: bool, quiet_mode: bool, idx: int, total_checks: int):
     this_os = detect_os()
     status_symbol = check_status_symbol(result.status)
     colour = check_status_colour(result.status)
@@ -78,7 +77,7 @@ def print_check_result(
             if suggestion:
                 print_suggestion_text(suggestion)
 
-            if clipboard:
+            if early_exit:
                 copy_to_clipboard(suggestion)
 
         if quiet_mode:
@@ -87,7 +86,7 @@ def print_check_result(
     if quiet_mode:
         print_progress_bar(early_exit, idx + 1, total_checks)
     elif early_exit:
-        print("ⓘ  Exited early due to --clipboard and/or --fail-fast flag")
+        print("ⓘ  Exited early due to --fail-fast flag")
 
 
 def print_progress_bar(early_exit: bool, current: int, total: int):
