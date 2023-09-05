@@ -65,8 +65,7 @@ def copy_to_clipboard(suggestion: Optional[str]):
     print("ⓘ  No command available to copy to clipboard")
 
 
-def print_check_result(
-    result: CheckResult, early_exit: bool, quiet_mode: bool, idx: int, total_checks: int):
+def print_check_result(result: CheckResult, early_exit: bool, quiet_mode: bool, idx: int, total_checks: int):
     this_os = detect_os()
     status_symbol = check_status_symbol(result.status)
     colour = check_status_colour(result.status)
