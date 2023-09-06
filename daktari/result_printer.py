@@ -1,5 +1,6 @@
 import re
 import textwrap
+import pyclip
 from typing import Callable, Dict, Optional
 
 from colors import green, red, underline, yellow
@@ -49,8 +50,19 @@ def print_suggestion_text(text: str):
     print("┌─" + title + "─" * (max_width - len(title)) + "┐")
     for line in lines:
         print(f"  {line}")
-
     print("└" + "─" * (max_width + 2) + "┘")
+
+
+def copy_to_clipboard(suggestion: Optional[str]):
+    if suggestion is not None:
+        command_regex = re.compile(r"\<cmd\>(.*?)\<\/cmd\>")
+        results = command_regex.findall(suggestion)
+        if len(results) > 0:
+            pyclip.copy("\n".join(results))
+            print("ⓘ  Command copied to clipboard")
+            return
+
+    print("ⓘ  No command available to copy to clipboard")
 
 
 def print_check_result(result: CheckResult, early_exit: bool, quiet_mode: bool, idx: int, total_checks: int):
@@ -63,6 +75,10 @@ def print_check_result(result: CheckResult, early_exit: bool, quiet_mode: bool, 
             suggestion = get_most_specific_suggestion(this_os, result.suggestions)
             if suggestion:
                 print_suggestion_text(suggestion)
+
+            if early_exit:
+                copy_to_clipboard(suggestion)
+
         if quiet_mode:
             print("")
 
