@@ -205,9 +205,9 @@ class HostAliasesConfigured(Check):
         logging.debug(f"Hosts file entries: {entries_dict}")
         for name, address in self.required_aliases.items():
             if entries_dict.get(name) != address:
-                return self.failed(f"{hosts.hosts_path} alias {name} -> {address} not present")
+                return self.failed(f"{hosts.path} alias {name} -> {address} not present")
 
-        return self.passed(f"{hosts.hosts_path} aliases present")
+        return self.passed(f"{hosts.path} aliases present")
 
 
 class DirectoryIsOnPath(Check):
