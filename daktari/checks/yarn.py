@@ -104,8 +104,8 @@ class YarnNpmGithubTokenValid(Check):
     depends_on = [YarnNpmScopeConfigured]
 
     def __init__(self, github_org: str, scope_name: str):
+        self.scope_name = scope_name
         self.github_organisation = github_org
-        self.github_token = get_yarnrc_token_for_scope(scope_name)
         self.suggestions = {
             OS.GENERIC: "Please check the token was copied correctly from GitHub."
             " Ensure the token hasn't expired, or has been revoked."
@@ -113,12 +113,16 @@ class YarnNpmGithubTokenValid(Check):
         }
 
     def check(self) -> CheckResult:
+        try:
+            github_token = get_yarnrc_token_for_scope(self.scope_name)
+        except Exception as e:
+            return self.failed(str(e))
         headers = {
-            "Authorization": f"Bearer {self.github_token}",
+            "Authorization": f"Bearer {github_token}",
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
         }
-        logging.debug(f"Checking the validity of Yarn token {self.github_token} with the Github API")
+        logging.debug(f"Checking the validity of Yarn token {github_token} with the Github API")
         response = requests.get(
             f"https://api.github.com/orgs/{self.github_organisation}/packages?package_type=npm", headers=headers
         )
