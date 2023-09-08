@@ -220,13 +220,13 @@ class DirectoryIsOnPath(Check):
                 Append the following line to your profile (~/.bashrc or ~/.zshrc):
                 export PATH="{self.directory}:$PATH
                 """,
-            OS.UBUNTU: """
+            OS.UBUNTU: f"""
                 Append the following line to your profile (~/.bashrc):
                 export PATH="{self.directory}:$PATH"
                 For first time setup, you can run this:
                 <cmd>echo 'export PATH="{self.directory}:$PATH"' >> ~/.bashrc && source ~/.bashrc</cmd>
                 """,
-            OS.OS_X: """
+            OS.OS_X: f"""
                 Append the following line to your profile (~/.zshrc):
                 export PATH="{self.directory}:$PATH"
                 For first time setup, you can run this:
