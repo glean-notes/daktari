@@ -21,4 +21,4 @@ dpath==2.1.6
 pyOpenSSL==23.2.0
 types-pyOpenSSL==23.2.0.2
 pyclip==0.7.0
-urllib3<2.1 # pin lower than 2 because of incompatibility with requests lib: https://github.com/psf/requests/issues/6432
+urllib3<1.27 # pin lower than 2 because of incompatibility with requests lib: https://github.com/psf/requests/issues/6432
