@@ -58,10 +58,12 @@ def copy_to_clipboard(suggestion: Optional[str]):
         command_regex = re.compile(r"\<cmd\>(.*?)\<\/cmd\>")
         results = command_regex.findall(suggestion)
         if len(results) > 0:
-            pyclip.copy("\n".join(results))
-            print("ⓘ  Command copied to clipboard")
+            try:
+                pyclip.copy("\n".join(results))
+                print("ⓘ  Command copied to clipboard")
+            except pyclip.base.ClipboardSetupException:
+                print("ⓘ  Clipboard not available")
             return
-
     print("ⓘ  No command available to copy to clipboard")
 
 
