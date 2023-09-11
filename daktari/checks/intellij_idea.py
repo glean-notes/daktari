@@ -66,7 +66,8 @@ def get_intellij_idea_version_snap() -> Optional[VersionInfo]:
     logging.debug(f"response from snapd: {snaps_info}")
     version_str = dpath.util.get(snaps_info, "/result/0/version", default=None)
     logging.debug(f"raw snapd version: {version_str}")
-
+    if not isinstance(version_str, str):
+        return None
     version_str = sanitise_version_string(version_str)
 
     version = try_parse_semver(version_str)
