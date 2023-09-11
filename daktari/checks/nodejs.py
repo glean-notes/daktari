@@ -16,7 +16,7 @@ def get_nodejs_version() -> Optional[VersionInfo]:
 
 
 def run_nvm(nvm_args: List[str]):
-    return run_command(["sh", "-u", "-c", '. "$NVM_DIR/nvm.sh"; nvm "$@"', "--", *nvm_args])
+    return run_command(["sh", "-c", '. "$NVM_DIR/nvm.sh"; nvm "$@"', "--", *nvm_args])
 
 
 def can_run_nvm() -> bool:
