@@ -10,6 +10,8 @@ updates:
       - 'dependencies'
   - package-ecosystem: 'pip'
     directory: '/'
+    ignore:
+      - dependency-name: 'urllib3' # Due to compatibility issues with 2.x: https://github.com/psf/requests/issues/6432
     schedule:
       interval: 'weekly'
     labels:
