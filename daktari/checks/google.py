@@ -2,11 +2,13 @@ import json
 import logging
 import os.path
 from json import JSONDecodeError
+from typing import Optional
 
 from daktari.check import Check, CheckResult
 from daktari.command_utils import can_run_command
 from daktari.file_utils import file_exists
 from daktari.os import OS
+from daktari.version_utils import get_simple_cli_version
 
 
 class GoogleCloudSdkInstalled(Check):
@@ -32,14 +34,20 @@ source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.
 
 class CloudSqlProxyInstalled(Check):
     name = "google.cloudSqlProxyInstalled"
-    depends_on = [GoogleCloudSdkInstalled]
+
+    def __init__(self, required_version: Optional[str] = None, recommended_version: Optional[str] = None):
+        self.required_version = required_version
+        self.recommended_version = recommended_version
 
     suggestions = {
         OS.GENERIC: "Install Cloud SQL Proxy: <cmd>gcloud components install cloud_sql_proxy</cmd>",
     }
 
     def check(self) -> CheckResult:
-        return self.verify(can_run_command("cloud_sql_proxy --version"), "Cloud SQL Proxy is <not/> installed")
+        installed_version = get_simple_cli_version("cloud_sql_proxy")
+        return self.validate_semver_expression(
+            "cloud_sql_proxy", installed_version, self.required_version, self.recommended_version
+        )
 
 
 class GkeGcloudAuthPluginInstalled(Check):

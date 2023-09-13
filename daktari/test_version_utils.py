@@ -20,3 +20,7 @@ class TestVersionUtils(unittest.TestCase):
     @mock.patch("daktari.version_utils.get_stdout", return_value="pre-commit 100")
     def test_get_simple_cli_version_invalid_version(self, _):
         self.assertEqual(get_simple_cli_version("foo"), None)
+
+    @mock.patch("daktari.version_utils.get_stdout", return_value="Cloud SQL Auth proxy: 1.27.0+darwin.arm64")
+    def test_get_simple_cli_version_invalid_version(self, _):
+        self.assertEqual(get_simple_cli_version("foo"), "1.27.0")
