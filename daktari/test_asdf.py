@@ -1,8 +1,8 @@
 import unittest
 from daktari.asdf import get_tool_version_from_string
 
-class TestGetToolVersionFromString(unittest.TestCase):
 
+class TestGetToolVersionFromString(unittest.TestCase):
     def test_valid_tool(self):
         content = """1password-cli 2.19.0
 cloud-sql-proxy 2.6.1
@@ -23,6 +23,7 @@ cloud-sql-proxy 2.6.1"""
     def test_empty_content(self):
         content = ""
         self.assertIsNone(get_tool_version_from_string("1password-cli", content))
+
 
 if __name__ == "__main__":
     unittest.main()
