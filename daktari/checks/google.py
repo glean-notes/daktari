@@ -89,6 +89,9 @@ class DockerGoogleCloudAuthConfigured(Check):
         if not file_exists(google_config_path):
             return self.failed(f"{google_config_path} does not exist")
 
+        if not can_run_command("gcloud auth application-default print-access-token"):
+            return self.failed("Application Default Credentials are not correctly set up")
+
         # Docker configured correctly
         docker_config_path = os.path.expanduser("~/.docker/config.json")
         if not file_exists(docker_config_path):
