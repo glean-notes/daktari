@@ -7,7 +7,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.8, 3.9, '3.10', '3.11']
@@ -34,6 +34,7 @@ jobs:
         mypy daktari
     - name: test
       run: |
+        sudo apt-get update
         sudo apt-get install -y xclip xorg
         python -m unittest discover
     - name: execute git check
