@@ -31,7 +31,6 @@ class Check:
     depends_on: List[Type["Check"]] = []
     suggestions: Dict[str, str] = {}
     run_on: Optional[str] = None
-    allow_overrides: bool = True
 
     def with_dependencies(self, *dependencies: Type["Check"]) -> "Check":
         copy = deepcopy(self)
