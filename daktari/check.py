@@ -8,6 +8,7 @@ from typing import Dict, List, Optional, Type
 from semver import VersionInfo
 
 from daktari.command_utils import can_run_command
+from daktari.os import OS
 
 
 class CheckStatus(Enum):
@@ -30,6 +31,7 @@ class Check:
     depends_on: List[Type["Check"]] = []
     suggestions: Dict[str, str] = {}
     run_on: Optional[str] = None
+    allow_overrides: bool = True
 
     def with_dependencies(self, *dependencies: Type["Check"]) -> "Check":
         copy = deepcopy(self)
@@ -89,8 +91,17 @@ class Check:
         self.suggestions = suggestions
         return self
 
-    def suggest(self, os: str, text: str) -> "Check":
+    def suggest(self, text: str, os: Optional[str] = None) -> "Check":
+        if os is None:
+            os = OS.GENERIC
+
         return self.override_suggestions({os: text})
+
+    def suggest_if(self, condition: bool, text: str, os: Optional[str] = None) -> "Check":
+        if condition:
+            return self.suggest(text, os)
+        else:
+            return self
 
     def only_on(self, os: str) -> "Check":
         self.run_on = os

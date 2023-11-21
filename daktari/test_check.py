@@ -3,6 +3,7 @@ import unittest
 from semver import VersionInfo
 
 from daktari.check import CheckResult, CheckStatus
+from daktari.os import OS
 from daktari.test_check_factory import DummyCheck, DummyCheck2
 
 INSTALLED_VERSION = VersionInfo(10, 3, 1)
@@ -46,6 +47,21 @@ class TestConfig(unittest.TestCase):
     def test_with_dependencies_keeps_existing_dependencies(self):
         check = DummyCheck(depends_on=[DummyCheck]).with_dependencies(DummyCheck2)
         self.assertEqual(check.depends_on, [DummyCheck, DummyCheck2])
+
+    def test_override_suggest(self):
+        generic = DummyCheck().suggest("Do the thing")
+        self.assertEqual(generic.suggestions, {OS.GENERIC: "Do the thing"})
+
+        ubuntu = DummyCheck().suggest("Do the thing", OS.UBUNTU)
+        self.assertEqual(ubuntu.suggestions, {OS.UBUNTU: "Do the thing"})
+
+    def test_conditional_override(self):
+        some_condition = True
+        overridden = DummyCheck().suggest_if(some_condition, "Do the thing")
+        self.assertEqual(overridden.suggestions, {OS.GENERIC: "Do the thing"})
+
+        not_overridden = DummyCheck().suggest_if(not some_condition, "Do the thing")
+        self.assertEqual(not_overridden.suggestions, {})
 
     def _verify_result(self, result: CheckResult, expected_status: CheckStatus, expected_message: str):
         self.assertEqual(result, CheckResult("check.name", expected_status, expected_message, {}))
