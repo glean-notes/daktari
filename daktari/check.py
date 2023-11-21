@@ -8,6 +8,7 @@ from typing import Dict, List, Optional, Type
 from semver import VersionInfo
 
 from daktari.command_utils import can_run_command
+from daktari.os import OS
 
 
 class CheckStatus(Enum):
@@ -89,8 +90,14 @@ class Check:
         self.suggestions = suggestions
         return self
 
-    def suggest(self, os: str, text: str) -> "Check":
+    def suggest(self, text: str, os: str = OS.GENERIC) -> "Check":
         return self.override_suggestions({os: text})
+
+    def suggest_if(self, condition: bool, text: str, os: str = OS.GENERIC) -> "Check":
+        if condition:
+            return self.suggest(text, os)
+        else:
+            return self
 
     def only_on(self, os: str) -> "Check":
         self.run_on = os
