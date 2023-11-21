@@ -91,13 +91,10 @@ class Check:
         self.suggestions = suggestions
         return self
 
-    def suggest(self, text: str, os: Optional[str] = None) -> "Check":
-        if os is None:
-            os = OS.GENERIC
-
+    def suggest(self, text: str, os: str = OS.GENERIC) -> "Check":
         return self.override_suggestions({os: text})
 
-    def suggest_if(self, condition: bool, text: str, os: Optional[str] = None) -> "Check":
+    def suggest_if(self, condition: bool, text: str, os: str = OS.GENERIC) -> "Check":
         if condition:
             return self.suggest(text, os)
         else:
