@@ -13,7 +13,7 @@ def run_checks(checks: List[Check], quiet_mode: bool, fail_fast: bool) -> bool:
 
 class CheckRunner:
     def __init__(self, checks: List[Check], quiet_mode: bool, fail_fast: bool):
-        self.checks = [check for check in checks if check.run_on is None or check.run_on == detect_os()]
+        self.checks = [check for check in checks if check.should_run(detect_os())]
         self.all_passed = True
         self.checks_passed: Set[str] = set()
         self.quiet_mode = quiet_mode

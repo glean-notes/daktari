@@ -63,5 +63,14 @@ class TestConfig(unittest.TestCase):
         not_overridden = DummyCheck().suggest_if(not some_condition, "Do the thing")
         self.assertEqual(not_overridden.suggestions, {})
 
+    def test_should_run(self):
+        self.assertTrue(DummyCheck().should_run(OS.GENERIC))
+
+        self.assertTrue(DummyCheck().only_on(OS.UBUNTU).should_run(OS.UBUNTU))
+        self.assertFalse(DummyCheck().only_on(OS.UBUNTU).should_run(OS.OS_X))
+
+        self.assertTrue(DummyCheck().skip_if(False).should_run(OS.GENERIC))
+        self.assertFalse(DummyCheck().skip_if(True).should_run(OS.GENERIC))
+
     def _verify_result(self, result: CheckResult, expected_status: CheckStatus, expected_message: str):
         self.assertEqual(result, CheckResult("check.name", expected_status, expected_message, {}))
