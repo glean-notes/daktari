@@ -28,24 +28,10 @@ def can_run_nvm() -> bool:
         return False
 
 
-def get_nvm_stdout(nvm_args: List[str]) -> Optional[str]:
-    try:
-        return run_nvm(nvm_args).stdout
-    except Exception:
-        return None
-
-
-def nvm_resolve_version(version: str) -> Optional[VersionInfo]:
-    resolved_version = get_nvm_stdout(["version", version])
-    resolved_version = None if resolved_version is None else resolved_version.lstrip("v")
-    return try_parse_semver(resolved_version)
-
-
 def get_nvmrc_version() -> Optional[str]:
     try:
         with open(".nvmrc", "r") as nvmrc_file:
-            nvmrc_ver = nvmrc_file.readline().strip()
-        return nvmrc_ver
+            return nvmrc_file.readline().strip()
     except IOError:
         logging.debug("Could not read .nvmrc", exc_info=True)
         return None
@@ -81,7 +67,6 @@ class NvmInstalled(Check):
 
 class NodeJsVersionMatchesNvmrc(Check):
     name = "nodejs.nvmrc.version"
-    depends_on = [NvmInstalled]
 
     suggestions = {
         OS.GENERIC: """
@@ -97,15 +82,11 @@ class NodeJsVersionMatchesNvmrc(Check):
         if nvmrc_version is None:
             return self.failed("Missing or invalid .nvmrc file")
 
-        expected_version = nvm_resolve_version(nvmrc_version)
-        if expected_version is None:
-            return self.failed(f'node.js version "{nvmrc_version}" is not installed')
-
         active_version = get_nodejs_version()
         if active_version is None:
             return self.failed(f'node.js version "{nvmrc_version}" is not installed')
 
-        if active_version != expected_version:
+        if active_version != nvmrc_version:
             return self.failed(f'the active node.js version is {active_version}, "{nvmrc_version}" is required')
 
         return self.passed(f"node.js version is {active_version}")
