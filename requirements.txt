@@ -19,6 +19,6 @@ pyobjc-framework-Cocoa==10.1; sys_platform == 'darwin'
 requests-unixsocket==0.3.0
 dpath==2.1.6
 pyOpenSSL==23.3.0
-types-pyOpenSSL==23.3.0.0
+types-pyOpenSSL==23.3.0.20240106
 pyclip==0.7.0
 urllib3<1.27 # pin lower than 2 because of incompatibility with requests lib: https://github.com/psf/requests/issues/6432
