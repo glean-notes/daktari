@@ -104,4 +104,4 @@ class Check:
         return self
 
     def __eq__(self, other):
-        return type(self) == type(other) and self.name == other.name
+        return type(self) == type(other) and self.name == other.name  # noqa: E721
