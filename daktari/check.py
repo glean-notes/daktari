@@ -104,4 +104,4 @@ class Check:
         return self
 
     def __eq__(self, other):
-        return type(self) is type(other) and self.name is other.name
+        return isinstance(self, other) and self.name == other.name
