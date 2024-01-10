@@ -54,6 +54,6 @@ class DirenvAllowed(Check):
         if direnv_status is None:
             return self.failed("direnv status returned no output")
         cwd = getcwd()
-        query = f"Found RC path {cwd}/.envrc\n.*\n.*\nFound RC allowed (true|0)"
+        query = f"Found RC path {cwd}/.envrc(\n.*)*Found RC allowed (true|0)"
         direnv_allowed = re.search(query, direnv_status) is not None
         return self.verify(direnv_allowed, f"{cwd} is <not/> allowed to use direnv")
