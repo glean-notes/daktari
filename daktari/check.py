@@ -31,6 +31,7 @@ class Check:
     depends_on: List[Type["Check"]] = []
     suggestions: Dict[str, str] = {}
     run_on: Optional[str] = None
+    skip: bool = False
 
     def with_dependencies(self, *dependencies: Type["Check"]) -> "Check":
         copy = deepcopy(self)
@@ -103,5 +104,12 @@ class Check:
         self.run_on = os
         return self
 
+    def skip_if(self, condition: bool) -> "Check":
+        self.skip = condition
+        return self
+
+    def should_run(self, current_os: str) -> bool:
+        return not self.skip and (self.run_on is None or self.run_on == current_os)
+
     def __eq__(self, other):
-        return type(self) == type(other) and self.name == other.name  # noqa: E721
+        return type(self) is type(other) and self.name == other.name
