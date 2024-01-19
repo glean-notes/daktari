@@ -142,7 +142,12 @@ def check_version_compatibility(config_path: Path, raw_config: str) -> bool:
         return True
 
     my_version = version.parse(__version__)
-    required_version = version.parse(match.group(1))
+
+    try:
+        required_version = version.parse(match.group(1))
+    except version.InvalidVersion:
+        print(red(f"❌  Invalid daktari_version in {config_path}: {match.group(1)}"))
+        return False
 
     if not isinstance(required_version, version.Version):
         print(red(f"❌  Invalid daktari_version in {config_path}: {required_version}"))

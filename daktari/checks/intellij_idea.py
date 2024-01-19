@@ -4,6 +4,7 @@ import os.path
 from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import Optional
+from xml.etree.ElementTree import Element
 
 import dpath.util
 from semver import VersionInfo
@@ -160,3 +161,38 @@ class IntelliJNodePackageManagerConfigured(XmlFileXPathCheck):
         current_package_manager = str(key_json["keyToString"]["nodejs_package_manager_path"])
         logging.debug(f"IntelliJ node package manager set to: {current_package_manager}")
         return current_package_manager.__contains__(self.package_manager_path)
+
+
+class IntelliJProjectSdkJavaVersion(XmlFileXPathCheck):
+    name = "intellij.jdkVersionConfigured"
+    file_path = ".idea/misc.xml"
+    xpath_query = "./component[@name='ProjectRootManager']"
+    depends_on = [IntelliJProjectImported]
+
+    def __init__(self, jdk_version: int):
+        self.jdk_version = jdk_version
+
+        self.suggestions = {
+            OS.GENERIC: f"""
+                Follow the steps to configure JDK {jdk_version}:
+                https://www.jetbrains.com/help/idea/sdk.html#change-project-sdk
+                """
+        }
+
+    def validate_query_result(self, result: Optional[Element]):
+        if result is None:
+            self.pass_fail_message = "IntelliJ Project SDK is not set"
+            return False
+
+        try:
+            jdk_type = result.attrib["project-jdk-type"]
+            if jdk_type != "JavaSDK":
+                self.pass_fail_message = f"IntelliJ Project SDK is not a Java JDK: {jdk_type}"
+                return False
+        except KeyError:
+            self.pass_fail_message = "IntelliJ Project SDK is not a Java JDK"
+            return False
+
+        language_level = result.attrib["languageLevel"]
+        self.pass_fail_message = f"IntelliJ Project SDK is <not/> set to Java {self.jdk_version}: {language_level}"
+        return language_level == f"JDK_{self.jdk_version}"
