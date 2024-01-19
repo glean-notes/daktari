@@ -23,6 +23,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements-dev.txt
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        sudo apt-get update
+        sudo apt-get install -y xclip xorg
     - name: flake8
       run: |
         flake8 setup.py daktari
@@ -33,10 +35,9 @@ jobs:
       run: |
         mypy daktari
     - name: test
+      working-directory: daktari
       run: |
-        sudo apt-get update
-        sudo apt-get install -y xclip xorg
-        python -m unittest discover
+        python -m pytest
     - name: execute git check
       run: |
         python3 -m daktari --debug --config .ci-config.py
