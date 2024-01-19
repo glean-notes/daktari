@@ -12,7 +12,7 @@ semver==3.0.2
 python-hosts==1.0.5
 tabulate==0.9.0
 types-tabulate==0.9.0.20240106
-PyYAML==5.3.1
+PyYAML==5.4.1
 types-PyYAML==6.0.12.12
 pyobjc-core==10.1; sys_platform == 'darwin'
 pyobjc-framework-Cocoa==10.1; sys_platform == 'darwin'
