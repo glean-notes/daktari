@@ -55,11 +55,15 @@ class ConanRemoteDetected(Check):
         logging.debug(f"{self.remote_name} conan remote is configured with URL {configured_url}.")
 
         if configured_url != self.remote_url:
+            self.suggestions = {
+                OS.GENERIC: f"<cmd>conan remote update --url {self.remote_url} {self.remote_name} </cmd>"
+            }
             return self.failed(
                 f"{self.remote_name} conan remote is configured with URL {configured_url}, expected {self.remote_url}"
             )
 
         if not remote["enabled"]:
+            self.suggestions = {OS.GENERIC: f"<cmd>conan remote enable {self.remote_name} </cmd>"}
             return self.failed(f"{self.remote_name} conan remote is not enabled.")
 
         return self.passed(f"{self.remote_name} conan remote is configured for the current user.")
