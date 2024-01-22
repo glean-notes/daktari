@@ -72,8 +72,12 @@ class ConanRemoteDetected(Check):
 class ConanRemoteAuthenticated(Check):
     name = "conan.remoteAuthenticated"
 
-    def __init__(self, remote_name: str):
-        self.suggestions = {OS.GENERIC: f"<cmd>conan remote login {remote_name}</cmd>"}
+    def __init__(self, remote_name: str, authentication_command: Optional[str] = None):
+        self.suggestions = (
+            {OS.GENERIC: authentication_command}
+            if authentication_command
+            else {OS.GENERIC: f"<cmd>conan remote login {remote_name}</cmd>"}
+        )
         self.remote_name = remote_name
         self.depends_on = [ConanRemoteDetected]
 
