@@ -277,3 +277,14 @@ class DetektInstalled(Check):
         return self.validate_semver_expression(
             "detekt", installed_version, self.required_version, self.recommended_version
         )
+
+
+class TaskInstalled(Check):
+    name = "task.installed"
+    suggestions = {
+        OS.OS_X: "<cmd>brew install go-task</cmd>",
+        OS.GENERIC: "Install task: https://taskfile.dev/installation/",
+    }
+
+    def check(self) -> CheckResult:
+        return self.verify_install("task")
