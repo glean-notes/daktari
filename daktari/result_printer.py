@@ -13,9 +13,12 @@ clear_line_prefix = "\33[2K\r"
 
 
 def check_status_symbol(status: CheckStatus) -> str:
-    return {CheckStatus.PASS: "✅", CheckStatus.PASS_WITH_WARNING: "⚠️ ", CheckStatus.FAIL: "❌", CheckStatus.ERROR: "💥"}[
-        status
-    ]
+    return {
+        CheckStatus.PASS: "✅",
+        CheckStatus.PASS_WITH_WARNING: "⚠️ ",
+        CheckStatus.FAIL: "❌",
+        CheckStatus.ERROR: "💥",
+    }[status]
 
 
 def check_status_colour(status: CheckStatus) -> Callable:
