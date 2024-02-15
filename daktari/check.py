@@ -47,12 +47,12 @@ class Check:
     def passed_with_warning(self, message: str) -> CheckResult:
         return CheckResult(self.name, CheckStatus.PASS_WITH_WARNING, message, self.suggestions)
 
-    def verify(self, passed: bool, dual_message: str) -> CheckResult:
+    def verify(self, passed: bool, dual_message: str, failed_message: Optional[str] = None) -> CheckResult:
         pattern = re.compile(" <not/> ")
         if passed:
             return self.passed(pattern.sub(" ", dual_message))
         else:
-            return self.failed(pattern.sub(" not ", dual_message))
+            return self.failed(failed_message or pattern.sub(" not ", dual_message))
 
     def validate_semver_expression(
         self,
