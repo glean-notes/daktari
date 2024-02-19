@@ -8,6 +8,7 @@ from tabulate import tabulate
 from daktari.check import Check, CheckResult
 from daktari.os import OS, check_env_var_exists, get_env_var_value
 from daktari.version_utils import get_simple_cli_version
+from daktari.command_utils import can_run_command
 
 
 class WatchmanInstalled(Check):
@@ -288,3 +289,14 @@ class TaskInstalled(Check):
 
     def check(self) -> CheckResult:
         return self.verify_install("task")
+
+
+class Rosetta2Installed(Check):
+    name = "rosetta2.installed"
+    run_on = OS.OS_X
+    suggestions = {OS.OS_X: "<cmd>softwareupdate --install-rosetta</cmd>"}
+
+    def check(self) -> CheckResult:
+        return self.verify(
+            can_run_command("arch -x86_64 true"), "Rosetta 2 is installed or not required", "Rosetta 2 is not installed"
+        )
