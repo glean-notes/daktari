@@ -1,0 +1,16 @@
+{
+  "latest_signin": "account-name",
+  "device": "6CACE0AB-FD1A-45F9-B867-BB2D9F761B0C",
+  "accounts": [
+    {
+      "shorthand": "account-name",
+      "accountUUID": "0CB7E2C7-479B-4530-AD0E-2D45A295BD17",
+      "url": "https://account-name.1password.com",
+      "email": "joe.blogs@account-name.co",
+      "accountKey": "N-O-P-Q-R-N-O-P-Q-R-N-O-P-Q-R-N-O-P-Q-R-N-O-P-Q-R",
+      "userUUID": "D6067FE0-C616-413D-ACA5-0A58C5616CCD",
+      "dsecret": "N-O-P-Q-R-N-O-P-Q-R-N-O-P-Q-R-N-O-P-Q-R-N-O-P-Q-R"
+    }
+  ],
+  "system_auth_latest_signin": "1E28E218-DD55-4984-B22C-D31CBE7887B4"
+}
