@@ -128,7 +128,11 @@ def get_intellij_idea_version() -> Optional[VersionInfo]:
     if os == OS.OS_X:
         return get_intellij_idea_version_mac()
     elif os == OS.UBUNTU:
-        return get_intellij_idea_version_snap() or get_intellij_idea_version_tarball() or get_intellij_idea_toolbox_version()
+        return (
+            get_intellij_idea_version_snap()
+            or get_intellij_idea_version_tarball()
+            or get_intellij_idea_toolbox_version()
+        )
     else:
         return get_intellij_idea_version_tarball() or get_intellij_idea_toolbox_version()
 
