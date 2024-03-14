@@ -84,6 +84,29 @@ def get_intellij_idea_version_tarball() -> Optional[VersionInfo]:
         return None
 
     product_info_path = os.path.join(os.path.dirname(idea_bin_path), "..", "product-info.json")
+    return get_intellij_version_from_product_info(product_info_path)
+
+
+def get_intellij_idea_toolbox_version() -> Optional[VersionInfo]:
+    try:
+        idea_bin_path = run_command(["sh", "-c", "which idea"]).stdout.rstrip("\n")
+    except CommandErrorException:
+        logging.debug("Could not locate idea", exc_info=True)
+        return None
+
+    apps_dir = os.path.join(os.path.dirname(idea_bin_path), "..", "apps")
+    toolbox_apps = os.listdir(apps_dir)
+    logging.debug(f"Toolbox apps found: {toolbox_apps}", exc_info=True)
+    intellij_installs = [app for app in toolbox_apps if "intellij-idea" in app]
+    if len(intellij_installs) == 0:
+        logging.debug("No IntelliJ IDEA installs found")
+        return None
+
+    product_info_path = os.path.join(apps_dir, intellij_installs[0], "product-info.json")
+    return get_intellij_version_from_product_info(product_info_path)
+
+
+def get_intellij_version_from_product_info(product_info_path: str) -> Optional[VersionInfo]:
     try:
         with open(product_info_path, "rb") as product_info_file:
             product_info = json.load(product_info_file)
@@ -105,9 +128,9 @@ def get_intellij_idea_version() -> Optional[VersionInfo]:
     if os == OS.OS_X:
         return get_intellij_idea_version_mac()
     elif os == OS.UBUNTU:
-        return get_intellij_idea_version_snap() or get_intellij_idea_version_tarball()
+        return get_intellij_idea_version_snap() or get_intellij_idea_version_tarball() or get_intellij_idea_toolbox_version()
     else:
-        return get_intellij_idea_version_tarball()
+        return get_intellij_idea_version_tarball() or get_intellij_idea_toolbox_version()
 
 
 class IntelliJIdeaInstalled(Check):

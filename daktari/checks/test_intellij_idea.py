@@ -1,10 +1,17 @@
 import unittest
 
+from semver import VersionInfo
+
 from daktari.check import CheckStatus
-from daktari.checks.intellij_idea import IntelliJProjectSdkJavaVersion
+from daktari.checks.intellij_idea import IntelliJProjectSdkJavaVersion, get_intellij_version_from_product_info
 
 
 class TestIntellijIdea(unittest.TestCase):
+    def test_parse_product_info(self):
+        product_info_path = "checks/test_resources/intellij-product-info.json"
+        result = get_intellij_version_from_product_info(product_info_path)
+        self.assertEqual(result, VersionInfo(2023, 3, 5))
+
     def test_project_sdk_unset(self):
         check = IntelliJProjectSdkJavaVersion(17)
         check.file_path = "checks/test_resources/intellij_misc_no_sdk.xml"
