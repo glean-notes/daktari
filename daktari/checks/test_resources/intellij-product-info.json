@@ -1,0 +1,25 @@
+{
+  "name": "IntelliJ IDEA",
+  "version": "2023.3.5",
+  "buildNumber": "233.14808.21",
+  "productCode": "IU",
+  "dataDirectoryName": "IntelliJIdea2023.3",
+  "svgIconPath": "bin/idea.svg",
+  "productVendor": "JetBrains",
+  "launch": [
+    {
+      "os": "Linux",
+      "arch": "amd64",
+      "launcherPath": "bin/idea.sh",
+      "javaExecutablePath": "jbr/bin/java",
+      "vmOptionsFilePath": "bin/idea64.vmoptions",
+      "startupWmClass": "jetbrains-idea",
+      "bootClassPathJarNames": [],
+      "additionalJvmArguments": [],
+      "mainClass": "com.intellij.idea.Main"
+    }
+  ],
+  "bundledPlugins": [],
+  "modules": [],
+  "fileExtensions": []
+}
