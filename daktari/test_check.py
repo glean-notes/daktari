@@ -72,5 +72,10 @@ class TestConfig(unittest.TestCase):
         self.assertTrue(DummyCheck().skip_if(False).should_run(OS.GENERIC))
         self.assertFalse(DummyCheck().skip_if(True).should_run(OS.GENERIC))
 
+    def test_warn_only(self):
+        check = DummyCheck(succeed=False).warn_only()
+        result = check.check()
+        self._verify_result(result, CheckStatus.PASS_WITH_WARNING, "dummy check")
+
     def _verify_result(self, result: CheckResult, expected_status: CheckStatus, expected_message: str):
         self.assertEqual(result, CheckResult("check.name", expected_status, expected_message, {}))
