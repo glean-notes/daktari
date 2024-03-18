@@ -194,5 +194,5 @@ class GitCommitSigningFormat(Check):
         return self.verify(
             format_setting == self.required_format,
             f"gpg.format is {self.required_format}",
-            f"gpg.format is not {self.required_format}: {format_setting}"
+            f"gpg.format is not {self.required_format}: {format_setting}",
         )
