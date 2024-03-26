@@ -32,7 +32,7 @@ class Check:
     suggestions: Dict[str, str] = {}
     run_on: Optional[str] = None
     skip: bool = False
-    warn_on_failure: bool = False
+    warn_only_on_failure: bool = False
 
     def with_dependencies(self, *dependencies: Type["Check"]) -> "Check":
         copy = deepcopy(self)
@@ -43,7 +43,7 @@ class Check:
         return CheckResult(self.name, CheckStatus.PASS, message, self.suggestions)
 
     def failed(self, message: str) -> CheckResult:
-        status = CheckStatus.PASS_WITH_WARNING if self.warn_on_failure else CheckStatus.FAIL
+        status = CheckStatus.PASS_WITH_WARNING if self.warn_only_on_failure else CheckStatus.FAIL
         return CheckResult(self.name, status, message, self.suggestions)
 
     def passed_with_warning(self, message: str) -> CheckResult:
@@ -111,7 +111,7 @@ class Check:
         return self
 
     def warn_only(self) -> "Check":
-        self.warn_on_failure = True
+        self.warn_only_on_failure = True
         return self
 
     def should_run(self, current_os: str) -> bool:
