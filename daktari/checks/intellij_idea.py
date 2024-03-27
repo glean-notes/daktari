@@ -12,7 +12,7 @@ from semver import VersionInfo
 from daktari.check import Check, CheckResult
 from daktari.checks.files import FilesExist
 from daktari.checks.xml import XmlFileXPathCheck
-from daktari.command_utils import CommandErrorException, run_command
+from daktari.command_utils import get_stdout
 from daktari.os import OS, detect_os
 from daktari.version_utils import try_parse_semver, sanitise_version_string
 
@@ -77,10 +77,8 @@ def get_intellij_idea_version_snap() -> Optional[VersionInfo]:
 
 
 def get_intellij_idea_version_tarball() -> Optional[VersionInfo]:
-    try:
-        idea_bin_path = run_command(["sh", "-c", "which idea.sh"]).stdout.rstrip("\n")
-    except CommandErrorException:
-        logging.debug("Could not locate idea.sh", exc_info=True)
+    idea_bin_path = get_stdout(["sh", "-c", "which idea.sh"])
+    if idea_bin_path is None:
         return None
 
     product_info_path = os.path.join(os.path.dirname(idea_bin_path), "..", "product-info.json")
@@ -88,10 +86,8 @@ def get_intellij_idea_version_tarball() -> Optional[VersionInfo]:
 
 
 def get_intellij_idea_toolbox_version() -> Optional[VersionInfo]:
-    try:
-        idea_bin_path = run_command(["sh", "-c", "which idea"]).stdout.rstrip("\n")
-    except CommandErrorException:
-        logging.debug("Could not locate idea", exc_info=True)
+    idea_bin_path = get_stdout(["sh", "-c", "which idea"])
+    if idea_bin_path is None:
         return None
 
     apps_dir = os.path.join(os.path.dirname(idea_bin_path), "..", "apps")

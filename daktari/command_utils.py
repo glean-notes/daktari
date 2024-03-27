@@ -64,7 +64,8 @@ def can_run_command(command) -> bool:
 
 def get_stdout(command) -> Optional[str]:
     try:
-        return run_command(command).stdout
+        result = run_command(command).stdout
+        return result.rstrip() if result is not None else result
     except Exception:
         logging.debug("Exception running command", exc_info=True)
         return None

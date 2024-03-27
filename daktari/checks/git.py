@@ -156,7 +156,6 @@ class GpgInstalled(Check):
 
 class GitCommitSigningSetUp(Check):
     name = "git.commitSigningSetUp"
-    depends_on = [GpgInstalled]
 
     suggestions = {
         OS.OS_X: "Follow instructions to set up commit signing: "
@@ -179,5 +178,21 @@ class GitCommitAutoSigningEnabled(Check):
 
     def check(self) -> CheckResult:
         setting = get_stdout("git config commit.gpgsign")
-        passed = setting is not None and setting.rstrip() == "true"
+        passed = setting == "true"
         return self.verify(passed, "commit.gpgsign is <not/> enabled")
+
+
+class GitCommitSigningFormat(Check):
+    name = "git.commitSigningFormat"
+
+    def __init__(self, required_format: str, suggestion: str):
+        self.required_format = required_format
+        self.suggestions = {OS.GENERIC: suggestion}
+
+    def check(self) -> CheckResult:
+        format_setting = get_stdout("git config gpg.format")
+        return self.verify(
+            format_setting == self.required_format,
+            f"gpg.format is {self.required_format}",
+            f"gpg.format is not {self.required_format}: {format_setting}",
+        )
