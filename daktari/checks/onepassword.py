@@ -1,10 +1,9 @@
 import json
-from pathlib import Path
 from typing import Optional
 
 from daktari.check import Check, CheckResult
-from daktari.file_utils import file_exists
 from daktari.os import OS
+from daktari.command_utils import get_stdout
 from daktari.version_utils import get_simple_cli_version
 
 
@@ -42,14 +41,13 @@ class OnePasswordAccountConfigured(Check):
         }
 
     def check(self) -> CheckResult:
-            try:
-                output = get_stdout("op account list")
-                if f"{account_shorthand}.1password.com" in output:
-                    return self.passed(f"{self.account_shorthand} is configured with OP CLI for the current user")
-                else:
-                    return self.failed(f"{self.account_shorthand} is not configured with OP CLI for the current user")
-            except subprocess.CalledProcessError:
-                return self.failed("1Password CLI command failed. Make sure it's installed and configured.")
+        output = get_stdout("op account list")
+        if output is None:
+            return self.failed("1Password CLI command failed. Make sure it's installed and configured.")
+        if f"{self.account_shorthand}.1password.com" in output:
+            return self.passed(f"{self.account_shorthand} is configured with OP CLI for the current user")
+        else:
+            return self.failed(f"{self.account_shorthand} is not configured with OP CLI for the current user")
 
 
 def account_exists(path: str, account_shorthand: str) -> bool:
