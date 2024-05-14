@@ -36,18 +36,26 @@ class OnePasswordAccountConfigured(Check):
 
     def __init__(self, account_shorthand: str):
         self.account_shorthand = account_shorthand
+        self.account_url = f"{account_shorthand}.1password.com"
         self.suggestions = {
-            OS.GENERIC: f"<cmd>op signin --account {account_shorthand}.1password.com</cmd>",
+            OS.GENERIC: f"<cmd>op signin --account {self.account_url}</cmd>",
         }
 
     def check(self) -> CheckResult:
         output = get_stdout("op account list")
         if output is None:
             return self.failed("1Password CLI command failed. Make sure it's installed and configured.")
-        if f"{self.account_shorthand}.1password.com" in output:
+
+        account_present = contains_account(output, self.account_url)
+
+        if account_present:
             return self.passed(f"{self.account_shorthand} is configured with OP CLI for the current user")
         else:
             return self.failed(f"{self.account_shorthand} is not configured with OP CLI for the current user")
+
+
+def contains_account(op_account_list_output: str, account_url: str) -> bool:
+    return account_url in op_account_list_output
 
 
 def account_exists(path: str, account_shorthand: str) -> bool:
