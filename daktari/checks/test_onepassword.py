@@ -11,19 +11,18 @@ class TestOnePassword(unittest.TestCase):
             account_exists("checks/test_resources/op_config_with_account.json", "non-existent-account-name")
         )
 
-
     def test_contains_account(self):
         account_url = "test.1password.com"
 
-        correct_output = '''
+        correct_output = """
         URL                    EMAIL                        USER ID
         test.1password.com     test.email@domain.com        test-user-id
-        '''
+        """
 
-        incorrect_output = '''
+        incorrect_output = """
         URL                    EMAIL                        USER ID
         my.1password.com       test.email@domain.com        test-user-id
-        '''
+        """
 
         empty_output = ""
 
