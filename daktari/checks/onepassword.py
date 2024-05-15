@@ -1,10 +1,9 @@
 import json
-from pathlib import Path
 from typing import Optional
 
 from daktari.check import Check, CheckResult
-from daktari.file_utils import file_exists
 from daktari.os import OS
+from daktari.command_utils import get_stdout
 from daktari.version_utils import get_simple_cli_version
 
 
@@ -37,25 +36,26 @@ class OnePasswordAccountConfigured(Check):
 
     def __init__(self, account_shorthand: str):
         self.account_shorthand = account_shorthand
+        self.account_url = f"{account_shorthand}.1password.com"
         self.suggestions = {
-            OS.GENERIC: f"<cmd>op signin {account_shorthand}.1password.com <your-email-here></cmd>",
+            OS.GENERIC: f"<cmd>op signin --account {self.account_url}</cmd>",
         }
 
     def check(self) -> CheckResult:
-        home = str(Path.home())
-        possible_paths = [f"{home}/.op/config", f"{home}/.config/op/config"]
+        output = get_stdout("op account list")
+        if output is None:
+            return self.failed("1Password CLI command failed. Make sure it's installed and configured.")
 
-        for config_path in possible_paths:
-            if file_exists(config_path):
-                op_config = json.loads(open(config_path).read())
-                accounts = op_config.get("accounts", [])
-                repo = next(filter(lambda account: account.get("shorthand") == self.account_shorthand, accounts), None)
-                if repo is None:
-                    return self.failed(f"{self.account_shorthand} is not configured with OP CLI for the current user")
+        account_present = contains_account(output, self.account_url)
 
-                return self.passed(f"{self.account_shorthand} is configured with OP CLI for the current user")
+        if account_present:
+            return self.passed(f"{self.account_shorthand} is configured with OP CLI for the current user")
+        else:
+            return self.failed(f"{self.account_shorthand} is not configured with OP CLI for the current user")
 
-        return self.failed("No 1Password config appears to be present on this machine.")
+
+def contains_account(op_account_list_output: str, account_url: str) -> bool:
+    return account_url in op_account_list_output
 
 
 def account_exists(path: str, account_shorthand: str) -> bool:
