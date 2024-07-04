@@ -89,7 +89,7 @@ class OnePasswordCliOwnedByCorrectGroup(Check):
             return self.failed(f"op group should be onepassword-cli, but was {group_name}")
 
         if S_IMODE(op_stat.st_mode) & S_ISGID == 0:
-            return self.failed(f"op does not set groupid when running")
+            return self.failed("op does not set groupid when running")
 
         return self.passed("op has correct group and sets groupid when running")
 
