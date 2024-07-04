@@ -1,8 +1,12 @@
+import grp
 import json
+import os
 from pathlib import Path
+from stat import S_IMODE, S_ISGID
 from typing import Optional
 
 from daktari.check import Check, CheckResult
+from daktari.command_utils import get_stdout
 from daktari.file_utils import file_exists
 from daktari.os import OS
 from daktari.version_utils import get_simple_cli_version
@@ -56,6 +60,38 @@ class OnePasswordAccountConfigured(Check):
                 return self.passed(f"{self.account_shorthand} is configured with OP CLI for the current user")
 
         return self.failed("No 1Password config appears to be present on this machine.")
+
+
+# If not set up, this breaks the integration between cli and desktop app (at least on Ubuntu)
+# https://github.com/NeoHsu/asdf-1password-cli/issues/6#issuecomment-1587502411
+class OnePasswordCliOwnedByCorrectGroup(Check):
+    depends_on = [OnePasswordCliInstalled]
+    name = "onePassword.onepasswordCliOwnedByCorrectGroup"
+    run_on = OS.UBUNTU
+
+    def __init__(self):
+        self.suggestions = {
+            OS.UBUNTU: """
+            Ensure the onepassword-cli group exists:
+                       <cmd>sudo groupadd -f onepassword-cli</cmd>
+                       Then update the group ownership and set group id when executing:
+                       <cmd>sudo chgrp onepassword-cli $(asdf which op) && sudo chmod g+s $(asdf which op)</cmd>
+                       """,
+        }
+
+    def check(self) -> CheckResult:
+        op_path = get_stdout(["sh", "-c", "asdf which op"])
+        op_stat = os.stat(op_path)
+        group_id = op_stat.st_gid
+        group_name = grp.getgrgid(group_id)[0]
+
+        if group_name != "onepassword-cli":
+            return self.failed(f"op group should be onepassword-cli, but was {group_name}")
+
+        if S_IMODE(op_stat.st_mode) & S_ISGID == 0:
+            return self.failed(f"op does not set groupid when running")
+
+        return self.passed("op has correct group and sets groupid when running")
 
 
 def account_exists(path: str, account_shorthand: str) -> bool:
