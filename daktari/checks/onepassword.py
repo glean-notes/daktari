@@ -66,17 +66,17 @@ class OnePasswordAccountConfigured(Check):
 # https://github.com/NeoHsu/asdf-1password-cli/issues/6#issuecomment-1587502411
 class OnePasswordCliOwnedByCorrectGroup(Check):
     depends_on = [OnePasswordCliInstalled]
-    name = "onePassword.onepasswordCliOwnedByCorrectGroup"
+    name = "onePasswordCli.ownedByCorrectGroup"
     run_on = OS.UBUNTU
 
     def __init__(self):
         self.suggestions = {
             OS.UBUNTU: """
             Ensure the onepassword-cli group exists:
-                       <cmd>sudo groupadd -f onepassword-cli</cmd>
-                       Then update the group ownership and set group id when executing:
-                       <cmd>sudo chgrp onepassword-cli $(asdf which op) && sudo chmod g+s $(asdf which op)</cmd>
-                       """,
+            <cmd>sudo groupadd -f onepassword-cli</cmd>
+            Then update the group ownership and set group id when executing:
+            <cmd>sudo chgrp onepassword-cli $(asdf which op) && sudo chmod g+s $(asdf which op)</cmd>
+            """,
         }
 
     def check(self) -> CheckResult:
