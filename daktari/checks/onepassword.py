@@ -81,6 +81,9 @@ class OnePasswordCliOwnedByCorrectGroup(Check):
 
     def check(self) -> CheckResult:
         op_path = get_stdout(["sh", "-c", "asdf which op"])
+        if op_path is None:
+            return self.failed("op not found")
+
         op_stat = os.stat(op_path)
         group_id = op_stat.st_gid
         group_name = grp.getgrgid(group_id)[0]
