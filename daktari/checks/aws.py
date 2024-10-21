@@ -23,7 +23,7 @@ class AWSCLIInstalled(Check):
 class AWSProfileExists(Check):
     depends_on = [AWSCLIInstalled]
 
-    def __init__(self, profile_name: str, suggestions: Optional[dict] = None):
+    def __init__(self, profile_name: str, suggestions: dict[str, str]):
         self.profile_name = profile_name
         self.name = f"aws.profileExists.{profile_name}"
         self.suggestions = suggestions
