@@ -1,7 +1,7 @@
 from typing import Optional
 
 from daktari.check import Check, CheckResult
-from daktari.command_utils import can_run_command
+from daktari.command_utils import can_run_command, get_stdout
 from daktari.os import OS
 
 
