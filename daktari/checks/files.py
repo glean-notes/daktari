@@ -2,7 +2,7 @@ from os.path import expanduser
 from typing import List
 
 from daktari.check import Check, CheckResult
-from daktari.file_utils import dir_exists, file_exists
+from daktari.file_utils import dir_exists, file_exists, get_file_owner
 from daktari.os import OS
 
 
@@ -42,3 +42,21 @@ class DirExists(DirsExist):
         self.dir_paths = [dir_path]
         self.pass_fail_message = f"{dir_path} is <not/> present"
         self.suggestions = {OS.GENERIC: suggestion}
+
+
+class FilesOwnedByUser(Check):
+    name = "files.ownedByUser"
+    file_paths: List[str] = []
+    user: str = ""
+    pass_fail_message = ""
+
+    def check(self) -> CheckResult:
+        for file_path in self.file_paths:
+            expanded_file_path = expanduser(file_path)
+            if file_exists(expanded_file_path):
+                if get_file_owner(expanded_file_path) != self.user:
+                    return self.verify(False, self.pass_fail_message)
+            else:
+                return self.failed(f"{expanded_file_path} is not present")
+
+        return self.verify(True, self.pass_fail_message)
