@@ -4,6 +4,7 @@ from daktari.command_utils import get_stdout
 
 import os
 import re
+from pwd import getpwuid
 
 
 def get_absolute_path(path: str) -> str:
@@ -44,3 +45,8 @@ def file_contains_text_regex(path: str, regex: str) -> bool:
 def dir_exists(path: str) -> bool:
     testing_dir = Path(path)
     return testing_dir.is_dir()
+
+
+def get_file_owner(file_path: str) -> str:
+    file_stat = os.stat(file_path)
+    return getpwuid(file_stat.st_uid).pw_name
