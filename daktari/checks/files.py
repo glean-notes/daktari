@@ -46,9 +46,12 @@ class DirExists(DirsExist):
 
 class FilesOwnedByUser(Check):
     name = "files.ownedByUser"
-    file_paths: List[str] = []
-    expected_owner: str = ""
-    pass_fail_message = ""
+
+    def __init__(self, file_paths: List[str], expected_owner: str = "root", pass_fail_message: str = ""):
+        self.file_paths = file_paths
+        self.expected_owner = expected_owner
+        file_paths_str = ", ".join(file_paths)
+        self.pass_fail_message = pass_fail_message or f"{file_paths_str} are <not/> owned by {expected_owner}"
 
     def check(self) -> CheckResult:
         for file_path in self.file_paths:
