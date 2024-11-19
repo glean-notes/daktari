@@ -1,6 +1,6 @@
 import json
 import logging
-import os.path
+import os
 from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import Optional
@@ -184,6 +184,33 @@ class IntelliJNodePackageManagerConfigured(XmlFileXPathCheck):
         current_package_manager = str(key_json["keyToString"]["nodejs_package_manager_path"])
         logging.debug(f"IntelliJ node package manager set to: {current_package_manager}")
         return current_package_manager.__contains__(self.package_manager_path)
+
+
+class IntelliJTypescriptCompilerPathConfigured(XmlFileXPathCheck):
+    name = "intellij.typescriptCompilerPathConfigured"
+    file_path = ".idea/compiler.xml"
+    xpath_query = "./component[@name='TypeScriptCompiler']/option[@name='typeScriptServiceDirectory']"
+    depends_on = [IntelliJProjectImported]
+
+    def __init__(self, typescript_compiler_path: str):
+        self.typescript_compiler_path = typescript_compiler_path
+        resolved_path = typescript_compiler_path.replace("$PROJECT_DIR$", os.getcwd())
+        self.pass_fail_message = f"IntelliJ typescript compiler path has <not/> been set to {resolved_path}"
+
+        self.suggestions = {
+            OS.GENERIC: f"""
+                Follow the steps to set {resolved_path} as your typescript compiler path:
+                https://www.jetbrains.com/help/idea/typescript-support.html#ws_ts_use_ts_service_checkbox
+                """
+        }
+
+    def validate_query_result(self, result):
+        if result is None:
+            self.pass_fail_message = "IntelliJ typescript compiler path is <not/> set"
+            return False
+        current_typescript_compiler_path = result.get('value')
+        logging.debug(f"IntelliJ typescript compiler set to: {current_typescript_compiler_path}")
+        return current_typescript_compiler_path.__eq__(self.typescript_compiler_path)
 
 
 class IntelliJProjectSdkJavaVersion(XmlFileXPathCheck):
