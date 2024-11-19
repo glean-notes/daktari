@@ -210,7 +210,7 @@ class IntelliJTypescriptCompilerPathConfigured(XmlFileXPathCheck):
             return False
         current_typescript_compiler_path = result.get('value')
         logging.debug(f"IntelliJ typescript compiler set to: {current_typescript_compiler_path}")
-        return current_typescript_compiler_path.__eq__(self.typescript_compiler_path)
+        return current_typescript_compiler_path == self.typescript_compiler_path
 
 
 class IntelliJProjectSdkJavaVersion(XmlFileXPathCheck):

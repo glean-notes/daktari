@@ -3,8 +3,11 @@ import unittest
 from semver import VersionInfo
 
 from daktari.check import CheckStatus
-from daktari.checks.intellij_idea import IntelliJProjectSdkJavaVersion, get_intellij_version_from_product_info, IntelliJTypescriptCompilerPathConfigured
-
+from daktari.checks.intellij_idea import (
+    IntelliJProjectSdkJavaVersion,
+    get_intellij_version_from_product_info,
+    IntelliJTypescriptCompilerPathConfigured,
+)
 
 class TestIntellijIdea(unittest.TestCase):
     def test_parse_product_info(self):
