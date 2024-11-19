@@ -49,7 +49,7 @@ class TestIntellijIdea(unittest.TestCase):
         check.file_path = "checks/test_resources/intellij_misc_no_ts_path.xml"
         result = check.check()
         self.assertEqual(result.status, CheckStatus.FAIL)
-        self.assertIn("IntelliJ typescript compiler path has not been set to", result.summary)
+        self.assertIn("IntelliJ typescript compiler path is not set", result.summary)
 
     def test_project_typescript_path_set_wrong(self):
         check = IntelliJTypescriptCompilerPathConfigured("/some/project/node_modules/typescript")
