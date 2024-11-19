@@ -9,6 +9,7 @@ from daktari.checks.intellij_idea import (
     IntelliJTypescriptCompilerPathConfigured,
 )
 
+
 class TestIntellijIdea(unittest.TestCase):
     def test_parse_product_info(self):
         product_info_path = "checks/test_resources/intellij-product-info.json"
