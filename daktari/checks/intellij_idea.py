@@ -208,7 +208,7 @@ class IntelliJTypescriptCompilerPathConfigured(XmlFileXPathCheck):
         if result is None:
             self.pass_fail_message = "IntelliJ typescript compiler path is <not/> set"
             return False
-        current_typescript_compiler_path = result.get('value')
+        current_typescript_compiler_path = result.get("value")
         logging.debug(f"IntelliJ typescript compiler set to: {current_typescript_compiler_path}")
         return current_typescript_compiler_path == self.typescript_compiler_path
 
