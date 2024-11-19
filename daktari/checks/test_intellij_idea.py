@@ -3,7 +3,11 @@ import unittest
 from semver import VersionInfo
 
 from daktari.check import CheckStatus
-from daktari.checks.intellij_idea import IntelliJProjectSdkJavaVersion, get_intellij_version_from_product_info
+from daktari.checks.intellij_idea import (
+    IntelliJProjectSdkJavaVersion,
+    get_intellij_version_from_product_info,
+    IntelliJTypescriptCompilerPathConfigured,
+)
 
 
 class TestIntellijIdea(unittest.TestCase):
@@ -39,3 +43,24 @@ class TestIntellijIdea(unittest.TestCase):
         result = check.check()
         self.assertEqual(result.status, CheckStatus.PASS)
         self.assertEqual(result.summary, "IntelliJ Project SDK is set to Java 17: JDK_17")
+
+    def test_project_typescript_path_unset(self):
+        check = IntelliJTypescriptCompilerPathConfigured("$PROJECT_DIR$/node_modules/typescript")
+        check.file_path = "checks/test_resources/intellij_misc_no_ts_path.xml"
+        result = check.check()
+        self.assertEqual(result.status, CheckStatus.FAIL)
+        self.assertIn("IntelliJ typescript compiler path is not set", result.summary)
+
+    def test_project_typescript_path_set_wrong(self):
+        check = IntelliJTypescriptCompilerPathConfigured("/some/project/node_modules/typescript")
+        check.file_path = "checks/test_resources/intellij_misc_custom_ts_path.xml"
+        result = check.check()
+        self.assertEqual(result.status, CheckStatus.FAIL)
+        self.assertIn("IntelliJ typescript compiler path has not been set to", result.summary)
+
+    def test_project_typescript_path_set_correctly(self):
+        check = IntelliJTypescriptCompilerPathConfigured("$PROJECT_DIR$/node_modules/typescript")
+        check.file_path = "checks/test_resources/intellij_misc_custom_ts_path.xml"
+        result = check.check()
+        self.assertEqual(result.status, CheckStatus.PASS)
+        self.assertIn("IntelliJ typescript compiler path has been set to", result.summary)
