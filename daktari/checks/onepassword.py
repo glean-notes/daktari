@@ -41,7 +41,7 @@ class OnePasswordAccountConfigured(Check):
         self.account_shorthand = account_shorthand
         self.account_url = f"{account_shorthand}.1password.com"
         self.suggestions = {
-            OS.GENERIC: """
+            OS.GENERIC: f"""
             Use the 1Password desktop app integration: https://developer.1password.com/docs/cli/get-started/#sign-in
             Otherwise:
             <cmd>op signin -f --account {self.account_url}</cmd>""",
