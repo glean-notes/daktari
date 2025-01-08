@@ -27,5 +27,11 @@ def try_parse_semver(version_str: Optional[str]) -> Optional[VersionInfo]:
         return None
 
 
+# Coerce version strings into a standard semver format: major.minor.patch
 def sanitise_version_string(version_str: str) -> str:
-    return version_str + ".0" if version_str.count(".") == 1 else version_str
+    parts = version_str.split(".")
+    if len(parts) == 2:
+        return version_str + ".0"
+    elif len(parts) >= 4:
+        return ".".join(parts[:3])
+    return version_str

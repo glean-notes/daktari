@@ -48,7 +48,7 @@ def get_intellij_idea_version_mac() -> Optional[VersionInfo]:
         version_str = sanitise_version_string(version_str)
         version = try_parse_semver(version_str)
 
-        logging.debug(f"IntelliJ IDEA version (via NSBundle): {version}")
+        logging.debug(f"IntelliJ IDEA version (via NSBundle): {version} ({version_str})")
         return version
 
 
