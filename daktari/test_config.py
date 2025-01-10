@@ -138,8 +138,9 @@ class TestConfig(unittest.TestCase):
             self.assertEqual(expected_contents, actual_contents)
 
     def test_version_number_sanitised(self):
-        result = sanitise_version_string("9.22")
-        self.assertEqual("9.22.0", result)
+        self.assertEqual(sanitise_version_string("9.22"), "9.22.0")
+        self.assertEqual(sanitise_version_string("1.2.3"), "1.2.3")
+        self.assertEqual(sanitise_version_string("1.2.3.4"), "1.2.3")
 
     def test_local_config_template(self):
         template_text = get_resource(LOCAL_CONFIG_TEMPLATE)
