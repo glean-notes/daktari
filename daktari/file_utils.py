@@ -48,5 +48,5 @@ def dir_exists(path: str) -> bool:
 
 
 def get_file_owner(file_path: str) -> str:
-    file_stat = os.stat(file_path)
+    file_stat = os.stat(file_path, follow_symlinks=False)
     return getpwuid(file_stat.st_uid).pw_name
