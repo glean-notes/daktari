@@ -47,7 +47,8 @@ class DirExists(DirsExist):
 class FilesOwnedByUser(Check):
     name = "files.ownedByUser"
 
-    def __init__(self, file_paths: List[str], expected_owner: str = "root", pass_fail_message: str = "", follow_symlinks: bool = False):
+    def __init__(self, file_paths: List[str], expected_owner: str = "root", pass_fail_message: str = "",
+                 follow_symlinks: bool = False):
         self.file_paths = file_paths
         self.expected_owner = expected_owner
         file_paths_str = ", ".join(file_paths)
