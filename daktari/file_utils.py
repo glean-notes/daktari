@@ -47,6 +47,6 @@ def dir_exists(path: str) -> bool:
     return testing_dir.is_dir()
 
 
-def get_file_owner(file_path: str) -> str:
-    file_stat = os.stat(file_path)
+def get_file_owner(file_path: str, follow_symlinks: bool = False) -> str:
+    file_stat = os.stat(file_path, follow_symlinks=follow_symlinks)
     return getpwuid(file_stat.st_uid).pw_name
