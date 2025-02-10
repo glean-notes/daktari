@@ -1,5 +1,5 @@
 black~=25.1.0
 flake8~=7.1.1
-mypy~=1.14.1
+mypy~=1.15.0
 types-requests~=2.32.0.20241016
 pytest~=8.3.4
