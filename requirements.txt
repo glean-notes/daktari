@@ -16,7 +16,7 @@ PyYAML==5.3.1
 types-PyYAML==6.0.12.20241230
 pyobjc-core==11.0; sys_platform == 'darwin'
 pyobjc-framework-Cocoa==11.0; sys_platform == 'darwin'
-requests-unixsocket==0.3.0
+requests-unixsocket==0.4.1
 dpath==2.2.0
 pyOpenSSL==25.0.0
 types-pyOpenSSL==24.1.0.20240722
