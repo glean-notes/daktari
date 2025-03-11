@@ -28,7 +28,7 @@ where = ["."]
 include = ["daktari"]
 
 [tool.setuptools.package-data]
-"daktari" = ["*"]  # Ensures package data is included
+"daktari" = ["*"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
