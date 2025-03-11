@@ -2,8 +2,8 @@ ansicolors==1.1.8
 distro==1.9.0
 pyfiglet==0.8.post1
 importlib_resources==6.5.2
-dataclasses==0.8; python_version < '3.7'
-types-dataclasses==0.1.5; python_version < '3.7'
+dataclasses==0.8
+types-dataclasses==0.1.5
 packaging==20.9
 setuptools==70.3.0
 requests==2.32.3
@@ -21,4 +21,4 @@ dpath==2.2.0
 pyOpenSSL==25.0.0
 types-pyOpenSSL==24.1.0.20240722
 pyclip==0.7.0
-urllib3<1.27 # pin lower than 2 because of incompatibility with requests lib: https://github.com/psf/requests/issues/6432
+urllib3==2.3.0
