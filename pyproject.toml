@@ -22,7 +22,7 @@ daktari = "daktari.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["daktari"]
+include = ["daktari", "daktari.checks"]
 
 [tool.setuptools.package-data]
 "daktari" = ["*"]
