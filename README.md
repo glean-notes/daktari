@@ -69,7 +69,7 @@ In case of a need to manually release, the steps are:
 
 ```
 bumpversion --verbose patch
-python setup.py sdist bdist_wheel
+python -m build
 twine check dist/*
 twine upload dist/*
 ```
