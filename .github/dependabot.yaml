@@ -10,7 +10,6 @@ updates:
       - 'dependencies'
   - package-ecosystem: 'pip'
     directory: '/'
-    ignore:
     schedule:
       interval: 'weekly'
     labels:
