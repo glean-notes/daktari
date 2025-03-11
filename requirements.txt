@@ -2,7 +2,7 @@ ansicolors==1.1.8
 distro==1.9.0
 pyfiglet==1.0.2
 importlib_resources==6.5.2
-packaging==20.9
+packaging==24.2
 setuptools==72.0.0
 requests==2.32.3
 responses==0.25.6
