@@ -1,18 +1,16 @@
 ansicolors==1.1.8
 distro==1.9.0
-pyfiglet==0.8.post1
+pyfiglet==1.0.2
 importlib_resources==6.5.2
-dataclasses==0.8; python_version < '3.7'
-types-dataclasses==0.1.5; python_version < '3.7'
-packaging==20.9
-setuptools==70.3.0
+packaging==24.2
+setuptools==72.0.0
 requests==2.32.3
 responses==0.25.6
 semver==3.0.4
 python-hosts==1.0.7
 tabulate==0.9.0
 types-tabulate==0.9.0.20241207
-PyYAML==5.3.1
+PyYAML==6.0.2
 types-PyYAML==6.0.12.20241230
 pyobjc-core==11.0; sys_platform == 'darwin'
 pyobjc-framework-Cocoa==11.0; sys_platform == 'darwin'
@@ -21,4 +19,4 @@ dpath==2.2.0
 pyOpenSSL==25.0.0
 types-pyOpenSSL==24.1.0.20240722
 pyclip==0.7.0
-urllib3<1.27 # pin lower than 2 because of incompatibility with requests lib: https://github.com/psf/requests/issues/6432
+urllib3==2.3.0

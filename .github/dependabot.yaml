@@ -10,9 +10,6 @@ updates:
       - 'dependencies'
   - package-ecosystem: 'pip'
     directory: '/'
-    ignore:
-      - dependency-name: 'urllib3' # Due to compatibility issues with 2.x: https://github.com/psf/requests/issues/6432
-      - dependency-name: 'PyYAML' # Due to incompatibility with cython3 (in use by python 3.12+): https://github.com/yaml/pyyaml/issues/601
     schedule:
       interval: 'weekly'
     labels:
