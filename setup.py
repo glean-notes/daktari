@@ -31,4 +31,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python",
     ],
+    options={
+        "metadata": {"license_files": ["LICENSE.txt"]}
+    }
 )

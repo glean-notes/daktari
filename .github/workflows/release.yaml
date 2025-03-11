@@ -23,7 +23,7 @@ jobs:
       - name: Build binaries
         run: |
           python -m pip install --no-cache-dir --upgrade pip
-          python -m pip install --no-cache-dir wheel twine
+          python -m pip install --no-cache-dir --upgrade wheel twine
           python setup.py sdist bdist_wheel
           python -m twine check dist/*
       - name: Upload to PyPI
