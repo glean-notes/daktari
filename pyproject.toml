@@ -20,9 +20,6 @@ Homepage = "https://github.com/sonocent/daktari"
 [project.scripts]
 daktari = "daktari.__main__:main"
 
-[tool.setuptools]
-license-files = ["LICENSE.txt"]
-
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["daktari"]
