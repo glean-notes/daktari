@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10.10'
       - name: Bump version and push tag
         uses: jasonamyers/github-bumpversion-action@v1.0.5
         env:

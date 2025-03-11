@@ -1,3 +1,2 @@
 recursive-include daktari/resources *
 include requirements.txt
-include LICENSE.txt
