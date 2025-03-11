@@ -24,6 +24,7 @@ jobs:
         run: |
           python -m pip install --no-cache-dir --upgrade pip wheel twine build setuptools
           python -m build
+          pip list
           python -m twine check dist/*
       - name: Upload to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
