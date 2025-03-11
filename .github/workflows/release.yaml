@@ -25,7 +25,7 @@ jobs:
           python -m pip install --no-cache-dir --upgrade pip
           python -m pip install --no-cache-dir wheel twine
           python setup.py sdist bdist_wheel
-          twine check dist/*
+          python -m twine check dist/*
       - name: Upload to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
