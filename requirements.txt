@@ -2,8 +2,6 @@ ansicolors==1.1.8
 distro==1.9.0
 pyfiglet==0.8.post1
 importlib_resources==6.5.2
-dataclasses==0.8
-types-dataclasses==0.1.5
 packaging==20.9
 setuptools==70.3.0
 requests==2.32.3
