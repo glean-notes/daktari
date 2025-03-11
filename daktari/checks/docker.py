@@ -6,8 +6,8 @@ from daktari.file_utils import dir_exists
 from semver import VersionInfo
 
 from daktari.check import Check, CheckResult
-from daktari.command_utils import can_run_command, get_stdout
-from daktari.os import OS, detect_os
+from daktari.command_utils import get_stdout
+from daktari.os import OS
 from daktari.version_utils import try_parse_semver
 
 
@@ -61,15 +61,13 @@ def get_orbstack_version() -> Optional[VersionInfo]:
             return version
     return None
 
+
 class OrbStackInstalled(Check):
     name = "orbstack.installed"
-    suggestions = {
-        OS.GENERIC: "Install orbstack: https://docs.orbstack.dev/install and sign in."
-    }
+    suggestions = {OS.GENERIC: "Install orbstack: https://docs.orbstack.dev/install and sign in."}
 
     def __init__(self, required_version: Optional[str] = None):
         self.required_version = required_version
-
 
     def check(self) -> CheckResult:
         installed_version = get_orbstack_version()
