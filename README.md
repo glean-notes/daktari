@@ -7,7 +7,7 @@ In the root of the project repository, create a `.daktari.py` configuration file
 ```python
 from daktari.checks.git import *
 
-version = "0.0.242"
+version = "0.0.255"
 title = "My Project"
 
 checks = [
@@ -69,7 +69,7 @@ In case of a need to manually release, the steps are:
 
 ```
 bumpversion --verbose patch
-python setup.py sdist bdist_wheel
+python -m build
 twine check dist/*
 twine upload dist/*
 ```
