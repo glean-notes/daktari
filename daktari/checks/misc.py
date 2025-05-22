@@ -3,7 +3,6 @@ from os.path import expanduser
 from typing import Dict, Optional
 
 from python_hosts import Hosts
-from tabulate import tabulate
 
 from daktari.check import Check, CheckResult
 from daktari.os import OS, check_env_var_exists, get_env_var_value
@@ -193,7 +192,7 @@ class HostAliasesConfigured(Check):
     def __init__(self, required_aliases: Dict[str, str]):
         self.required_aliases = required_aliases
         hosts_path = Hosts.determine_hosts_path()
-        entries_text = tabulate([(addr, name) for (name, addr) in self.required_aliases.items()], tablefmt="plain")
+        entries_text = "\n".join([f"{addr} {name}" for (name, addr) in self.required_aliases.items()])
         self.suggestions = {OS.GENERIC: f"Add the following entries to {hosts_path}:\n\n{entries_text}"}
 
     def check(self) -> CheckResult:
