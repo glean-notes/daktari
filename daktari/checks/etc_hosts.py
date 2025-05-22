@@ -20,6 +20,6 @@ class EtcHostsFormattedCorrectly(Check):
         with open("/etc/hosts", "r") as f:
             content = f.read()
             if "\t" in content or "  " in content:
-                return self.failed("/etc/hosts is usess tabs or multiple spaces in blankspace.")
+                return self.failed("/etc/hosts is uses tabs or multiple spaces in blankspace.")
             else:
                 return self.passed("/etc/hosts is formatted correctly")
