@@ -1,7 +1,8 @@
 from daktari.check import Check, CheckResult
 from daktari.os import OS
 
-
+# We found that if /etc/hosts used a mixture of tabs and spaces it caused some applications to ignore /etc/hosts and perform DNS lookups instead.
+# This check enforces a single space in any blankspace in /etc/hosts.
 class EtcHostsFormattedCorrectly(Check):
     name = "etc.hosts.formattedCorrectly"
     description = "Check if /etc/hosts is formatted correctly with consistent use of tabs and spaces"
