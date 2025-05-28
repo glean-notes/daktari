@@ -15,7 +15,7 @@ class EtcHostsFormattedCorrectly(Check):
             OS.OS_X: "Reformat /etc/hosts to use a single space consistently in blankspace:\n\n"
             + r"<cmd>sudo sed -Ei '' 's:( |\t)+: :g' /etc/hosts</cmd>",
             OS.UBUNTU: "Reformat /etc/hosts to use a single space consistently in blankspace:\n\n"
-            + r"<cmd>sudo sed -Ei 's:( |\t)+: :g' /etc/hosts</cmd>"
+            + r"<cmd>sudo sed -Ei 's:( |\t)+: :g' /etc/hosts</cmd>",
         }
 
     def check(self) -> CheckResult:
