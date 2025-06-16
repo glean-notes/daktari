@@ -4,7 +4,7 @@ pyfiglet==1.0.3
 importlib_resources==6.5.2
 packaging==25.0
 setuptools==80.9.0
-requests==2.32.3
+requests==2.32.4
 responses==0.25.7
 semver==3.0.4
 python-hosts==1.0.7
