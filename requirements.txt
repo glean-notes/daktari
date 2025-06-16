@@ -11,7 +11,7 @@ python-hosts==1.0.7
 PyYAML==6.0.2
 types-PyYAML==6.0.12.20250516
 pyobjc-core==11.1; sys_platform == 'darwin'
-pyobjc-framework-Cocoa==11.0; sys_platform == 'darwin'
+pyobjc-framework-Cocoa==11.1; sys_platform == 'darwin'
 requests-unixsocket==0.4.1
 dpath==2.2.0
 pyOpenSSL==25.1.0
